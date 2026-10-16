@@ -5,151 +5,281 @@ değişkenleriyle yapılandırılır (LLM_BASE_URL, LLM_MODEL, LLM_API_KEY).
 Bağlantı kurulamazsa uygulama çökmez; çağıran taraf açık bir hata/durum alır.
 """
 import json
+import re
+from typing import Iterator
 
 import httpx
 
 from . import config
 
-SUGGESTION_SYSTEM_PROMPT = """Sen bir bankanın iç kontrol biriminde çalışan, periyodik \
-kontrol önerileri üreten bir uzmansın. Sana iki şey verilecek: (1) şirketin yüklediği süreç/\
-prosedür belgelerinden çıkarılmış metin, (2) birikmiş "skill" bilgi tabanı (mevzuat, \
-Üçlü Savunma Hattı, MASAK/AML kuralları, kontrol metrikleri tanımları).
+KATEGORILER = ["Operasyonel", "Mevzuat Uyum", "Bilgi Sistemleri", "Finansal Raporlama", "AML / Şüpheli İşlem"]
+SIKLIKLAR = ["Anlık", "Günlük", "Haftalık", "Aylık", "Üç aylık", "Altı aylık", "Yıllık", "Olay tetiklemeli"]
+RISKLER = ["Düşük", "Orta", "Yüksek", "Kritik"]
+EFORLAR = ["Düşük", "Orta", "Yüksek"]
+EDITABLE_FIELDS = ("kontrol_adi", "kategori", "hat", "siklik", "risk", "efor", "gerekce", "dayanak")
 
-Görevin: belgedeki süreçler için somut periyodik kontrol ÖNERİLERİ üretmek. Her öneri şu \
-alanları İÇERMELİDİR ve SADECE geçerli bir JSON listesi olarak dönmelisin (başka hiçbir \
-metin yazma):
+SET_SYSTEM_PROMPT = f"""Sen bir bankanın iç kontrol biriminde periyodik kontrol tasarlayan \
+kıdemli bir uzmansın. Sana şirketin süreç/prosedür belgeleri ve birikmiş bilgi tabanı \
+(skill'ler) verilecek. Belgedeki süreçler için somut, test edilebilir periyodik kontroller öner.
 
-[
-  {
-    "kontrol_adi": "...",
-    "kategori": "...",
-    "hat": "yalnızca tek bir rakam: 1, 2 veya 3",
-    "siklik": "...",
-    "risk": "düşük | orta | yüksek | kritik",
-    "efor": "düşük | orta | yüksek",
-    "gerekce": "belge/mevzuat referansıyla kısa gerekçe"
-  }
-]
+ÇIKTI BİÇİMİ — ÇOK ÖNEMLİ: JSON Lines. Her satır tek bir JSON objesi. Başka hiçbir metin, \
+açıklama, liste parantezi veya kod bloğu yazma.
 
-MASAK/AML kategorisindeki önerilere tipping-off uyarısını gerekçeye ekle. Belgede boşluk \
-(gap) görürsen gerekçede açıkça belirt."""
+1) İlk satır (bir kez):
+{{"tip":"baslik","baslik":"<süreç adı, kısa>","ozet":"<2-3 cümlelik özet: neler incelendi, kontroller nerede yoğunlaşıyor>"}}
 
-FEEDBACK_SYSTEM_PROMPT = """Sen bir bankanın iç kontrol biriminde, kullanıcının bir periyodik \
-kontrol önerisine verdiği serbest metin geri bildirimini (prompt) değerlendiren bir uzmansın.
+2) Her kontrol için bir satır:
+{{"tip":"kontrol","kontrol_adi":"<kısa, eylem odaklı>","kategori":"<{' | '.join(KATEGORILER)}>","hat":"<1, 2 veya 3 — tek rakam>","siklik":"<{' | '.join(SIKLIKLAR)}>","risk":"<{' | '.join(RISKLER)}>","efor":"<{' | '.join(EFORLAR)}>","gerekce":"<neden gerekli, 1-2 cümle>","dayanak":"<mevzuat/politika maddesi ya da boş>","kaynak":"<belgeden kısa birebir alıntı ya da boş>"}}
 
-Sana mevcut kontrol önerisi (JSON) ve kullanıcının bu öneriye dair yazdığı geri bildirim \
-verilecek. Görevin: SADECE geçerli bir JSON objesi döndürmek (başka hiçbir metin yazma):
+3) Belgede tespit ettiğin her boşluk/tutarsızlık için bir satır:
+{{"tip":"bosluk","metin":"<boşluğun tek cümlelik açıklaması>"}}
 
-{
-  "alan_guncellemesi": null veya yalnız DEĞİŞMESİ gereken alanları içeren bir obje \
-(olası alanlar: kontrol_adi, kategori, hat, siklik, risk, efor, gerekce) — kullanıcı somut bir \
-değişiklik istemiyorsa (sadece yorum/not ise) null döndür,
-  "ders": "Bu geri bildirimden çıkarılan, GELECEKTEKİ benzer önerilere de uygulanabilecek genel, \
-kısa ve somut bir ders cümlesi (Türkçe)."
-}"""
+Kurallar: kategori, sıklık, risk ve efor değerlerini YALNIZ yukarıdaki listelerden seç. \
+Kaynak alıntısını uydurma; belgede yoksa boş bırak. AML / Şüpheli İşlem kontrollerinin \
+gerekçesine tipping-off (5549 m.4/2) riskini ekle. Bilgi tabanındaki "Öğrenilenler" \
+maddelerini uygula."""
+
+CHAT_SYSTEM_PROMPT = """Sen bir bankanın iç kontrol biriminde, kullanıcının bir kontrol setine \
+veya tek bir kontrole verdiği serbest metin geri bildirimini uygulayan bir uzmansın.
+
+Sana setteki kontroller (id ile), varsa odaktaki kontrol ve kullanıcının mesajı verilecek. \
+SADECE geçerli bir JSON objesi döndür, başka hiçbir metin yazma:
+
+{"yanit":"<kullanıcıya kısa Türkçe yanıt: ne yaptın, neyi neden değiştirmedin>",
+ "degisiklikler":[{"id":<kontrol id>,"alanlar":{"<alan>":"<yeni değer>"}}],
+ "ders":"<gelecekteki setlere de uygulanabilecek genel, kısa bir kural; yoksa null>"}
+
+Değiştirilebilir alanlar: kontrol_adi, kategori, hat, siklik, risk, efor, gerekce, dayanak. \
+Değişiklik gerekmiyorsa "degisiklikler": [] döndür. Yalnız verilen id'leri kullan. \
+Kategori/sıklık/risk/efor için mevcut değerlerle aynı sözlüğü kullan."""
+
+
+def _headers():
+    return {"Authorization": f"Bearer {config.LLM_API_KEY}"}
+
+
+def _url():
+    return f"{config.LLM_BASE_URL.rstrip('/')}/chat/completions"
+
+
+def connection_error_text(err: str) -> str:
+    return (
+        f"Lokal modele ulaşılamadı ({config.LLM_BASE_URL}, model: {config.LLM_MODEL}): {err}. "
+        "LLM_BASE_URL / LLM_MODEL ayarlarını kontrol edin."
+    )
 
 
 def _extract_json_payload(content: str):
     """Model çıktısını (gerekirse kod bloğundan temizleyip) json.loads ile ayrıştırır."""
     cleaned = content.strip()
     if cleaned.startswith("```"):
-        cleaned = cleaned.strip("`")
-        cleaned = cleaned.split("\n", 1)[1] if "\n" in cleaned else cleaned
-        if cleaned.lower().startswith("json"):
-            cleaned = cleaned.split("\n", 1)[1]
-    return json.loads(cleaned)
+        cleaned = re.sub(r"^```[a-zA-Z]*\n?", "", cleaned)
+        cleaned = re.sub(r"\n?```$", "", cleaned)
+    try:
+        return json.loads(cleaned)
+    except json.JSONDecodeError:
+        # metnin içindeki ilk { ... } ya da [ ... ] bloğunu dene
+        m = re.search(r"(\{.*\}|\[.*\])", cleaned, re.S)
+        if not m:
+            raise
+        return json.loads(m.group(1))
 
 
 def call_chat_completion(messages: list[dict], temperature: float = 0.2) -> dict:
     """Döner: {"ok": True, "content": str} veya {"ok": False, "error": str}."""
-    url = f"{config.LLM_BASE_URL.rstrip('/')}/chat/completions"
-    payload = {
-        "model": config.LLM_MODEL,
-        "messages": messages,
-        "temperature": temperature,
-    }
-    headers = {"Authorization": f"Bearer {config.LLM_API_KEY}"}
+    payload = {"model": config.LLM_MODEL, "messages": messages, "temperature": temperature}
     try:
         with httpx.Client(timeout=config.LLM_TIMEOUT_S) as client:
-            resp = client.post(url, json=payload, headers=headers)
+            resp = client.post(_url(), json=payload, headers=_headers())
             resp.raise_for_status()
-            data = resp.json()
-            return {"ok": True, "content": data["choices"][0]["message"]["content"]}
+            return {"ok": True, "content": resp.json()["choices"][0]["message"]["content"]}
     except Exception as exc:
         return {"ok": False, "error": str(exc)}
 
 
-def _connection_error(result: dict) -> dict:
+# ---------------------------------------------------------------- normalizasyon
+
+def _pick(value, options, default):
+    if not value:
+        return default
+    v = str(value).strip().lower()
+    for opt in options:
+        if v == opt.lower():
+            return opt
+    for opt in options:  # kısmi eşleşme ("yuksek", "aml" vb.)
+        o = opt.lower()
+        if v in o or o.split()[0] in v:
+            return opt
+    tr = str.maketrans("ışğüöç", "isguoc")
+    for opt in options:
+        if v.translate(tr) == opt.lower().translate(tr):
+            return opt
+    return default
+
+
+def normalize_control(obj: dict) -> dict:
+    hat = re.search(r"[123]", str(obj.get("hat") or ""))
     return {
-        "ok": False,
-        "error": (
-            "Lokal LLM uç noktasına ulaşılamadı "
-            f"({config.LLM_BASE_URL}): {result['error']}. "
-            "LLM_BASE_URL / LLM_MODEL ortam değişkenlerini işyerindeki "
-            "lokal model sunucunuza göre ayarlayın."
-        ),
+        "kontrol_adi": (obj.get("kontrol_adi") or "").strip() or "Adsız kontrol",
+        "kategori": _pick(obj.get("kategori"), KATEGORILER, "Operasyonel"),
+        "hat": hat.group(0) if hat else "1",
+        "siklik": _pick(obj.get("siklik"), SIKLIKLAR, "Aylık"),
+        "risk": _pick(obj.get("risk"), RISKLER, "Orta"),
+        "efor": _pick(obj.get("efor"), EFORLAR, "Orta"),
+        "gerekce": (obj.get("gerekce") or "").strip(),
+        "dayanak": (obj.get("dayanak") or "").strip(),
+        "kaynak": (obj.get("kaynak") or "").strip(),
     }
 
 
-def generate_suggestions(document_text: str, skills_text: str) -> dict:
-    """LLM'den öneri listesi ister. Başarısızlıkta hata bilgisini döner, uygulama çökmez."""
-    user_prompt = (
-        f"BİRİKMİŞ SKILL BİLGİSİ:\n{skills_text}\n\n"
-        f"ŞİRKET BELGESİNDEN ÇIKARILAN METİN (ilk ~12000 karakter):\n"
-        f"{document_text[:12000]}\n\n"
-        "Yukarıdaki talimata göre JSON listesi üret."
+def normalize_fields(fields: dict) -> dict:
+    out = {}
+    for k, v in (fields or {}).items():
+        if k not in EDITABLE_FIELDS or v in (None, ""):
+            continue
+        if k == "kategori":
+            v = _pick(v, KATEGORILER, None)
+        elif k == "siklik":
+            v = _pick(v, SIKLIKLAR, None)
+        elif k == "risk":
+            v = _pick(v, RISKLER, None)
+        elif k == "efor":
+            v = _pick(v, EFORLAR, None)
+        elif k == "hat":
+            m = re.search(r"[123]", str(v))
+            v = m.group(0) if m else None
+        else:
+            v = str(v).strip()
+        if v:
+            out[k] = v
+    return out
+
+
+# ---------------------------------------------------------------- set üretimi (akışlı)
+
+def _parse_line(line: str):
+    line = line.strip().strip(",")
+    if not line or line.startswith("```"):
+        return None
+    if not line.startswith("{"):
+        i = line.find("{")
+        if i < 0:
+            return None
+        line = line[i:]
+    try:
+        obj = json.loads(line)
+    except json.JSONDecodeError:
+        return None
+    return obj if isinstance(obj, dict) else None
+
+
+def _classify(obj: dict):
+    tip = (obj.get("tip") or "").lower()
+    if tip == "baslik" or ("baslik" in obj and "kontrol_adi" not in obj):
+        return {"event": "meta", "baslik": obj.get("baslik") or "", "ozet": obj.get("ozet") or ""}
+    if tip == "bosluk" or ("metin" in obj and "kontrol_adi" not in obj):
+        return {"event": "gap", "metin": obj.get("metin") or ""}
+    if tip == "kontrol" or "kontrol_adi" in obj:
+        return {"event": "control", "control": normalize_control(obj)}
+    return None
+
+
+def stream_control_set(document_text: str, skills_text: str) -> Iterator[dict]:
+    """Model çıktısını satır satır okuyup olay üretir:
+    {"event":"meta"|"control"|"gap"|"error", ...}. Asla exception fırlatmaz."""
+    messages = [
+        {"role": "system", "content": SET_SYSTEM_PROMPT},
+        {"role": "user", "content": (
+            f"BİLGİ TABANI (skill'ler):\n{skills_text}\n\n"
+            f"ŞİRKET BELGELERİ (ilk ~14000 karakter):\n{document_text[:14000]}\n\n"
+            "Şimdi JSON Lines çıktısını üret."
+        )},
+    ]
+    payload = {"model": config.LLM_MODEL, "messages": messages, "temperature": 0.2, "stream": True}
+    buffer, full = "", ""
+    emitted = 0
+    try:
+        with httpx.Client(timeout=httpx.Timeout(config.LLM_TIMEOUT_S, connect=10)) as client:
+            with client.stream("POST", _url(), json=payload, headers=_headers()) as resp:
+                if resp.status_code >= 400:
+                    resp.read()
+                    yield {"event": "error", "error": connection_error_text(f"HTTP {resp.status_code}: {resp.text[:200]}")}
+                    return
+                for raw in resp.iter_lines():
+                    if not raw or not raw.startswith("data:"):
+                        continue
+                    data = raw[5:].strip()
+                    if data == "[DONE]":
+                        break
+                    try:
+                        delta = json.loads(data)["choices"][0]["delta"].get("content") or ""
+                    except Exception:
+                        continue
+                    buffer += delta
+                    full += delta
+                    while "\n" in buffer:
+                        line, buffer = buffer.split("\n", 1)
+                        obj = _parse_line(line)
+                        ev = _classify(obj) if obj else None
+                        if ev:
+                            emitted += 1
+                            yield ev
+    except Exception as exc:
+        yield {"event": "error", "error": connection_error_text(str(exc))}
+        return
+
+    obj = _parse_line(buffer)
+    ev = _classify(obj) if obj else None
+    if ev:
+        emitted += 1
+        yield ev
+
+    if emitted == 0:
+        # Model JSON Lines yerine tek bir JSON (liste/obje) döndürdüyse kurtarmayı dene.
+        try:
+            parsed = _extract_json_payload(full)
+            items = parsed if isinstance(parsed, list) else parsed.get("kontroller", [parsed])
+            for it in items:
+                if isinstance(it, dict):
+                    ev = _classify(it) or {"event": "control", "control": normalize_control(it)}
+                    yield ev
+                    emitted += 1
+        except Exception:
+            pass
+    if emitted == 0:
+        yield {"event": "error", "error": "Model geçerli bir kontrol listesi döndürmedi. Tekrar deneyin ya da daha güçlü bir model seçin."}
+
+
+# ---------------------------------------------------------------- sohbet / geri bildirim
+
+def chat_feedback(controls: list[dict], focus: dict | None, message: str, skills_text: str) -> dict:
+    compact = [
+        {k: c.get(k) for k in ("id", "kontrol_adi", "kategori", "hat", "siklik", "risk", "efor")}
+        for c in controls
+    ]
+    user = (
+        f"BİLGİ TABANI (özet):\n{skills_text[:3500]}\n\n"
+        f"SETTEKİ KONTROLLER:\n{json.dumps(compact, ensure_ascii=False)}\n\n"
+        + (f"ODAKTAKİ KONTROL (mesaj özellikle bununla ilgili):\n{json.dumps(focus, ensure_ascii=False)}\n\n" if focus else "")
+        + f"KULLANICI MESAJI:\n{message}"
     )
     result = call_chat_completion(
-        [
-            {"role": "system", "content": SUGGESTION_SYSTEM_PROMPT},
-            {"role": "user", "content": user_prompt},
-        ]
+        [{"role": "system", "content": CHAT_SYSTEM_PROMPT}, {"role": "user", "content": user}]
     )
     if not result["ok"]:
-        return _connection_error(result)
-    content = result["content"]
+        return {"ok": False, "error": connection_error_text(result["error"])}
     try:
-        suggestions = _extract_json_payload(content)
-        return {"ok": True, "suggestions": suggestions}
+        parsed = _extract_json_payload(result["content"])
+        if not isinstance(parsed, dict):
+            raise ValueError("obje bekleniyordu")
     except Exception as exc:
-        return {
-            "ok": False,
-            "error": f"Model yanıtı JSON olarak ayrıştırılamadı: {exc}",
-            "raw_response": content,
-        }
-
-
-def process_prompt_feedback(suggestion: dict, skills_text: str, user_prompt: str) -> dict:
-    """Kullanıcının bir öneriye yazdığı serbest metin geri bildirimini değerlendirir.
-
-    Döner: {"ok": True, "alan_guncellemesi": dict|None, "ders": str} veya
-    {"ok": False, "error": str}.
-    """
-    user_content = (
-        f"BİRİKMİŞ SKILL BİLGİSİ (özet):\n{skills_text[:4000]}\n\n"
-        f"MEVCUT ÖNERİ:\n{json.dumps(suggestion, ensure_ascii=False)}\n\n"
-        f"KULLANICI GERİ BİLDİRİMİ:\n{user_prompt}\n\n"
-        "Yukarıdaki talimata göre JSON objesi üret."
-    )
-    result = call_chat_completion(
-        [
-            {"role": "system", "content": FEEDBACK_SYSTEM_PROMPT},
-            {"role": "user", "content": user_content},
-        ]
-    )
-    if not result["ok"]:
-        return _connection_error(result)
-    content = result["content"]
-    try:
-        parsed = _extract_json_payload(content)
-        return {
-            "ok": True,
-            "alan_guncellemesi": parsed.get("alan_guncellemesi"),
-            "ders": parsed.get("ders"),
-        }
-    except Exception as exc:
-        return {
-            "ok": False,
-            "error": f"Model yanıtı JSON olarak ayrıştırılamadı: {exc}",
-            "raw_response": content,
-        }
+        return {"ok": False, "error": f"Model yanıtı ayrıştırılamadı: {exc}"}
+    ders = parsed.get("ders")
+    if isinstance(ders, str) and ders.strip().lower() in ("null", "none", ""):
+        ders = None
+    return {
+        "ok": True,
+        "yanit": (parsed.get("yanit") or "").strip() or "Tamam.",
+        "degisiklikler": parsed.get("degisiklikler") or [],
+        "ders": ders,
+    }

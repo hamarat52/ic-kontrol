@@ -1,344 +1,660 @@
-const docList = document.getElementById("docList");
-const fileInput = document.getElementById("fileInput");
-const dropZone = document.getElementById("dropZone");
-const generateBtn = document.getElementById("generateBtn");
-const generateStatus = document.getElementById("generateStatus");
-const tbody = document.querySelector("#suggestionsTable tbody");
-const emptyState = document.getElementById("emptyState");
-const skillsList = document.getElementById("skillsList");
-const toastContainer = document.getElementById("toastContainer");
-const llmDot = document.getElementById("llmDot");
-const llmStatusText = document.getElementById("llmStatusText");
-const exportWordBtn = document.getElementById("exportWordBtn");
-const exportExcelBtn = document.getElementById("exportExcelBtn");
-const steps = document.querySelectorAll(".step");
+/* Periyodik Kontrol Asistanı — istemci
+   Kural: hareket yalnız ton/opaklık; yer değiştiren tek şey sağ panel ve sohbet. */
 
-const FIELD_ORDER = ["kontrol_adi", "kategori", "hat", "siklik", "risk", "efor", "gerekce"];
-let currentSuggestions = [];
-let currentRunId = null;
+const $ = (s, r = document) => r.querySelector(s);
+const esc = (v) => String(v ?? "").replace(/[&<>"]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
 
-// ---------- Toast ----------
-function showToast(message, type = "default") {
-  const el = document.createElement("div");
-  el.className = `toast ${type}`;
-  el.textContent = message;
-  toastContainer.appendChild(el);
-  setTimeout(() => el.remove(), 3000);
-}
+const KAT_ICO = { "Operasyonel": "⚙️", "Mevzuat Uyum": "⚖️", "Bilgi Sistemleri": "🛡️", "Finansal Raporlama": "📊", "AML / Şüpheli İşlem": "🔍" };
+const KAT_ORDER = Object.keys(KAT_ICO);
+const RISK_CLS = { "Kritik": "r-kritik", "Yüksek": "r-yuksek", "Orta": "r-orta", "Düşük": "r-dusuk" };
+const HAT_ADI = { "1": "1 — Operasyonel yönetim", "2": "2 — Risk / uyum", "3": "3 — İç denetim" };
 
-// ---------- fetch helper ----------
-async function fetchJSON(url, options) {
-  const res = await fetch(url, options);
+const S = {
+  docs: [], sets: [], lib: [], health: null, meta: null,
+  route: { name: "home" }, set: null, gen: null,
+  filter: "all", q: "", selectedId: null, chatBusy: false, fresh: new Set(),
+};
+
+/* ---------------------------------------------------------------- yardımcılar */
+async function api(path, opts = {}) {
+  const res = await fetch(path, opts);
   if (!res.ok) {
-    const text = await res.text();
-    throw new Error(`${res.status}: ${text}`);
+    let msg = `${res.status}`;
+    try { const j = await res.json(); msg = j.detail || j.error || msg; } catch {}
+    throw new Error(msg);
   }
   return res.json();
 }
+const jsonOpts = (method, body) => ({ method, headers: { "Content-Type": "application/json" }, body: JSON.stringify(body) });
 
-function setActiveStep(n) {
-  steps.forEach((s) => s.classList.toggle("active", Number(s.dataset.step) <= n));
+function toDate(s) { return s ? new Date(s.replace(" ", "T") + "Z") : null; }
+function fmtDate(s, time = false) {
+  const d = toDate(s); if (!d) return "";
+  const o = { day: "numeric", month: "short" };
+  if (d.getFullYear() !== new Date().getFullYear() || !time) o.year = "numeric";
+  if (time) { o.hour = "2-digit"; o.minute = "2-digit"; }
+  return d.toLocaleString("tr-TR", o);
+}
+function fmtTime(s) { const d = toDate(s); return d ? d.toLocaleTimeString("tr-TR", { hour: "2-digit", minute: "2-digit" }) : ""; }
+function setIco(title = "") {
+  const t = title.toLocaleLowerCase("tr");
+  if (/kredi|tahsis|limit/.test(t)) return "🏦";
+  if (/ödeme|transfer|eft|havale/.test(t)) return "💸";
+  if (/erişim|yetki|kullanıcı|bilgi sistem/.test(t)) return "🔐";
+  if (/finans|rapor|muhasebe/.test(t)) return "🧾";
+  if (/aml|masak|aklama|şüpheli/.test(t)) return "🔍";
+  return "📋";
+}
+let toastTimer;
+function toast(msg, err = false) {
+  const t = $("#toast"); t.textContent = msg; t.className = "toast on" + (err ? " err" : "");
+  clearTimeout(toastTimer); toastTimer = setTimeout(() => (t.className = "toast" + (err ? " err" : "")), 2600);
+}
+function download(url) { const a = document.createElement("a"); a.href = url; a.download = ""; document.body.appendChild(a); a.click(); a.remove(); }
+function autosize(el) { el.style.height = "auto"; el.style.height = el.scrollHeight + "px"; }
+const SVG = {
+  check: `<svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"><path d="m5 12 5 5 9-10"/></svg>`,
+  down: `<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v12m0 0-4-4m4 4 4-4M4 17v2a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-2"/></svg>`,
+  more: `<svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor"><circle cx="5" cy="12" r="1.7"/><circle cx="12" cy="12" r="1.7"/><circle cx="19" cy="12" r="1.7"/></svg>`,
+  search: `<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>`,
+  close: `<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M6 6l12 12M18 6 6 18"/></svg>`,
+};
+
+/* ---------------------------------------------------------------- veri */
+async function loadBase() {
+  const [docs, sets, lib] = await Promise.all([api("/api/documents"), api("/api/sets"), api("/api/library")]);
+  S.docs = docs; S.sets = sets; S.lib = lib;
+  renderSidebar();
+}
+async function refreshSets() { S.sets = await api("/api/sets"); renderSidebar(); }
+async function refreshLib() { S.lib = await api("/api/library"); renderSidebar(); }
+
+/* ---------------------------------------------------------------- yönlendirme */
+function parseRoute() {
+  const h = location.hash.replace(/^#\/?/, "");
+  const [name, id] = h.split("/");
+  if (name === "set" && id) return { name: "set", id };
+  if (["belgeler", "kutuphane", "bilgi", "setler"].includes(name)) return { name };
+  return { name: "home" };
+}
+function go(hash) { if (location.hash === hash) route(); else location.hash = hash; }
+
+async function route() {
+  const r = parseRoute();
+  const changed = JSON.stringify(r) !== JSON.stringify(S.route);
+  S.route = r;
+  if (changed) { closePanel(true); closeChat(); S.filter = "all"; S.q = ""; $("#scroll").scrollTop = 0; }
+  if (r.name === "home" || r.name === "setler") {
+    if (S.sets.length) { location.replace("#/set/" + S.sets[0].id); return; }
+  }
+  if (r.name === "set") {
+    if (S.gen && S.gen.set.id === r.id) S.set = S.gen.set;
+    else if (!S.set || S.set.id !== r.id || changed) {
+      try { S.set = await api("/api/sets/" + r.id); }
+      catch { toast("Kontrol seti bulunamadı", true); location.replace("#/"); return; }
+    }
+  }
+  renderSidebar();
+  renderView();
 }
 
-// ---------- health ----------
-async function checkHealth() {
+/* ---------------------------------------------------------------- sidebar */
+function renderSidebar() {
+  $("#cDocs").textContent = S.docs.length || "";
+  $("#cSets").textContent = S.sets.length || "";
+  $("#cLib").textContent = S.lib.length || "";
+  const r = S.route;
+  document.querySelectorAll("#nav .nav-item").forEach((b) => {
+    const n = b.dataset.route;
+    b.classList.toggle("active", n === r.name || (n === "setler" && (r.name === "home")));
+  });
+  const list = $("#setList");
+  if (!S.sets.length) { list.innerHTML = `<div class="sec-empty">Henüz set yok</div>`; return; }
+  list.innerHTML = S.sets.map((s) => {
+    const generating = S.gen && S.gen.set.id === s.id;
+    const title = (generating ? S.gen.set.baslik : s.baslik) || "Yeni kontrol seti";
+    return `<button class="nav-item${r.name === "set" && r.id === s.id ? " active" : ""}" data-set="${s.id}">
+      <span class="ico">${setIco(title)}</span><span class="label">${esc(title)}</span>
+      ${generating ? `<span class="gen-tag">üretiliyor</span>` : `<span class="count">${s.toplam || ""}</span>`}
+    </button>`;
+  }).join("");
+}
+
+function renderHealth() {
+  const h = S.health;
+  const line = $("#modelLine");
+  if (!h) { line.innerHTML = `<span class="dot bad"></span>sunucuya ulaşılamadı`; return; }
+  line.innerHTML = `<span class="dot ${h.llm_ok ? "ok" : "bad"}"></span>${esc(h.llm_model)} · ${h.llm_ok ? "yerel" : "bağlantı yok"}`;
+  line.title = h.llm_base_url;
+}
+
+/* ---------------------------------------------------------------- görünümler */
+function setTop(crumbHtml, actionsHtml = "") { $("#crumb").innerHTML = crumbHtml; $("#actions").innerHTML = actionsHtml; }
+
+function renderView() {
+  const n = S.route.name;
+  $("#ask").hidden = n !== "set";
+  if (n === "belgeler") return viewDocs();
+  if (n === "kutuphane") return viewLibrary();
+  if (n === "bilgi") return viewKnowledge();
+  if (n === "set" && S.set) return viewSet();
+  return viewHome();
+}
+
+/* --- ana sayfa / boş durum */
+function viewHome() {
+  setTop(`<b>Kontrol Setleri</b>`);
+  const hasDocs = S.docs.length > 0;
+  $("#view").innerHTML = `<div class="empty">
+      <div class="big">📋</div>
+      <h1>Henüz kontrol seti yok</h1>
+      <p>${hasDocs ? "Belgelerin hazır. Periyodik kontrolleri çıkararak ilk seti oluştur." : "Süreç ve prosedür belgelerini yükle, periyodik kontrolleri birlikte çıkaralım."}</p>
+      ${hasDocs ? `<button class="btn btn-ink" data-act="generate">Periyodik kontrolleri çıkart</button>`
+                : `<button class="btn btn-ink" data-act="to-docs">Belge yükle</button>`}
+    </div>`;
+}
+
+/* --- belgeler */
+function viewDocs() {
+  setTop(`<b>Belgeler</b>`);
+  const busy = !!S.gen;
+  $("#view").innerHTML = `
+    <h1>Belgeler</h1>
+    <p class="lead">Kontrol çıkarılacak süreç, prosedür ve politika belgelerini ekle. Yeni kontrol seti, burada listelenen tüm belgelerden üretilir.</p>
+    <div class="drop" id="drop" tabindex="0">
+      <div class="big">📄</div>
+      <div><strong>Belgeleri sürükle bırak</strong> ya da seçmek için tıkla</div>
+      <small>PDF · Word · TXT · Markdown</small>
+    </div>
+    <div class="doc-list">
+      ${S.docs.map((d) => `<div class="doc-row">
+          <span class="ico">📄</span>
+          <div><div class="title">${esc(d.filename)}</div>
+            <div class="meta">${(d.char_count || 0).toLocaleString("tr-TR")} karakter<span class="sep">·</span>${fmtDate(d.uploaded_at, true)}</div></div>
+          <button class="row-action" data-act="del-doc" data-id="${d.id}">Kaldır</button>
+        </div>`).join("")}
+    </div>
+    <div class="cta">
+      <button class="btn btn-ink" data-act="generate" ${!S.docs.length || busy ? "disabled" : ""}>Periyodik kontrolleri çıkart</button>
+      <span class="hint">${busy ? "Bir set şu an üretiliyor." : S.docs.length ? `${S.docs.length} belge kullanılacak · yerel modelde birkaç dakika sürebilir` : "Önce en az bir belge ekle."}</span>
+    </div>`;
+  const drop = $("#drop");
+  drop.onclick = () => $("#fileInput").click();
+  drop.onkeydown = (e) => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); $("#fileInput").click(); } };
+  ["dragenter", "dragover"].forEach((ev) => drop.addEventListener(ev, (e) => { e.preventDefault(); drop.classList.add("over"); }));
+  ["dragleave", "drop"].forEach((ev) => drop.addEventListener(ev, (e) => { e.preventDefault(); drop.classList.remove("over"); }));
+  drop.addEventListener("drop", (e) => upload(e.dataTransfer.files));
+}
+
+async function upload(files) {
+  if (!files || !files.length) return;
+  let ok = 0;
+  for (const f of files) {
+    const fd = new FormData(); fd.append("file", f);
+    try { await api("/api/documents", { method: "POST", body: fd }); ok++; }
+    catch (e) { toast(`${f.name}: ${e.message}`, true); }
+  }
+  S.docs = await api("/api/documents");
+  renderSidebar();
+  if (S.route.name === "belgeler") viewDocs();
+  if (ok) toast(ok === 1 ? "Belge eklendi" : `${ok} belge eklendi`);
+}
+
+/* --- kontrol seti */
+function counts(controls) {
+  const c = { all: controls.length, bekliyor: 0, kabul: 0, red: 0 };
+  controls.forEach((x) => (c[x.status] = (c[x.status] || 0) + 1));
+  return c;
+}
+function visibleControls() {
+  const q = S.q.trim().toLocaleLowerCase("tr");
+  return S.set.controls.filter((c) =>
+    (S.filter === "all" || c.status === S.filter) &&
+    (!q || `${c.kontrol_adi} ${c.gerekce} ${c.kategori}`.toLocaleLowerCase("tr").includes(q)));
+}
+
+function viewSet() {
+  const s = S.set;
+  const generating = S.gen && S.gen.set.id === s.id;
+  const exportable = !generating && s.controls.some((c) => c.status !== "red");
+  setTop(
+    `Kontrol Setleri <span>/</span> <b>${esc(s.baslik || "Yeni kontrol seti")}</b>`,
+    `<button class="pill-btn" data-act="export-word" ${exportable ? "" : "disabled"}>${SVG.down}Word</button>
+     <button class="pill-btn" data-act="export-excel" ${exportable ? "" : "disabled"}>${SVG.down}Excel</button>
+     <button class="pill-btn icon-btn" data-act="menu" title="Diğer">${SVG.more}</button>
+     <div class="menu" id="menu"><button class="danger" data-act="delete-set" ${generating ? "disabled" : ""}>Seti sil</button></div>`
+  );
+  $("#view").innerHTML = `<div id="setHead"></div><div id="setBody"></div><div id="setGaps"></div>`;
+  renderSetHead(); renderSetBody(); renderGaps(); updateAskPlaceholder();
+}
+
+function renderSetHead() {
+  const s = S.set, el = $("#setHead"); if (!el) return;
+  const generating = S.gen && S.gen.set.id === s.id;
+  const n = s.controls.length;
+  const belge = (s.belge_adlari || []).length;
+  let status = "";
+  if (generating) status = `<div class="status-line"><span class="orb"></span><span class="thinking"><span>${n ? `${n} kontrol hazır, devam ediyor…` : s.baslik ? "Kontroller yazılıyor…" : "Belgeler okunuyor…"}</span></span></div>`;
+  else if (s.hata && (s.durum === "hata" || !n)) status = `<div class="status-line error">${esc(s.hata)}</div>`;
+  else if (s.hata) status = `<div class="status-line">${esc(s.hata)}</div>`;
+  el.innerHTML = `
+    <h1 class="${s.baslik ? "" : "placeholder"}">${esc(s.baslik || (generating ? "Kontrol seti oluşturuluyor…" : "Adsız kontrol seti"))}</h1>
+    <div class="source">
+      <span>📄 ${belge} belge</span><span class="sep">·</span><span>${fmtDate(s.created_at)}</span>
+      <span class="sep">·</span><span>${n} kontrol</span><span class="sep">·</span><span>${esc(s.model || "")}</span>
+    </div>
+    ${s.ozet ? `<p class="lead">${esc(s.ozet)}</p>` : generating ? `<p class="lead muted">Kontroller hazırlandıkça aşağıda listelenecek. Bu sırada başka sayfalara geçebilirsin.</p>` : `<div style="height:22px"></div>`}
+    ${status}`;
+}
+
+function rowHtml(c) {
+  const cls = ["row", c.status === "kabul" ? "done" : "", c.status === "red" ? "rejected" : "",
+    S.selectedId === c.id ? "selected" : "", S.fresh.has(c.id) ? "fresh" : ""].filter(Boolean).join(" ");
+  return `<div class="${cls}" data-id="${c.id}">
+    <button class="cb" data-act="toggle" title="${c.status === "kabul" ? "Kabulü geri al" : "Kabul et"}">${SVG.check}</button>
+    <div><div class="title">${esc(c.kontrol_adi)}</div>
+      <div class="meta">${esc(c.siklik)}<span class="sep">·</span>Hat ${esc(c.hat)}<span class="sep">·</span>Efor ${esc((c.efor || "").toLocaleLowerCase("tr"))}${c.edited ? `<span class="sep">·</span>düzenlendi` : ""}</div></div>
+    <span class="risk ${RISK_CLS[c.risk] || ""}"><i></i>${esc(c.risk)}</span>
+  </div>`;
+}
+
+function renderSetBody() {
+  const el = $("#setBody"); if (!el) return;
+  const s = S.set;
+  if (!s.controls.length) { el.innerHTML = ""; return; }
+  const k = counts(s.controls);
+  const vis = visibleControls();
+  const groups = {};
+  vis.forEach((c) => (groups[c.kategori] = groups[c.kategori] || []).push(c));
+  const order = [...KAT_ORDER.filter((x) => groups[x]), ...Object.keys(groups).filter((x) => !KAT_ORDER.includes(x))];
+  const searchFocused = document.activeElement && document.activeElement.id === "ctrlSearch";
+  const caret = searchFocused ? document.activeElement.selectionStart : null;
+  el.innerHTML = `
+    <div class="toolbar">
+      <div class="seg">
+        ${[["all", "Tümü"], ["bekliyor", "Bekleyen"], ["kabul", "Kabul"], ["red", "Red"]].map(([key, label]) =>
+          `<button data-filter="${key}" class="${S.filter === key ? "on" : ""}">${label}<span>${k[key] || 0}</span></button>`).join("")}
+      </div>
+      <label class="mini-search">${SVG.search}<input id="ctrlSearch" placeholder="Kontrollerde ara" value="${esc(S.q)}" /></label>
+    </div>
+    ${order.map((cat) => `<h2 class="group"><span class="ico">${KAT_ICO[cat] || "📋"}</span>${esc(cat)} <span class="count">${groups[cat].length}</span></h2>
+      ${groups[cat].map(rowHtml).join("")}`).join("")}
+    ${vis.length ? "" : `<div class="empty-filter">Bu filtreye uyan kontrol yok.</div>`}`;
+  if (searchFocused) { const i = $("#ctrlSearch"); i.focus(); i.setSelectionRange(caret, caret); }
+  S.fresh.clear();
+}
+
+function renderGaps() {
+  const el = $("#setGaps"); if (!el) return;
+  const g = S.set.bosluklar || [];
+  el.innerHTML = g.length ? `<div class="gaps"><h2>Tespit edilen boşluklar</h2><ul>${g.map((x) => `<li>${esc(x)}</li>`).join("")}</ul></div>` : "";
+}
+
+/* --- üretim (akışlı) */
+async function generate() {
+  if (S.gen) return;
+  let res;
+  try { res = await fetch("/api/sets", { method: "POST" }); }
+  catch (e) { toast("Sunucuya ulaşılamadı", true); return; }
+  if (!res.ok) { let m = res.status; try { m = (await res.json()).detail; } catch {} toast(m, true); return; }
+  const reader = res.body.getReader(); const dec = new TextDecoder();
+  let buf = "";
+  const handle = (ev) => {
+    if (ev.event === "set") {
+      S.gen = { set: { ...ev.set, controls: [], messages: [], bosluklar: [] } };
+      S.sets.unshift({ id: ev.set.id, baslik: "", toplam: 0, kabul: 0, red: 0, created_at: ev.set.created_at });
+      go("#/set/" + ev.set.id);
+      return;
+    }
+    if (!S.gen) return;
+    const g = S.gen.set, viewing = S.route.name === "set" && S.route.id === g.id;
+    if (ev.event === "meta") { g.baslik = ev.baslik; g.ozet = ev.ozet; renderSidebar(); if (viewing) { renderSetHead(); $("#crumb b") && ($("#crumb b").textContent = g.baslik); } }
+    else if (ev.event === "control") { g.controls.push(ev.control); S.fresh.add(ev.control.id); const it = S.sets.find((x) => x.id === g.id); if (it) it.toplam = g.controls.length; if (viewing) { renderSetHead(); renderSetBody(); } }
+    else if (ev.event === "gap") { g.bosluklar.push(ev.metin); if (viewing) renderGaps(); }
+    else if (ev.event === "error") { g.hata = ev.error; if (viewing) renderSetHead(); }
+    else if (ev.event === "done") { Object.assign(g, ev.set, { controls: g.controls, messages: g.messages }); }
+  };
   try {
-    const h = await fetchJSON("/api/health");
-    llmDot.classList.add("ok");
-    llmStatusText.textContent = `Lokal model: ${h.llm_model} (${h.llm_base_url})`;
-  } catch (e) {
-    llmDot.classList.add("bad");
-    llmStatusText.textContent = "Sunucuya ulaşılamadı";
-  }
-}
-
-// ---------- documents ----------
-function docIconSvg() {
-  return `<svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8l-6-6Z"/><path d="M14 2v6h6"/></svg>`;
-}
-
-async function loadDocuments() {
-  const docs = await fetchJSON("/api/documents");
-  docList.innerHTML = "";
-  docs.forEach((d) => {
-    const li = document.createElement("li");
-    li.className = "doc-item";
-    li.innerHTML = `
-      <span class="doc-name">${docIconSvg()} ${escapeHtml(d.filename)}</span>
-      <button data-id="${d.id}" class="btn btn-sm btn-ghost del-doc">Sil</button>`;
-    docList.appendChild(li);
-  });
-  docList.querySelectorAll(".del-doc").forEach((btn) => {
-    btn.onclick = async () => {
-      await fetchJSON(`/api/documents/${btn.dataset.id}`, { method: "DELETE" });
-      showToast("Belge silindi");
-      loadDocuments();
-    };
-  });
-  if (docs.length) setActiveStep(2);
-}
-
-// ---------- skills ----------
-async function loadSkills() {
-  const skills = await fetchJSON("/api/skills");
-  skillsList.innerHTML = "";
-  skills.forEach((s) => {
-    const card = document.createElement("div");
-    card.className = "skill-card";
-    card.innerHTML = `
-      <div class="skill-summary">
-        <span>${escapeHtml(s.name)}</span>
-        <svg class="chevron" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg>
-      </div>
-      <div class="skill-body">${escapeHtml(s.content)}</div>`;
-    card.querySelector(".skill-summary").onclick = () => card.classList.toggle("open");
-    skillsList.appendChild(card);
-  });
-}
-
-function escapeHtml(str) {
-  return (str || "").toString().replace(/[&<>]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;" }[c]));
-}
-
-function riskClass(risk) {
-  if (!risk) return "";
-  const norm = risk.toLowerCase().replace("ş", "s").replace("ı", "i").replace("ü", "u");
-  return "pill risk-" + norm;
-}
-
-// ---------- suggestions rendering ----------
-function renderSuggestions(suggestions) {
-  currentSuggestions = suggestions;
-  tbody.innerHTML = "";
-  emptyState.style.display = suggestions.length ? "none" : "block";
-  exportWordBtn.disabled = !suggestions.length;
-  exportExcelBtn.disabled = !suggestions.length;
-  suggestions.forEach((s, i) => {
-    const row = buildRow(s);
-    row.style.animationDelay = `${i * 40}ms`;
-    tbody.appendChild(row);
-  });
-  if (suggestions.length) setActiveStep(3);
-}
-
-function buildRow(s) {
-  const tr = document.createElement("tr");
-  tr.dataset.id = s.id;
-  tr.innerHTML = displayRowHtml(s);
-  attachDisplayHandlers(tr, s);
-  return tr;
-}
-
-function displayRowHtml(s) {
-  return `
-    <td data-field="kontrol_adi">${escapeHtml(s.kontrol_adi)}</td>
-    <td data-field="kategori">${escapeHtml(s.kategori)}</td>
-    <td data-field="hat"><span class="badge">${escapeHtml(s.hat) || "-"}</span></td>
-    <td data-field="siklik">${escapeHtml(s.siklik)}</td>
-    <td data-field="risk"><span class="${riskClass(s.risk)}">${escapeHtml(s.risk)}</span></td>
-    <td data-field="efor">${escapeHtml(s.efor)}</td>
-    <td data-field="gerekce">${escapeHtml(s.gerekce)}</td>
-    <td class="fb-cell">
-      <div class="fb-row">
-        <button class="btn btn-sm btn-success" data-action="kabul">Kabul</button>
-        <button class="btn btn-sm btn-danger" data-action="red">Red</button>
-        <button class="btn btn-sm btn-ghost" data-action="duzenle">Düzenle</button>
-      </div>
-      <div class="status-note">${s.status && s.status !== "bekliyor" ? "Durum: " + escapeHtml(s.status) : ""}</div>
-      <div class="prompt-row">
-        <input type="text" class="prompt-input" placeholder="Bu kontrole feedback yaz (ör: ayda bir yeterli)..." />
-        <button class="btn btn-sm btn-ghost" data-action="prompt">Gönder</button>
-      </div>
-      <div class="lesson-note"></div>
-    </td>`;
-}
-
-function editRowHtml(s) {
-  const inputs = FIELD_ORDER.map(
-    (f) =>
-      `<td data-field="${f}"><input type="text" class="edit-input" data-field="${f}" value="${escapeHtml(s[f]).replace(/"/g, "&quot;")}" /></td>`
-  ).join("");
-  return `
-    ${inputs}
-    <td class="fb-cell">
-      <div class="fb-row">
-        <button class="btn btn-sm btn-primary" data-action="kaydet">Kaydet</button>
-        <button class="btn btn-sm btn-ghost" data-action="iptal">İptal</button>
-      </div>
-    </td>`;
-}
-
-function attachDisplayHandlers(tr, s) {
-  tr.querySelectorAll("button[data-action]").forEach((btn) => {
-    btn.onclick = () => handleAction(tr, s, btn.dataset.action);
-  });
-}
-
-async function handleAction(tr, s, action) {
-  if (action === "kabul" || action === "red") {
-    try {
-      await fetchJSON(`/api/suggestions/${s.id}/feedback`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ karar: action }),
-      });
-      s.status = action;
-      tr.innerHTML = displayRowHtml(s);
-      attachDisplayHandlers(tr, s);
-      tr.classList.add(action === "kabul" ? "flash-success" : "flash-danger");
-      showToast(action === "kabul" ? "Kontrol kabul edildi" : "Kontrol reddedildi", action === "kabul" ? "success" : "error");
-      loadSkills();
-    } catch (e) {
-      showToast("Hata: " + e.message, "error");
-    }
-    return;
-  }
-
-  if (action === "duzenle") {
-    tr.innerHTML = editRowHtml(s);
-    tr.querySelectorAll("button[data-action]").forEach((btn) => {
-      btn.onclick = () => handleEditAction(tr, s, btn.dataset.action);
-    });
-    return;
-  }
-
-  if (action === "prompt") {
-    const input = tr.querySelector(".prompt-input");
-    const promptText = input.value.trim();
-    if (!promptText) return;
-    const lessonNote = tr.querySelector(".lesson-note");
-    const btn = tr.querySelector('button[data-action="prompt"]');
-    btn.disabled = true;
-    lessonNote.textContent = "İşleniyor...";
-    try {
-      const result = await fetchJSON(`/api/suggestions/${s.id}/prompt-feedback`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ prompt: promptText }),
-      });
-      if (!result.ok) {
-        lessonNote.textContent = "Hata: " + result.error;
-        showToast("Geri bildirim işlenemedi", "error");
-      } else {
-        Object.assign(s, result.suggestion);
-        tr.innerHTML = displayRowHtml(s);
-        attachDisplayHandlers(tr, s);
-        tr.querySelector(".lesson-note").textContent = result.applied_fields
-          ? "Güncellendi + öğrenildi: " + result.lesson
-          : "Öğrenildi: " + result.lesson;
-        tr.classList.add("flash-success");
-        showToast("Geri bildirim kaydedildi", "success");
-        loadSkills();
+    while (true) {
+      const { done, value } = await reader.read();
+      if (done) break;
+      buf += dec.decode(value, { stream: true });
+      let i;
+      while ((i = buf.indexOf("\n")) >= 0) {
+        const line = buf.slice(0, i).trim(); buf = buf.slice(i + 1);
+        if (line) { try { handle(JSON.parse(line)); } catch (e) { console.error(e); } }
       }
-    } catch (e) {
-      lessonNote.textContent = "Hata: " + e.message;
-      showToast("Hata: " + e.message, "error");
     }
-    if (btn) btn.disabled = false;
-    input.value = "";
-  }
+  } catch (e) { if (S.gen) S.gen.set.hata = "Bağlantı koptu: " + e.message; }
+  const g = S.gen && S.gen.set; S.gen = null;
+  await refreshSets();
+  if (g && S.route.name === "set" && S.route.id === g.id) { S.set = g; viewSet(); }
+  if (g) toast(g.controls.length ? `${g.controls.length} kontrol hazır` : "Kontrol üretilemedi", !g.controls.length);
 }
 
-async function handleEditAction(tr, s, action) {
-  if (action === "iptal") {
-    tr.innerHTML = displayRowHtml(s);
-    attachDisplayHandlers(tr, s);
+/* --- kararlar ve düzenleme */
+function findControl(id) { return S.set && S.set.controls.find((c) => c.id === Number(id)); }
+
+async function decide(id, karar) {
+  const c = findControl(id); if (!c) return;
+  const prev = c.status; c.status = karar;          // önce arayüz
+  renderSetBody(); if (S.selectedId === c.id) renderPanelFoot(c);
+  try { const r = await api(`/api/controls/${id}/decision`, jsonOpts("POST", { karar })); Object.assign(c, r.control); }
+  catch (e) { c.status = prev; renderSetBody(); toast(e.message, true); return; }
+  if (S.selectedId === c.id) loadHistory(c.id);
+  refreshLib(); updateSetCounts();
+}
+function updateSetCounts() {
+  const it = S.sets.find((x) => x.id === S.set.id); if (!it) return;
+  const k = counts(S.set.controls); it.toplam = k.all; it.kabul = k.kabul; it.red = k.red; renderSidebar();
+}
+
+async function saveFields(id, fields) {
+  const c = findControl(id); if (!c) return;
+  const diff = {}; Object.entries(fields).forEach(([k, v]) => { if ((c[k] ?? "") !== v) diff[k] = v; });
+  if (!Object.keys(diff).length) return;
+  try {
+    const r = await api(`/api/controls/${id}`, jsonOpts("PATCH", diff));
+    Object.assign(c, r.control);
+    renderSetBody(); loadHistory(id);
+    const sv = $("#saved"); if (sv) { sv.classList.add("on"); setTimeout(() => sv.classList.remove("on"), 1400); }
+    if (c.status === "kabul") refreshLib();
+  } catch (e) { toast(e.message, true); }
+}
+
+/* ---------------------------------------------------------------- sağ panel */
+function openPanel(id) {
+  const c = findControl(id); if (!c) return;
+  S.selectedId = c.id;
+  renderPanel(c);
+  $("#win").classList.add("has-panel");
+  document.querySelectorAll(".row.selected").forEach((r) => r.classList.remove("selected"));
+  const row = document.querySelector(`.row[data-id="${c.id}"]`); if (row) row.classList.add("selected");
+  updateAskPlaceholder();
+}
+function closePanel(silent) {
+  S.selectedId = null;
+  $("#win").classList.remove("has-panel");
+  if (!silent) document.querySelectorAll(".row.selected").forEach((r) => r.classList.remove("selected"));
+  updateAskPlaceholder();
+}
+
+function opts(list, val) {
+  const all = list.includes(val) || !val ? list : [val, ...list];
+  return all.map((o) => `<option ${o === val ? "selected" : ""}>${esc(o)}</option>`).join("");
+}
+
+function renderPanel(c) {
+  const m = S.meta || { kategoriler: KAT_ORDER, sikliklar: [], riskler: [], eforlar: [] };
+  $("#panel").innerHTML = `
+    <div class="panel-top"><span>Kontrol detayı<span class="saved" id="saved">· Kaydedildi</span></span>
+      <button class="pill-btn icon-btn" data-act="close-panel" title="Kapat (Esc)">${SVG.close}</button></div>
+    <div class="panel-body">
+      <textarea class="auto p-title" data-field="kontrol_adi" rows="1">${esc(c.kontrol_adi)}</textarea>
+      <dl class="fields">
+        <dt>Kategori</dt><dd><select data-field="kategori">${opts(m.kategoriler, c.kategori)}</select></dd>
+        <dt>Sıklık</dt><dd><select data-field="siklik">${opts(m.sikliklar, c.siklik)}</select></dd>
+        <dt>Risk</dt><dd><select data-field="risk">${opts(m.riskler, c.risk)}</select></dd>
+        <dt>Efor</dt><dd><select data-field="efor">${opts(m.eforlar, c.efor)}</select></dd>
+        <dt>Hat</dt><dd><select data-field="hat">${["1", "2", "3"].map((h) => `<option value="${h}" ${String(c.hat) === h ? "selected" : ""}>${HAT_ADI[h]}</option>`).join("")}</select></dd>
+      </dl>
+      <div class="blk"><h4>Gerekçe</h4><textarea class="auto" data-field="gerekce" rows="1" placeholder="Gerekçe ekle">${esc(c.gerekce)}</textarea></div>
+      ${c.kaynak ? `<div class="blk"><h4>Kaynak</h4><div class="quote">“${esc(c.kaynak)}”</div></div>` : ""}
+      <div class="blk"><h4>Dayanak</h4><textarea class="auto" data-field="dayanak" rows="1" placeholder="Mevzuat / politika maddesi ekle">${esc(c.dayanak)}</textarea></div>
+      <div class="blk"><h4>Geçmiş</h4><ul class="hist" id="hist"><li><time></time>Yükleniyor…</li></ul></div>
+    </div>
+    <div class="panel-foot" id="panelFoot"></div>`;
+  $("#panel").querySelectorAll("textarea.auto").forEach(autosize);
+  requestAnimationFrame(() => $("#panel").querySelectorAll("textarea.auto").forEach(autosize));
+  renderPanelFoot(c);
+  loadHistory(c.id);
+}
+function renderPanelFoot(c) {
+  const f = $("#panelFoot"); if (!f) return;
+  f.innerHTML = `
+    <button class="btn btn-ghost" data-act="${c.status === "red" ? "undo" : "reject"}">${c.status === "red" ? "Reddi geri al" : "Reddet"}</button>
+    <button class="btn btn-ink" data-act="${c.status === "kabul" ? "undo" : "accept"}">${c.status === "kabul" ? "Kabulü geri al" : "Kabul et"}</button>`;
+}
+async function loadHistory(id) {
+  try {
+    const items = await api(`/api/controls/${id}/history`);
+    const el = $("#hist"); if (!el || S.selectedId !== id) return;
+    el.innerHTML = items.map((h) => `<li><time>${fmtTime(h.t)}</time><span>${esc(h.text)}</span></li>`).join("");
+  } catch {}
+}
+
+/* ---------------------------------------------------------------- sohbet */
+function updateAskPlaceholder() {
+  const c = S.selectedId && findControl(S.selectedId);
+  $("#askPh").textContent = c ? `“${c.kontrol_adi}” kontrolüne geri bildirim ver…` : "Bu kontrol setine sor ya da geri bildirim ver…";
+  $("#chatTitle").textContent = c ? `Odak: ${c.kontrol_adi}` : "Kontrol setiyle sohbet";
+  $("#chatInput").placeholder = c ? "Bu kontrol için ne değişmeli?" : "Bir şey sor ya da geri bildirim ver…";
+}
+function openChat() {
+  if (S.route.name !== "set" || !S.set) return;
+  if (S.gen && S.gen.set.id === S.set.id) { toast("Üretim bitince sohbet açılır"); return; }
+  if (!S.set.controls.length) return;
+  $("#ask").classList.add("open"); renderChat();
+  setTimeout(() => $("#chatInput").focus(), 60);
+}
+function closeChat() { $("#ask").classList.remove("open"); }
+
+function msgHtml(m) {
+  if (m.role === "user") {
+    const c = m.control_id && findControl(m.control_id);
+    return `<div class="msg-user">${c ? `<span class="focus-tag">${esc(c.kontrol_adi)}</span>` : ""}${esc(m.content)}</div>`;
+  }
+  const changes = (m.changes || []).map((ch) => `<div class="change"><b>${esc(ch.kontrol_adi)}</b>${
+    Object.entries(ch.alanlar || {}).map(([k, [a, b]]) => `<span><s>${esc(a || "—")}</s> → ${esc(b)}</span>`).join("")}</div>`).join("");
+  return `<div class="msg-ai${m.error ? " err" : ""}"><span class="orb"></span><div>${esc(m.content)}${changes}${
+    m.lesson ? `<div class="learned">Bilgi tabanına eklendi: “${esc(m.lesson)}”</div>` : ""}</div></div>`;
+}
+function renderChat() {
+  const msgs = S.set ? S.set.messages : [];
+  const el = $("#chat");
+  el.innerHTML = (msgs.length ? msgs.map(msgHtml).join("") :
+    `<div class="chat-empty">Kontrolleri doğal dille düzelt: “Şube hacmi düşük, sıklıkları azalt”, “Bu kontrol neden kritik?” gibi. Bir kontrol seçiliyse mesaj ona odaklanır. Model değişiklikleri uygular ve öğrendiğini bilgi tabanına yazar.</div>`)
+    + (S.chatBusy ? `<div class="thinking"><span class="orb"></span><span>Düşünüyor…</span></div>` : "");
+  el.scrollTop = el.scrollHeight;
+  $("#chatSend").disabled = S.chatBusy;
+}
+async function sendChat() {
+  const input = $("#chatInput"); const text = input.value.trim();
+  if (!text || S.chatBusy || !S.set) return;
+  const set = S.set, control_id = S.selectedId || null;
+  set.messages.push({ role: "user", content: text, control_id });
+  input.value = ""; autosize(input);
+  S.chatBusy = true; renderChat();
+  try {
+    const r = await api(`/api/sets/${set.id}/chat`, jsonOpts("POST", { message: text, control_id }));
+    if (!r.ok) set.messages.push({ role: "ai", content: r.error, error: true });
+    else {
+      set.messages.push(r.message);
+      set.controls = r.controls;
+      if (S.set === set) {
+        renderSetBody();
+        const c = S.selectedId && findControl(S.selectedId); if (c) renderPanel(c);
+        if (set.controls.some((c) => c.status === "kabul")) refreshLib();
+      }
+    }
+  } catch (e) { set.messages.push({ role: "ai", content: e.message, error: true }); }
+  S.chatBusy = false;
+  if (S.set === set) renderChat();
+}
+
+/* --- kütüphane */
+async function viewLibrary() {
+  setTop(`<b>Kontrol Kütüphanesi</b>`);
+  const lib = S.lib;
+  const q = S.q.trim().toLocaleLowerCase("tr");
+  const vis = lib.filter((c) => !q || `${c.kontrol_adi} ${c.gerekce} ${c.kategori}`.toLocaleLowerCase("tr").includes(q));
+  const groups = {}; vis.forEach((c) => (groups[c.kategori] = groups[c.kategori] || []).push(c));
+  const order = [...KAT_ORDER.filter((x) => groups[x]), ...Object.keys(groups).filter((x) => !KAT_ORDER.includes(x))];
+  const searchFocused = document.activeElement && document.activeElement.id === "ctrlSearch";
+  $("#view").innerHTML = `
+    <h1>Kontrol Kütüphanesi</h1>
+    <div class="source"><span>📚 ${lib.length} kontrol</span><span class="sep">·</span><span>${new Set(lib.map((x) => x.set_id)).size} setten</span></div>
+    <p class="lead">Kabul ettiğin kontroller burada birikir ve sonraki setlerde tekrar kullanılabilir. Bir kontrolü setin içinde düzenlersen buradaki kopyası da güncellenir.</p>
+    ${lib.length ? `<div class="toolbar"><span></span><label class="mini-search">${SVG.search}<input id="ctrlSearch" placeholder="Kütüphanede ara" value="${esc(S.q)}" /></label></div>` : ""}
+    ${order.map((cat) => `<h2 class="group"><span class="ico">${KAT_ICO[cat] || "📋"}</span>${esc(cat)} <span class="count">${groups[cat].length}</span></h2>
+      ${groups[cat].map((c) => `<div class="row" style="cursor:default">
+        <span class="ico" style="font-size:14px">✓</span>
+        <div><div class="title">${esc(c.kontrol_adi)}</div>
+          <div class="meta">${esc(c.siklik)}<span class="sep">·</span>Hat ${esc(c.hat)}<span class="sep">·</span>Efor ${esc((c.efor || "").toLocaleLowerCase("tr"))}${c.set_baslik ? `<span class="sep">·</span>${esc(c.set_baslik)}` : ""}</div></div>
+        <div style="display:flex;flex-direction:column;align-items:flex-end;gap:6px">
+          <span class="risk ${RISK_CLS[c.risk] || ""}"><i></i>${esc(c.risk)}</span>
+          <button class="row-action" data-act="lib-remove" data-id="${c.id}">Çıkar</button>
+        </div></div>`).join("")}`).join("")}
+    ${!lib.length ? `<div class="empty" style="margin-top:8vh"><div class="big">📚</div><h1>Kütüphane boş</h1><p>Bir kontrol setinde kontrolleri kabul ettikçe burada birikecek.</p></div>`
+      : !vis.length ? `<div class="empty-filter">Aramana uyan kontrol yok.</div>` : ""}`;
+  if (searchFocused) { const i = $("#ctrlSearch"); i.focus(); i.setSelectionRange(i.value.length, i.value.length); }
+}
+
+/* --- bilgi tabanı */
+function mdLite(src) {
+  const lines = esc(src).split("\n"); let out = "", inList = false, inCode = false;
+  const inline = (t) => t.replace(/\*\*(.+?)\*\*/g, "<b>$1</b>").replace(/`([^`]+)`/g, "<code>$1</code>");
+  for (const raw of lines) {
+    const l = raw.trimEnd();
+    if (l.startsWith("```")) { if (inList) { out += "</ul>"; inList = false; } out += inCode ? "</pre>" : "<pre>"; inCode = !inCode; continue; }
+    if (inCode) { out += l + "\n"; continue; }
+    if (/^\s*[-*] /.test(l)) { if (!inList) { out += "<ul>"; inList = true; } out += `<li>${inline(l.replace(/^\s*[-*] /, ""))}</li>`; continue; }
+    if (inList) { out += "</ul>"; inList = false; }
+    if (/^#{2,4} /.test(l)) out += `<h4>${inline(l.replace(/^#+ /, ""))}</h4>`;
+    else if (l.startsWith("&gt; ")) out += `<blockquote>${inline(l.slice(5))}</blockquote>`;
+    else if (/^\d+\. /.test(l)) out += `<p>${inline(l)}</p>`;
+    else if (l.trim()) out += `<p>${inline(l)}</p>`;
+  }
+  if (inList) out += "</ul>"; if (inCode) out += "</pre>";
+  return out;
+}
+function parseSkill(content) {
+  const lines = content.split("\n");
+  const title = ((lines.find((l) => l.startsWith("# ")) || "# Skill").slice(2)).replace(/^Skill:\s*/, "");
+  const idx = lines.findIndex((l) => l.trim() === "## Öğrenilenler");
+  const seedLines = (idx >= 0 ? lines.slice(0, idx) : lines).filter((l) => !l.startsWith("# "));
+  const learned = [];
+  if (idx >= 0) lines.slice(idx + 1).forEach((l) => {
+    const m = l.match(/^- \[(\d{4}-\d{2}-\d{2})(?: (\d{2}:\d{2}))?\]\s*(.+)$/);
+    if (m) learned.push({ date: m[1], time: m[2] || "", text: m[3] });
+  });
+  return { title, seed: seedLines.join("\n").trim(), learned: learned.reverse() };
+}
+async function viewKnowledge() {
+  setTop(`<b>Bilgi Tabanı</b>`);
+  $("#view").innerHTML = `<h1>Bilgi Tabanı</h1><p class="lead muted">Yükleniyor…</p>`;
+  let skills = [];
+  try { skills = await api("/api/skills"); } catch (e) { toast(e.message, true); }
+  if (S.route.name !== "bilgi") return;
+  const parsed = skills.map((s) => ({ name: s.name, ...parseSkill(s.content) }));
+  const total = parsed.reduce((a, p) => a + p.learned.length, 0);
+  const icon = { "genel-cerceve": "🏛️", "kontrol-metrikleri": "📐", "masak-aml": "🔍" };
+  $("#view").innerHTML = `
+    <h1>Bilgi Tabanı</h1>
+    <div class="source"><span>💡 ${parsed.length} konu</span><span class="sep">·</span><span>${total} öğrenilen kural</span></div>
+    <p class="lead">Model her kontrol setini üretirken bu bilgileri kullanır. Reddettiğin, düzelttiğin ya da sohbette açıkladığın her şey ilgili konunun altına öğrenilen kural olarak eklenir.</p>
+    ${parsed.map((p) => `<section class="kb">
+      <h2><span class="ico">${icon[p.name] || "📘"}</span>${esc(p.title)}</h2>
+      <p class="sub">${p.learned.length ? `${p.learned.length} öğrenilen kural` : "Henüz öğrenilen kural yok"}</p>
+      ${p.learned.length ? `<ul class="learn">${p.learned.map((x) => `<li><time>${esc(x.date.slice(8, 10) + "." + x.date.slice(5, 7))} ${esc(x.time)}</time><span>${esc(x.text)}</span></li>`).join("")}</ul>` : ""}
+      <details class="seed"><summary>Başlangıç bilgisi</summary><div class="md">${mdLite(p.seed)}</div></details>
+    </section>`).join("")}`;
+}
+
+/* ---------------------------------------------------------------- olaylar */
+document.addEventListener("click", async (e) => {
+  const menu = $("#menu");
+  if (menu && menu.classList.contains("open") && !e.target.closest("#menu") && !e.target.closest('[data-act="menu"]')) menu.classList.remove("open");
+
+  const nav = e.target.closest("#nav .nav-item");
+  if (nav) { go(nav.dataset.route === "setler" ? "#/setler" : "#/" + nav.dataset.route); return; }
+  const setBtn = e.target.closest("[data-set]");
+  if (setBtn) { go("#/set/" + setBtn.dataset.set); return; }
+
+  const f = e.target.closest("[data-filter]");
+  if (f) { S.filter = f.dataset.filter; renderSetBody(); return; }
+
+  const act = e.target.closest("[data-act]");
+  const a = act && act.dataset.act;
+  if (a === "toggle") {
+    const row = act.closest(".row"); const c = findControl(row.dataset.id);
+    decide(c.id, c.status === "kabul" ? "bekliyor" : "kabul"); return;
+  }
+  if (a === "accept" || a === "reject" || a === "undo") {
+    decide(S.selectedId, a === "accept" ? "kabul" : a === "reject" ? "red" : "bekliyor"); return;
+  }
+  if (a === "close-panel") return closePanel();
+  if (a === "generate") return generate();
+  if (a === "to-docs") return go("#/belgeler");
+  if (a === "del-doc") {
+    try { await api("/api/documents/" + act.dataset.id, { method: "DELETE" }); S.docs = await api("/api/documents"); renderSidebar(); viewDocs(); }
+    catch (err) { toast(err.message, true); }
     return;
   }
-  if (action === "kaydet") {
-    const payload = {};
-    tr.querySelectorAll(".edit-input").forEach((inp) => {
-      payload[inp.dataset.field] = inp.value;
-    });
-    try {
-      const result = await fetchJSON(`/api/suggestions/${s.id}`, {
-        method: "PATCH",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(payload),
-      });
-      if (result.changed) {
-        Object.assign(s, result.suggestion);
-        showToast("Değişiklikler kaydedildi", "success");
-      }
-      tr.innerHTML = displayRowHtml(s);
-      attachDisplayHandlers(tr, s);
-      tr.classList.add("flash-success");
-      loadSkills();
-    } catch (e) {
-      showToast("Hata: " + e.message, "error");
-    }
+  if (a === "export-word") return download(`/api/export/word?set_id=${S.set.id}`);
+  if (a === "export-excel") return download(`/api/export/excel?set_id=${S.set.id}`);
+  if (a === "menu") { $("#menu").classList.toggle("open"); return; }
+  if (a === "delete-set") {
+    $("#menu").classList.remove("open");
+    if (!confirm(`“${S.set.baslik || "Bu set"}” silinsin mi? Kütüphanedeki kabul edilmiş kontroller korunur.`)) return;
+    await api("/api/sets/" + S.set.id, { method: "DELETE" });
+    S.set = null; await refreshSets(); toast("Set silindi"); go("#/"); return;
   }
-}
-
-// ---------- upload ----------
-async function uploadFiles(files) {
-  if (!files.length) return;
-  for (const file of files) {
-    const fd = new FormData();
-    fd.append("file", file);
-    try {
-      await fetchJSON("/api/documents", { method: "POST", body: fd });
-      showToast(`${file.name} yüklendi`, "success");
-    } catch (e) {
-      showToast("Yükleme hatası: " + e.message, "error");
-    }
+  if (a === "lib-remove") {
+    await api("/api/library/" + act.dataset.id, { method: "DELETE" });
+    await refreshLib(); viewLibrary(); return;
   }
-  loadDocuments();
-}
 
-fileInput.addEventListener("change", () => {
-  uploadFiles(fileInput.files);
-  fileInput.value = "";
+  const row = e.target.closest("#setBody .row");
+  if (row) { const id = Number(row.dataset.id); if (S.selectedId === id) closePanel(); else openPanel(id); }
 });
 
-["dragenter", "dragover"].forEach((evt) =>
-  dropZone.addEventListener(evt, (e) => {
-    e.preventDefault();
-    dropZone.classList.add("dragover");
-  })
-);
-["dragleave", "drop"].forEach((evt) =>
-  dropZone.addEventListener(evt, (e) => {
-    e.preventDefault();
-    dropZone.classList.remove("dragover");
-  })
-);
-dropZone.addEventListener("drop", (e) => {
-  if (e.dataTransfer?.files?.length) uploadFiles(e.dataTransfer.files);
+document.addEventListener("input", (e) => {
+  if (e.target.id === "ctrlSearch") { S.q = e.target.value; S.route.name === "kutuphane" ? viewLibrary() : renderSetBody(); }
+  if (e.target.matches("textarea.auto") || e.target.id === "chatInput") autosize(e.target);
 });
 
-// ---------- generate ----------
-generateBtn.onclick = async () => {
-  generateBtn.disabled = true;
-  generateStatus.innerHTML = `<span class="spinner"></span> Üretiliyor... (lokal LLM uç noktasına bağlanıyor)`;
-  try {
-    const result = await fetchJSON("/api/periyodik-kontrolleri-cikart", { method: "POST" });
-    if (!result.ok) {
-      generateStatus.textContent = "Hata: " + result.error;
-      showToast("Öneri üretilemedi", "error");
-    } else {
-      currentRunId = result.run_id;
-      generateStatus.textContent = `${result.suggestions.length} öneri üretildi (çalışma: ${result.run_id}).`;
-      renderSuggestions(result.suggestions);
-      showToast(`${result.suggestions.length} öneri üretildi`, "success");
-    }
-  } catch (e) {
-    generateStatus.textContent = "Hata: " + e.message;
-    showToast("Hata: " + e.message, "error");
+/* panel alan kaydetme */
+$("#panel").addEventListener("change", (e) => {
+  const el = e.target.closest("select[data-field]"); if (el && S.selectedId) saveFields(S.selectedId, { [el.dataset.field]: el.value });
+});
+$("#panel").addEventListener("focusout", (e) => {
+  const el = e.target.closest("textarea[data-field]"); if (!el || !S.selectedId) return;
+  const v = el.value.trim();
+  if (el.dataset.field === "kontrol_adi" && !v) { el.value = findControl(S.selectedId).kontrol_adi; return; }
+  saveFields(S.selectedId, { [el.dataset.field]: v });
+});
+$("#panel").addEventListener("keydown", (e) => {
+  if (e.key === "Enter" && !e.shiftKey && e.target.matches('textarea[data-field="kontrol_adi"], textarea[data-field="dayanak"]')) { e.preventDefault(); e.target.blur(); }
+});
+
+$("#fileInput").addEventListener("change", (e) => { upload(e.target.files); e.target.value = ""; });
+$("#secToggle").onclick = () => $("#secSets").classList.toggle("closed");
+$("#newSetBtn").onclick = () => go("#/belgeler");
+$("#searchBtn").onclick = () => { const i = $("#ctrlSearch"); if (i) i.focus(); else if (S.lib.length) go("#/kutuphane"); };
+$("#askBar").onclick = openChat;
+$("#chatClose").onclick = closeChat;
+$("#chatSend").onclick = sendChat;
+$("#chatInput").addEventListener("keydown", (e) => { if (e.key === "Enter" && !e.shiftKey) { e.preventDefault(); sendChat(); } });
+
+document.addEventListener("keydown", (e) => {
+  const mod = e.metaKey || e.ctrlKey;
+  if (mod && e.key.toLowerCase() === "k") { e.preventDefault(); $("#searchBtn").click(); return; }
+  if (mod && e.key.toLowerCase() === "j") { e.preventDefault(); $("#ask").classList.contains("open") ? closeChat() : openChat(); return; }
+  if (e.key === "Escape") {
+    const menu = $("#menu");
+    if (menu && menu.classList.contains("open")) return menu.classList.remove("open");
+    if ($("#ask").classList.contains("open")) return closeChat();
+    if (S.selectedId) return closePanel();
   }
-  generateBtn.disabled = false;
-};
+});
 
-// ---------- export ----------
-exportWordBtn.onclick = () => {
-  if (!currentRunId) return;
-  window.open(`/api/export/word?run_id=${currentRunId}`, "_blank");
-};
-exportExcelBtn.onclick = () => {
-  if (!currentRunId) return;
-  window.open(`/api/export/excel?run_id=${currentRunId}`, "_blank");
-};
+window.addEventListener("hashchange", route);
 
-checkHealth();
-loadDocuments();
-loadSkills();
+/* ---------------------------------------------------------------- başlat */
+(async function init() {
+  api("/api/health").then((h) => { S.health = h; renderHealth(); }).catch(() => renderHealth());
+  try { S.meta = await api("/api/meta"); } catch {}
+  try { await loadBase(); } catch (e) { toast("Sunucuya ulaşılamadı", true); }
+  route();
+})();

@@ -1,51 +1,117 @@
-"""Word (.docx) ve Excel (.xlsx) dışa aktarım üretimi."""
+"""Word (.docx) ve Excel (.xlsx) dışa aktarımı — panel tasarımıyla aynı düzen."""
 from datetime import datetime
 from io import BytesIO
 
 from docx import Document as DocxDocument
 from docx.enum.table import WD_TABLE_ALIGNMENT
-from docx.shared import Pt, RGBColor
+from docx.oxml import OxmlElement
+from docx.oxml.ns import qn
+from docx.shared import Cm, Pt, RGBColor
 from openpyxl import Workbook
-from openpyxl.styles import Alignment, Font, PatternFill
+from openpyxl.styles import Alignment, Border, Font, PatternFill, Side
 from openpyxl.utils import get_column_letter
 
-HEADERS = ["Kontrol Adı", "Kategori", "Hat", "Sıklık", "Risk", "Efor", "Gerekçe", "Durum"]
-FIELD_KEYS = ["kontrol_adi", "kategori", "hat", "siklik", "risk", "efor", "gerekce", "status"]
+INK = RGBColor(0x1F, 0x20, 0x25)
+MUTED = RGBColor(0x6E, 0x6F, 0x76)
+KATEGORI_SIRASI = ["Operasyonel", "Mevzuat Uyum", "Bilgi Sistemleri", "Finansal Raporlama", "AML / Şüpheli İşlem"]
+DURUM = {"bekliyor": "Bekliyor", "kabul": "Kabul", "red": "Red"}
 
-ACCENT_HEX = "4F46E5"
+
+def _durum(s):
+    st = (s.get("status") or "bekliyor").lower()
+    if st.startswith("düzenlendi"):
+        return "Düzenlendi"
+    return DURUM.get(st, st.capitalize())
 
 
-def build_word(suggestions: list[dict], run_id: str) -> BytesIO:
+def _grouped(controls):
+    groups = {}
+    for c in controls:
+        groups.setdefault(c.get("kategori") or "Diğer", []).append(c)
+    order = [k for k in KATEGORI_SIRASI if k in groups] + [k for k in groups if k not in KATEGORI_SIRASI]
+    return [(k, groups[k]) for k in order]
+
+
+def _shade(cell, hex_fill):
+    tc_pr = cell._tc.get_or_add_tcPr()
+    shd = OxmlElement("w:shd")
+    shd.set(qn("w:val"), "clear")
+    shd.set(qn("w:color"), "auto")
+    shd.set(qn("w:fill"), hex_fill)
+    tc_pr.append(shd)
+
+
+def build_word(control_set: dict, controls: list[dict]) -> BytesIO:
     doc = DocxDocument()
-    title = doc.add_heading("Periyodik Kontrol Önerileri", level=1)
-    for run in title.runs:
-        run.font.color.rgb = RGBColor(0x4F, 0x46, 0xE5)
+    sec = doc.sections[0]
+    sec.left_margin = sec.right_margin = Cm(2)
+    base = doc.styles["Normal"]
+    base.font.name = "Calibri"
+    base.font.size = Pt(10.5)
+    base.font.color.rgb = INK
+
+    h = doc.add_heading(control_set.get("baslik") or "Periyodik Kontroller", level=0)
+    for r in h.runs:
+        r.font.color.rgb = INK
+        r.font.size = Pt(24)
 
     meta = doc.add_paragraph()
-    meta.add_run(f"Çalışma No: {run_id}  ·  Oluşturulma: ").italic = True
-    meta.add_run(datetime.now().strftime("%Y-%m-%d %H:%M")).italic = True
+    belgeler = control_set.get("belge_adlari") or []
+    parts = [
+        f"{len(belgeler)} belge" if belgeler else None,
+        (control_set.get("created_at") or "")[:10] or datetime.now().strftime("%Y-%m-%d"),
+        f"{len(controls)} kontrol",
+        control_set.get("model"),
+    ]
+    run = meta.add_run("  ·  ".join(p for p in parts if p))
+    run.font.color.rgb = MUTED
+    run.font.size = Pt(9.5)
 
-    table = doc.add_table(rows=1, cols=len(HEADERS))
-    table.alignment = WD_TABLE_ALIGNMENT.CENTER
-    table.style = "Light Grid Accent 1"
-    hdr_cells = table.rows[0].cells
-    for i, header in enumerate(HEADERS):
-        hdr_cells[i].text = header
-        for p in hdr_cells[i].paragraphs:
-            for r in p.runs:
-                r.font.bold = True
+    if control_set.get("ozet"):
+        doc.add_paragraph(control_set["ozet"])
 
-    for s in suggestions:
-        cells = table.add_row().cells
-        for i, key in enumerate(FIELD_KEYS):
-            cells[i].text = str(s.get(key) or "")
+    for kategori, items in _grouped(controls):
+        doc.add_heading(f"{kategori} ({len(items)})", level=2)
+        table = doc.add_table(rows=1, cols=6)
+        table.alignment = WD_TABLE_ALIGNMENT.CENTER
+        table.style = "Table Grid"
+        heads = ["Kontrol", "Sıklık", "Risk", "Efor", "Hat", "Durum"]
+        for i, t in enumerate(heads):
+            cell = table.rows[0].cells[i]
+            cell.text = ""
+            r = cell.paragraphs[0].add_run(t)
+            r.bold = True
+            r.font.size = Pt(9)
+            _shade(cell, "F3F2EF")
+        for c in items:
+            row = table.add_row().cells
+            p = row[0].paragraphs[0]
+            p.add_run(c.get("kontrol_adi") or "").bold = True
+            if c.get("gerekce"):
+                g = row[0].add_paragraph().add_run(c["gerekce"])
+                g.font.size = Pt(9)
+                g.font.color.rgb = MUTED
+            if c.get("dayanak"):
+                d = row[0].add_paragraph().add_run(f"Dayanak: {c['dayanak']}")
+                d.font.size = Pt(8.5)
+                d.font.color.rgb = MUTED
+            for i, val in enumerate([c.get("siklik"), c.get("risk"), c.get("efor"), c.get("hat"), _durum(c)], start=1):
+                row[i].text = str(val or "")
+        for row in table.rows:
+            row.cells[0].width = Cm(8.5)
 
-    doc.add_paragraph()
+    gaps = control_set.get("bosluklar") or []
+    if gaps:
+        doc.add_heading("Tespit edilen boşluklar", level=2)
+        for g in gaps:
+            doc.add_paragraph(g, style="List Bullet")
+
     note = doc.add_paragraph()
-    note.add_run(
-        "Bu belge Periyodik Kontrol Asistanı tarafından otomatik üretilmiştir; "
-        "yayımlanmadan önce ilgili uzman tarafından gözden geçirilmelidir."
-    ).italic = True
+    note.paragraph_format.space_before = Pt(18)
+    n = note.add_run("Periyodik Kontrol Asistanı tarafından üretilmiştir; kullanılmadan önce uzman gözden geçirmelidir.")
+    n.italic = True
+    n.font.size = Pt(8.5)
+    n.font.color.rgb = MUTED
 
     buf = BytesIO()
     doc.save(buf)
@@ -53,26 +119,56 @@ def build_word(suggestions: list[dict], run_id: str) -> BytesIO:
     return buf
 
 
-def build_excel(suggestions: list[dict], run_id: str) -> BytesIO:
+EXCEL_COLS = [
+    ("Kontrol", "kontrol_adi", 48), ("Kategori", "kategori", 20), ("Hat", "hat", 6),
+    ("Sıklık", "siklik", 16), ("Risk", "risk", 10), ("Efor", "efor", 10),
+    ("Gerekçe", "gerekce", 60), ("Dayanak", "dayanak", 30), ("Kaynak alıntı", "kaynak", 50),
+    ("Durum", None, 12),
+]
+
+
+def build_excel(control_set: dict, controls: list[dict]) -> BytesIO:
     wb = Workbook()
     ws = wb.active
-    ws.title = "Periyodik Kontroller"
+    ws.title = "Kontroller"
+    thin = Side(style="thin", color="E6E5E0")
+    head_fill = PatternFill("solid", fgColor="1F2025")
 
-    ws.append(HEADERS)
+    ws.append([c[0] for c in EXCEL_COLS])
     for cell in ws[1]:
         cell.font = Font(bold=True, color="FFFFFF")
-        cell.fill = PatternFill("solid", fgColor=ACCENT_HEX)
-        cell.alignment = Alignment(horizontal="center", vertical="center")
+        cell.fill = head_fill
+        cell.alignment = Alignment(vertical="center")
+    ws.row_dimensions[1].height = 22
 
-    for s in suggestions:
-        ws.append([s.get(key) or "" for key in FIELD_KEYS])
+    for kategori, items in _grouped(controls):
+        for c in items:
+            ws.append([(_durum(c) if key is None else (c.get(key) or "")) for _, key, _ in EXCEL_COLS])
 
-    for col_cells in ws.columns:
-        length = max((len(str(c.value)) for c in col_cells if c.value), default=10)
-        ws.column_dimensions[get_column_letter(col_cells[0].column)].width = min(
-            max(length + 2, 12), 50
-        )
-    ws.freeze_panes = "A2"
+    for i, (_, _, width) in enumerate(EXCEL_COLS, start=1):
+        ws.column_dimensions[get_column_letter(i)].width = width
+    for row in ws.iter_rows(min_row=2):
+        for cell in row:
+            cell.alignment = Alignment(wrap_text=True, vertical="top")
+            cell.border = Border(bottom=thin)
+    ws.freeze_panes = "B2"
+    ws.auto_filter.ref = ws.dimensions
+
+    info = wb.create_sheet("Set bilgisi")
+    rows = [
+        ("Başlık", control_set.get("baslik") or ""),
+        ("Oluşturulma", control_set.get("created_at") or ""),
+        ("Model", control_set.get("model") or ""),
+        ("Belgeler", ", ".join(control_set.get("belge_adlari") or [])),
+        ("Özet", control_set.get("ozet") or ""),
+    ] + [("Boşluk", g) for g in (control_set.get("bosluklar") or [])]
+    for r in rows:
+        info.append(list(r))
+    info.column_dimensions["A"].width = 14
+    info.column_dimensions["B"].width = 100
+    for row in info.iter_rows():
+        row[0].font = Font(bold=True)
+        row[1].alignment = Alignment(wrap_text=True, vertical="top")
 
     buf = BytesIO()
     wb.save(buf)

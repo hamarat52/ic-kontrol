@@ -1,0 +1,41 @@
+ÖRNEK BANKA A.Ş. — KREDİ TAHSİS PROSEDÜRÜ (SENTETİK TEST BELGESİ)
+Bu belge test amaçlı uydurulmuştur; gerçek bir kuruma ait değildir.
+
+1. Amaç ve Kapsam
+Bu prosedür, bireysel ve ticari kredi başvurularının alınması, değerlendirilmesi, tahsisi ve
+kullandırılmasına ilişkin usul ve esasları belirler. Tüm şubeler ve Genel Müdürlük Kredi Tahsis
+Bölümü bu prosedüre tabidir.
+
+2. Başvurunun Alınması
+2.1. Kredi başvuruları şube portföy yöneticisi tarafından kredi başvuru sistemine kaydedilir.
+2.2. Başvuru ile birlikte müşterinin kimlik, gelir belgesi ve son üç aylık hesap hareketleri alınır.
+2.3. Eksik belgeli başvurular değerlendirmeye alınmaz.
+
+3. İstihbarat ve Ön Değerlendirme
+3.1. Her başvuru için KKB sorgusu ve iç istihbarat taraması yapılır.
+3.2. Müşterinin risk grubu, ortaklık ve yönetim ilişkileri dikkate alınarak belirlenir.
+
+4. Risk Analizi
+4.1. Her kredi başvurusu, tahsis onayından önce Risk Analizi Biriminin değerlendirmesinden geçer.
+4.2. Risk analizi raporu, müşterinin derecelendirme notunu ve teminat yeterliliğini içerir.
+4.3. 250.000 TL altındaki bireysel başvurularda skor kartı sonucu risk analizi yerine geçebilir.
+
+5. Tahsis Yetkileri
+5.1. Şube müdürü 500.000 TL'ye kadar, bölge müdürü 2.000.000 TL'ye kadar tahsis yetkisine sahiptir.
+5.2. Limit üstü tahsisler Kredi Komitesinin onayına sunulur.
+5.3. Aynı kullanıcı hem tahsis teklifini hazırlayıp hem onaylayamaz.
+5.4. Acil durumlarda bölge müdürü sözlü onay verebilir; yazılı onay en geç 5 iş günü içinde sisteme girilir.
+
+6. Teminatlar
+6.1. Gayrimenkul teminatları lisanslı ekspertiz firmalarınca değerlenir.
+6.2. Teminat değerleme raporları dosyada saklanır.
+6.3. Teminat sigortalarının vadesi takip edilir.
+
+7. Kullandırım
+7.1. Kullandırım, tahsis onayı ve teminat tesisi tamamlandıktan sonra operasyon birimince yapılır.
+7.2. Kullandırım tutarı, onaylanan limiti aşamaz.
+
+8. İzleme
+8.1. Kullandırılan krediler aylık olarak gecikme açısından izlenir.
+8.2. Erken kapatılan krediler Uyum Birimine raporlanır.
+8.3. Yasal kredi sınırlarına (5411 sayılı Kanun md. 54) uyum Mali Kontrol tarafından izlenir.
