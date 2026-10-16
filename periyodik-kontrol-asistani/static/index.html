@@ -1,0 +1,50 @@
+<!doctype html>
+<html lang="tr">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Periyodik Kontrol Asistanı</title>
+<link rel="stylesheet" href="/static/style.css" />
+</head>
+<body>
+  <header>
+    <h1>Periyodik Kontrol Asistanı</h1>
+    <p class="subtitle">İç kontrol / teftiş için YZ destekli periyodik kontrol önerileri</p>
+  </header>
+
+  <main>
+    <section class="card">
+      <h2>1. Şirket içi süreç/prosedür belgelerini yükle</h2>
+      <input type="file" id="fileInput" accept=".pdf,.docx,.txt,.md" multiple />
+      <button id="uploadBtn">Yükle</button>
+      <ul id="docList"></ul>
+    </section>
+
+    <section class="card">
+      <h2>2. Periyodik kontrolleri çıkart</h2>
+      <button id="generateBtn" class="primary">Periyodik Kontrolleri Çıkart</button>
+      <p id="generateStatus"></p>
+    </section>
+
+    <section class="card">
+      <h2>Öneriler</h2>
+      <table id="suggestionsTable">
+        <thead>
+          <tr>
+            <th>Kontrol Adı</th><th>Kategori</th><th>Hat</th><th>Sıklık</th>
+            <th>Risk</th><th>Efor</th><th>Gerekçe</th><th>Geri Bildirim</th>
+          </tr>
+        </thead>
+        <tbody></tbody>
+      </table>
+    </section>
+
+    <section class="card">
+      <h2>Skill'ler (birikmiş bilgi)</h2>
+      <div id="skillsList"></div>
+    </section>
+  </main>
+
+  <script src="/static/app.js"></script>
+</body>
+</html>
