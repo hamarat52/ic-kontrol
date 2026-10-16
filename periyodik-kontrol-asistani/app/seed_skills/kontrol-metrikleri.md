@@ -38,4 +38,4 @@ Gerekçe / dayanak (belge referansı veya mevzuat maddesi):
 ```
 
 ## Öğrenilenler
-- [2026-10-16 21:23] Her kontrolün gerekçe ve dayanak bilgilerini eksiksiz ve mevcut mevzuat maddelerine uygun şekilde belirtmek önemlidir.
+_(henüz geri bildirim yok — kullanım arttıkça buraya eklenir)_

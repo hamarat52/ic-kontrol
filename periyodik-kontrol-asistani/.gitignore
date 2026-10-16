@@ -6,3 +6,4 @@ data/app.db
 !data/uploads/.gitkeep
 .env
 .pytest_cache/
+data/skills/

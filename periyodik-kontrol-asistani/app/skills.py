@@ -10,8 +10,22 @@ from pathlib import Path
 
 from . import config
 
+SEED_DIR = Path(__file__).resolve().parent / "seed_skills"
+
+
+def ensure_seed() -> None:
+    """Başlangıç skill'lerini (app/seed_skills, sürüm kontrollü) çalışma klasörüne
+    (data/skills, kullanıcıya özel, git dışı) yalnız eksikse kopyalar.
+    Kullanıcının öğrendikleri asla üzerine yazılmaz."""
+    config.SKILLS_DIR.mkdir(parents=True, exist_ok=True)
+    for seed in SEED_DIR.glob("*.md"):
+        target = config.SKILLS_DIR / seed.name
+        if not target.exists():
+            target.write_text(seed.read_text(encoding="utf-8"), encoding="utf-8")
+
 
 def list_skills() -> list[dict]:
+    ensure_seed()
     skills = []
     for path in sorted(config.SKILLS_DIR.glob("*.md")):
         skills.append({"name": path.stem, "content": path.read_text(encoding="utf-8")})
