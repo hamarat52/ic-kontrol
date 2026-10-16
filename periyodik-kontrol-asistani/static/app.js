@@ -75,7 +75,7 @@ function parseRoute() {
   const h = location.hash.replace(/^#\/?/, "");
   const [name, id] = h.split("/");
   if (name === "set" && id) return { name: "set", id };
-  if (["belgeler", "kutuphane", "bilgi", "setler"].includes(name)) return { name };
+  if (["belgeler", "kutuphane", "bilgi", "setler", "model"].includes(name)) return { name };
   return { name: "home" };
 }
 function go(hash) { if (location.hash === hash) route(); else location.hash = hash; }
@@ -84,7 +84,7 @@ async function route() {
   const r = parseRoute();
   const changed = JSON.stringify(r) !== JSON.stringify(S.route);
   S.route = r;
-  if (changed) { closePanel(true); closeChat(); S.filter = "all"; S.q = ""; $("#scroll").scrollTop = 0; }
+  if (changed) { closePanel(true); closeChat(); S.filter = "all"; S.q = ""; S.editConn = null; S.addingConn = false; $("#scroll").scrollTop = 0; }
   if (r.name === "home" || r.name === "setler") {
     if (S.sets.length) { location.replace("#/set/" + S.sets[0].id); return; }
   }
@@ -97,6 +97,7 @@ async function route() {
   }
   renderSidebar();
   renderView();
+  if (S.health) renderHealth();
 }
 
 /* ---------------------------------------------------------------- sidebar */
@@ -125,8 +126,9 @@ function renderHealth() {
   const h = S.health;
   const line = $("#modelLine");
   if (!h) { line.innerHTML = `<span class="dot bad"></span>sunucuya ulaşılamadı`; return; }
-  line.innerHTML = `<span class="dot ${h.llm_ok ? "ok" : "bad"}"></span>${esc(h.llm_model)} · ${h.llm_ok ? "yerel" : "bağlantı yok"}`;
-  line.title = h.llm_base_url;
+  line.innerHTML = `<span class="dot ${h.llm_ok ? "ok" : "bad"}"></span>${esc(h.llm_model)} · ${h.llm_ok ? (h.tur === "bulut" ? "bulut" : "yerel") : "bağlantı yok"}`;
+  $("#userBtn").title = `${h.baglanti}: ${h.llm_base_url}${h.llm_error ? " — " + h.llm_error : ""} · değiştirmek için tıkla`;
+  $("#userBtn").classList.toggle("active", S.route.name === "model");
 }
 
 /* ---------------------------------------------------------------- görünümler */
@@ -138,6 +140,7 @@ function renderView() {
   if (n === "belgeler") return viewDocs();
   if (n === "kutuphane") return viewLibrary();
   if (n === "bilgi") return viewKnowledge();
+  if (n === "model") return viewModel();
   if (n === "set" && S.set) return viewSet();
   return viewHome();
 }
@@ -605,6 +608,102 @@ async function viewKnowledge() {
     </section>`).join("")}`;
 }
 
+/* --- model ayarları */
+const TUR_ADI = { yerel: "Yerel", bulut: "Bulut" };
+
+async function viewModel(fresh = true) {
+  setTop(`<b>Model</b>`);
+  if (fresh || !S.models) {
+    if (!S.models) $("#view").innerHTML = `<h1>Model</h1><p class="lead muted">Bağlantılar kontrol ediliyor…</p>`;
+    try { S.models = await api("/api/models"); } catch (e) { toast(e.message, true); return; }
+  }
+  if (S.route.name !== "model") return;
+  const m = S.models, a = m.aktif;
+  const activeConn = m.baglantilar.find((b) => b.id === a.baglanti);
+  $("#view").innerHTML = `
+    <h1>Model</h1>
+    <div class="source"><span>${activeConn && activeConn.tur === "bulut" ? "☁️" : "💻"} ${esc(activeConn ? activeConn.ad : "")}</span><span class="sep">·</span><span>${esc(a.model)}</span></div>
+    <p class="lead">Kontrol üretimi ve sohbet seçili modelle yapılır. Kurum içinde yerel bir model sunucusunun (Ollama, LM Studio, vLLM) adresini eklemen yeterli; internet gerekmez.</p>
+    ${m.baglantilar.map((b) => connBlock(b, a)).join("")}
+    <div id="addConn">${S.addingConn ? connForm() : `<button class="btn btn-ghost" data-act="conn-add">Bağlantı ekle</button>`}</div>`;
+}
+
+function connBlock(b, a) {
+  const status = b.hata
+    ? `<span class="conn-st bad">${esc(b.hata)}</span>`
+    : `<span class="conn-st ok"><span class="dot ok"></span>${b.modeller.length} model</span>`;
+  const editing = S.editConn === b.id;
+  const needsKey = b.tur === "bulut" && !b.anahtar_var;
+  const models = b.modeller.length ? b.modeller : (b.id === a.baglanti ? [a.model] : []);
+  return `<section class="conn${b.id === a.baglanti ? " in-use" : ""}">
+    <div class="conn-head">
+      <span class="ico">${b.tur === "bulut" ? "☁️" : "💻"}</span>
+      <div class="conn-title"><b>${esc(b.ad)}</b><span class="tag">${TUR_ADI[b.tur] || "Yerel"}</span>${status}
+        <div class="conn-url">${esc(b.base_url)}${b.anahtar_var ? `<span class="sep">·</span>anahtar kayıtlı` : ""}</div></div>
+      <button class="row-action show" data-act="conn-edit" data-id="${b.id}">${editing ? "Vazgeç" : "Düzenle"}</button>
+    </div>
+    ${b.tur === "bulut" ? `<p class="conn-note">Bulut modelinde belge metni internet üzerinden bu servise gönderilir. Gerçek kurum belgeleriyle yalnız izin varsa kullan.</p>` : ""}
+    ${editing ? connForm(b) : needsKey ? keyForm(b) : ""}
+    ${models.length ? `<div class="model-list">${models.map((name) => {
+      const on = b.id === a.baglanti && name === a.model;
+      return `<button class="model-row${on ? " on" : ""}" data-act="model-pick" data-conn="${b.id}" data-model="${esc(name)}">
+        <span class="radio"></span><span>${esc(name)}</span>${on ? `<span class="in-use-tag">kullanılıyor</span>` : ""}</button>`;
+    }).join("")}</div>` : ""}
+    ${!b.modeller.length && !needsKey && !editing ? `<div class="manual">
+        <input class="inp" placeholder="Model adını elle yaz (ör. llama3.1:70b)" data-manual="${b.id}">
+        <button class="btn btn-ghost" data-act="model-manual" data-conn="${b.id}">Kullan</button></div>` : ""}
+  </section>`;
+}
+
+function keyForm(b) {
+  return `<form class="conn-form" data-conn-form="${b.id}" autocomplete="off">
+    <input class="inp" name="api_key" type="password" placeholder="API anahtarı" autocomplete="new-password">
+    <button class="btn btn-ink" type="submit">Kaydet</button>
+  </form>`;
+}
+
+function connForm(b) {
+  const isNew = !b;
+  return `<form class="conn-form grid" data-conn-form="${isNew ? "" : b.id}" autocomplete="off">
+    <label>Ad<input class="inp" name="ad" value="${esc(b ? b.ad : "")}" placeholder="Kurum model sunucusu"></label>
+    <label>Adres<input class="inp" name="base_url" value="${esc(b ? b.base_url : "")}" placeholder="http://sunucu:11434/v1"></label>
+    <label>Tür<select class="inp" name="tur">
+      <option value="yerel" ${!b || b.tur !== "bulut" ? "selected" : ""}>Yerel / kurum içi</option>
+      <option value="bulut" ${b && b.tur === "bulut" ? "selected" : ""}>Bulut</option></select></label>
+    <label>API anahtarı<input class="inp" name="api_key" type="password" autocomplete="new-password" placeholder="${b && b.anahtar_var ? "Kayıtlı · değiştirmek için yaz" : "Gerekmiyorsa boş bırak"}"></label>
+    <div class="conn-form-actions">
+      <button class="btn btn-ink" type="submit">${isNew ? "Ekle" : "Kaydet"}</button>
+      ${isNew ? `<button class="btn btn-ghost" type="button" data-act="conn-add-cancel">Vazgeç</button>` : ""}
+      ${b && b.anahtar_var ? `<button class="btn btn-ghost" type="button" data-act="conn-key-del" data-id="${b.id}">Anahtarı sil</button>` : ""}
+      ${b && b.id !== "yerel" && b.id !== S.models.aktif.baglanti ? `<button class="btn btn-ghost danger" type="button" data-act="conn-del" data-id="${b.id}">Bağlantıyı sil</button>` : ""}
+    </div>
+  </form>`;
+}
+
+async function pickModel(conn, model) {
+  try {
+    await api("/api/models/active", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ baglanti: conn, model }) });
+    S.models.aktif = { baglanti: conn, model };
+    viewModel(false);
+    toast(`Model: ${model}`);
+    api("/api/health").then((h) => { S.health = h; renderHealth(); });
+  } catch (e) { toast(e.message, true); }
+}
+
+async function saveConn(form) {
+  const fd = new FormData(form);
+  const body = { id: form.dataset.connForm || null };
+  for (const [k, v] of fd.entries()) if (String(v).trim()) body[k] = String(v).trim();
+  const btn = form.querySelector('[type="submit"]'); btn.disabled = true; btn.textContent = "Bağlanıyor…";
+  try {
+    const r = await api("/api/models/connections", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(body) });
+    S.models = r; S.editConn = null; S.addingConn = false;
+    const c = r.baglantilar.find((x) => x.id === r.id);
+    toast(c && c.hata ? `Kaydedildi · ${c.hata}` : "Bağlantı kaydedildi", !!(c && c.hata));
+    viewModel(false);
+  } catch (e) { toast(e.message, true); btn.disabled = false; btn.textContent = "Kaydet"; }
+}
+
 /* ---------------------------------------------------------------- olaylar */
 document.addEventListener("click", async (e) => {
   const menu = $("#menu");
@@ -635,6 +734,22 @@ document.addEventListener("click", async (e) => {
     return;
   }
   if (a === "to-docs") return go("#/belgeler");
+  if (a === "model-pick") return pickModel(act.dataset.conn, act.dataset.model);
+  if (a === "model-manual") { const v = $(`[data-manual="${act.dataset.conn}"]`).value.trim(); if (v) pickModel(act.dataset.conn, v); return; }
+  if (a === "conn-edit") { S.editConn = S.editConn === act.dataset.id ? null : act.dataset.id; return viewModel(false); }
+  if (a === "conn-add") { S.addingConn = true; viewModel(false); const i = $('#addConn input[name="ad"]'); if (i) i.focus(); return; }
+  if (a === "conn-add-cancel") { S.addingConn = false; return viewModel(false); }
+  if (a === "conn-key-del") {
+    try { S.models = await api("/api/models/connections", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ id: act.dataset.id, anahtari_sil: true }) }); S.editConn = null; viewModel(false); toast("Anahtar silindi"); }
+    catch (err) { toast(err.message, true); }
+    return;
+  }
+  if (a === "conn-del") {
+    if (!confirm("Bu bağlantı silinsin mi?")) return;
+    try { S.models = await api("/api/models/connections/" + act.dataset.id, { method: "DELETE" }); S.editConn = null; viewModel(false); }
+    catch (err) { toast(err.message, true); }
+    return;
+  }
   if (a === "del-doc") {
     try { await api("/api/documents/" + act.dataset.id, { method: "DELETE" }); S.docs = await api("/api/documents"); renderSidebar(); viewDocs(); }
     catch (err) { toast(err.message, true); }
@@ -680,6 +795,11 @@ $("#panel").addEventListener("keydown", (e) => {
 $("#fileInput").addEventListener("change", (e) => { upload(e.target.files); e.target.value = ""; });
 $("#secToggle").onclick = () => $("#secSets").classList.toggle("closed");
 $("#newSetBtn").onclick = () => go("#/belgeler");
+$("#userBtn").onclick = () => go("#/model");
+document.addEventListener("submit", (e) => {
+  const f = e.target.closest("[data-conn-form]");
+  if (f) { e.preventDefault(); saveConn(f); }
+});
 $("#searchBtn").onclick = () => { const i = $("#ctrlSearch"); if (i) i.focus(); else if (S.lib.length) go("#/kutuphane"); };
 $("#askBar").onclick = openChat;
 $("#chatClose").onclick = closeChat;

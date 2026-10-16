@@ -8,7 +8,7 @@ from fastapi.responses import FileResponse, StreamingResponse
 from fastapi.staticfiles import StaticFiles
 from pydantic import BaseModel
 
-from . import config, documents, exporters, jobs, llm, skills, storage
+from . import config, documents, exporters, jobs, llm, model_settings, skills, storage
 
 app = FastAPI(title="Periyodik Kontrol Asistanı")
 storage.init_db()
@@ -102,14 +102,84 @@ def _apply_fields(conn, control: dict, fields: dict, karar: str) -> list[str]:
 
 @app.get("/api/health")
 def health():
-    llm_ok = False
-    try:
-        r = httpx.get(f"{config.LLM_BASE_URL.rstrip('/')}/models", timeout=2,
-                      headers={"Authorization": f"Bearer {config.LLM_API_KEY}"})
-        llm_ok = r.status_code < 400
-    except Exception:
-        pass
-    return {"ok": True, "llm_ok": llm_ok, "llm_base_url": config.LLM_BASE_URL, "llm_model": config.LLM_MODEL}
+    conn = model_settings.active()
+    models, err = model_settings.list_models(conn, timeout=3)
+    return {"ok": True, "llm_ok": err is None, "llm_error": err, "llm_base_url": conn["base_url"],
+            "llm_model": conn["model"], "baglanti": conn["ad"], "tur": conn.get("tur", "yerel"),
+            "model_var": conn["model"] in models if models else None}
+
+
+# ------------------------------------------------------------------ model ayarları
+
+def _settings_view(probe: bool = True):
+    data = model_settings.load()
+    out = []
+    for b in data["baglantilar"]:
+        item = model_settings.public(b)
+        if probe and (b.get("tur") != "bulut" or b.get("api_key")):
+            item["modeller"], item["hata"] = model_settings.list_models(b)
+        else:
+            item["modeller"], item["hata"] = [], ("Anahtar girilmedi." if b.get("tur") == "bulut" else None)
+        out.append(item)
+    return {"baglantilar": out, "aktif": data["aktif"]}
+
+
+@app.get("/api/models")
+def get_models():
+    return _settings_view()
+
+
+class ConnectionIn(BaseModel):
+    id: str | None = None
+    ad: str | None = None
+    tur: str | None = None
+    base_url: str | None = None
+    api_key: str | None = None
+    anahtari_sil: bool = False
+
+
+@app.post("/api/models/connections")
+def save_connection(body: ConnectionIn):
+    if body.base_url and not body.base_url.startswith(("http://", "https://")):
+        raise HTTPException(400, "Adres http:// ya da https:// ile başlamalı.")
+    data = model_settings.load()
+    if not body.id and not (body.ad and body.base_url):
+        raise HTTPException(400, "Yeni bağlantı için ad ve adres gerekli.")
+    if body.id and not any(b["id"] == body.id for b in data["baglantilar"]):
+        raise HTTPException(404, "Bağlantı bulunamadı.")
+    conn = model_settings.upsert_connection(data, body.model_dump())
+    model_settings.save(data)
+    view = _settings_view()
+    return {**view, "id": conn["id"]}
+
+
+@app.delete("/api/models/connections/{conn_id}")
+def delete_connection(conn_id: str):
+    data = model_settings.load()
+    if conn_id in ("yerel",):
+        raise HTTPException(400, "Yerel bağlantı silinemez.")
+    if data["aktif"].get("baglanti") == conn_id:
+        raise HTTPException(409, "Kullanımdaki bağlantı silinemez; önce başka bir model seçin.")
+    data["baglantilar"] = [b for b in data["baglantilar"] if b["id"] != conn_id]
+    model_settings.save(data)
+    return _settings_view()
+
+
+class ActiveIn(BaseModel):
+    baglanti: str
+    model: str
+
+
+@app.post("/api/models/active")
+def set_active(body: ActiveIn):
+    data = model_settings.load()
+    if not any(b["id"] == body.baglanti for b in data["baglantilar"]):
+        raise HTTPException(404, "Bağlantı bulunamadı.")
+    if not body.model.strip():
+        raise HTTPException(400, "Model adı boş olamaz.")
+    data["aktif"] = {"baglanti": body.baglanti, "model": body.model.strip()}
+    model_settings.save(data)
+    return _settings_view(probe=False)
 
 
 # ------------------------------------------------------------------ belgeler
@@ -227,7 +297,7 @@ def create_set():
         conn.execute(
             """INSERT INTO control_sets (id, baslik, belge_adlari, model, durum, hata)
                VALUES (?,?,?,?, 'uretiliyor', ?)""",
-            (set_id, provisional, json.dumps(names, ensure_ascii=False), config.LLM_MODEL,
+            (set_id, provisional, json.dumps(names, ensure_ascii=False), model_settings.active()["model"],
              f"Metni okunamayan belgeler atlandı: {', '.join(skipped)}" if skipped else None),
         )
     try:

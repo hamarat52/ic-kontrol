@@ -10,7 +10,7 @@ from typing import Iterator
 
 import httpx
 
-from . import config
+from . import config, model_settings
 
 KATEGORILER = ["Operasyonel", "Mevzuat Uyum", "Bilgi Sistemleri", "Finansal Raporlama", "AML / Şüpheli İşlem"]
 SIKLIKLAR = ["Anlık", "Günlük", "Haftalık", "Aylık", "Üç aylık", "Altı aylık", "Yıllık", "Olay tetiklemeli"]
@@ -83,19 +83,18 @@ Değişiklik gerekmiyorsa "degisiklikler": [] döndür. Yalnız verilen id'leri 
 Kategori/sıklık/risk/efor için mevcut değerlerle aynı sözlüğü kullan."""
 
 
-def _headers():
-    return {"Authorization": f"Bearer {config.LLM_API_KEY}"}
+def _conn(conn: dict | None) -> dict:
+    return conn or model_settings.active()
 
 
-def _url():
-    return f"{config.LLM_BASE_URL.rstrip('/')}/chat/completions"
+def _url(conn: dict):
+    return f"{conn['base_url'].rstrip('/')}/chat/completions"
 
 
-def connection_error_text(err: str) -> str:
-    return (
-        f"Lokal modele ulaşılamadı ({config.LLM_BASE_URL}, model: {config.LLM_MODEL}): {err}. "
-        "LLM_BASE_URL / LLM_MODEL ayarlarını kontrol edin."
-    )
+def connection_error_text(err: str, conn: dict | None = None) -> str:
+    c = _conn(conn)
+    return (f"Modele ulaşılamadı ({c.get('ad')}: {c.get('base_url')}, model: {c.get('model')}): {err}. "
+            "Model ayarlarını kontrol edin.")
 
 
 def _extract_json_payload(content: str):
@@ -114,12 +113,13 @@ def _extract_json_payload(content: str):
         return json.loads(m.group(1))
 
 
-def call_chat_completion(messages: list[dict], temperature: float = 0.2) -> dict:
+def call_chat_completion(messages: list[dict], temperature: float = 0.2, conn: dict | None = None) -> dict:
     """Döner: {"ok": True, "content": str} veya {"ok": False, "error": str}."""
-    payload = {"model": config.LLM_MODEL, "messages": messages, "temperature": temperature}
+    conn = _conn(conn)
+    payload = {"model": conn["model"], "messages": messages, "temperature": temperature, "max_tokens": 4096}
     try:
         with httpx.Client(timeout=config.LLM_TIMEOUT_S) as client:
-            resp = client.post(_url(), json=payload, headers=_headers())
+            resp = client.post(_url(conn), json=payload, headers=model_settings.headers(conn))
             resp.raise_for_status()
             return {"ok": True, "content": resp.json()["choices"][0]["message"]["content"]}
     except Exception as exc:
@@ -216,7 +216,8 @@ def _classify(obj: dict):
 
 
 def stream_control_set(chunk_text: str, skills_text: str, context: dict | None = None,
-                       should_stop=None, examples: str = "", hint: str = "") -> Iterator[dict]:
+                       should_stop=None, examples: str = "", hint: str = "",
+                       conn: dict | None = None) -> Iterator[dict]:
     """Bir bölüm için model çıktısını satır satır okuyup olay üretir:
     {"event":"control"|"gap"|"meta"|"empty"|"error", ...}. Asla exception fırlatmaz.
     `should_stop()` True dönerse akışı keser. `examples`: kurumun kabul/ret geçmişi,
@@ -237,16 +238,17 @@ def stream_control_set(chunk_text: str, skills_text: str, context: dict | None =
             + "Şimdi JSON Lines çıktısını üret."
         )},
     ]
-    payload = {"model": config.LLM_MODEL, "messages": messages, "temperature": 0.2, "stream": True}
+    conn = _conn(conn)
+    payload = {"model": conn["model"], "messages": messages, "temperature": 0.2, "stream": True, "max_tokens": 8192}
     buffer, full = "", ""
     emitted = 0
     stop = should_stop or (lambda: False)
     try:
         with httpx.Client(timeout=httpx.Timeout(config.LLM_TIMEOUT_S, connect=10)) as client:
-            with client.stream("POST", _url(), json=payload, headers=_headers()) as resp:
+            with client.stream("POST", _url(conn), json=payload, headers=model_settings.headers(conn)) as resp:
                 if resp.status_code >= 400:
                     resp.read()
-                    yield {"event": "error", "error": connection_error_text(f"HTTP {resp.status_code}: {resp.text[:200]}")}
+                    yield {"event": "error", "error": connection_error_text(f"HTTP {resp.status_code}: {resp.text[:200]}", conn)}
                     return
                 for raw in resp.iter_lines():
                     if stop():
@@ -270,7 +272,7 @@ def stream_control_set(chunk_text: str, skills_text: str, context: dict | None =
                             emitted += 1
                             yield ev
     except Exception as exc:
-        yield {"event": "error", "error": connection_error_text(str(exc))}
+        yield {"event": "error", "error": connection_error_text(str(exc), conn)}
         return
 
     obj = _parse_line(buffer)
@@ -295,7 +297,8 @@ def stream_control_set(chunk_text: str, skills_text: str, context: dict | None =
         yield {"event": "error", "error": "Model bu bölüm için geçerli bir çıktı vermedi (biçim hatası)."}
 
 
-def summarize_set(doc_names: list[str], headings: list[str], titles: list[str], gaps: list[str]) -> dict | None:
+def summarize_set(doc_names: list[str], headings: list[str], titles: list[str], gaps: list[str],
+                  conn: dict | None = None) -> dict | None:
     """Set başlığı ve özeti; başarısızlıkta None (çağıran geçici başlığı korur)."""
     user = (
         f"BELGELER: {', '.join(doc_names)}\n"
@@ -304,7 +307,7 @@ def summarize_set(doc_names: list[str], headings: list[str], titles: list[str], 
         f"BOŞLUKLAR: {'; '.join(gaps[:10]) or 'yok'}"
     )
     result = call_chat_completion(
-        [{"role": "system", "content": SUMMARY_SYSTEM_PROMPT}, {"role": "user", "content": user}]
+        [{"role": "system", "content": SUMMARY_SYSTEM_PROMPT}, {"role": "user", "content": user}], conn=conn
     )
     if not result["ok"]:
         return None

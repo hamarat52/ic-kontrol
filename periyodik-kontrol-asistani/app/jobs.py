@@ -9,7 +9,7 @@ import threading
 import traceback
 from pathlib import Path
 
-from . import llm, processing, skills, storage
+from . import llm, model_settings, processing, skills, storage
 
 _lock = threading.Lock()
 _running: dict[str, threading.Thread] = {}
@@ -120,6 +120,7 @@ def run(set_id: str, docs: list[tuple[str, str]]):
 
     skills_text = skills.read_all_skills_text()
     examples, rejected = _history()
+    llm_conn = model_settings.active()   # set boyunca aynı model (kullanıcı arada değiştirse de)
     titles: list[str] = []
     gaps: list[str] = []
     last_error = None
@@ -130,7 +131,7 @@ def run(set_id: str, docs: list[tuple[str, str]]):
         nonlocal last_error
         added, failed = 0, False
         for ev in llm.stream_control_set(chunk["text"], skills_text, ctx, should_stop=_StopCheck(set_id),
-                                         examples=examples, hint=hint):
+                                         examples=examples, hint=hint, conn=llm_conn):
             kind = ev["event"]
             if kind == "control":
                 c = ev["control"]
@@ -185,7 +186,7 @@ def run(set_id: str, docs: list[tuple[str, str]]):
     # Başlık ve özet
     if titles and not cancelled:
         _update(set_id, progress={"i": total, "toplam": total, "asama": "ozet"})
-        meta = llm.summarize_set([d[0] for d in docs], [c["bolum"] for c in chunks], titles, gaps)
+        meta = llm.summarize_set([d[0] for d in docs], [c["bolum"] for c in chunks], titles, gaps, conn=llm_conn)
         if meta:
             _update(set_id, baslik=meta["baslik"], ozet=meta["ozet"])
 

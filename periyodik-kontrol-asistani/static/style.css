@@ -64,7 +64,13 @@ button:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-vis
 .nav-item .label{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .ico{width:20px;height:20px;display:inline-flex;align-items:center;justify-content:center;font-size:16px;line-height:1;flex-shrink:0}
 .count{margin-left:auto;font-size:12px;color:var(--faint);font-weight:500;flex-shrink:0}
-.gen-tag{font-size:11px;color:var(--faint);font-weight:500;flex-shrink:0}
+/* üretim sürerken: metnin üzerinden yavaşça geçen hafif bir ışık (yalnız ton değişimi, yer değiştirme yok) */
+.gen-tag{font-size:11px;font-weight:500;flex-shrink:0;color:var(--faint);
+  background:linear-gradient(90deg,var(--faint) 0%,var(--faint) 40%,var(--ink-2) 50%,var(--faint) 60%,var(--faint) 100%);
+  background-size:250% 100%;-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;
+  animation:sheen 2.4s linear infinite}
+@keyframes sheen{from{background-position:100% 0}to{background-position:-150% 0}}
+@media (prefers-reduced-motion:reduce){.gen-tag{animation:none;-webkit-text-fill-color:var(--faint)}}
 .sec{margin-top:18px;min-height:0;display:flex;flex-direction:column}
 .sec-head{
   display:flex;align-items:center;gap:6px;width:100%;height:28px;padding:0 10px;flex-shrink:0;
@@ -82,7 +88,9 @@ button:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-vis
   color:var(--ink-2);font-size:13.5px;transition:background var(--t);
 }
 .new-btn:hover{background:var(--hover)}
-.user{display:flex;align-items:center;gap:10px;padding:8px 10px;border-radius:10px;min-width:0}
+.user{display:flex;align-items:center;gap:10px;padding:8px 10px;border-radius:10px;min-width:0;width:100%;text-align:left;cursor:pointer;transition:background var(--t)}
+.user:hover{background:var(--hover)}
+.user.active{background:var(--sel)}
 .user > div:last-child{min-width:0}
 .avatar{width:26px;height:26px;border-radius:50%;background:#2B2D35;color:#fff;font-size:12px;font-weight:600;display:flex;align-items:center;justify-content:center;flex-shrink:0}
 .user small{display:block;color:var(--faint);font-size:11.5px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
@@ -309,3 +317,35 @@ kbd.k{font-family:inherit;font-size:11px;color:var(--faint);padding:3px 7px;bord
   padding:8px 14px;border-radius:10px;font-size:13px;opacity:0;pointer-events:none;transition:opacity var(--t)}
 .toast.on{opacity:1}
 .toast.err{background:var(--r-kritik)}
+
+/* ---------- model ayarları ---------- */
+.conn{padding:16px 0 18px;border-top:1px solid var(--line)}
+.conn-head{display:grid;grid-template-columns:22px 1fr auto;gap:12px;align-items:start}
+.conn-head .ico{font-size:16px;line-height:22px}
+.conn-title{font-size:14px;line-height:22px;min-width:0}
+.conn-title b{font-weight:600;margin-right:8px}
+.tag{font-size:11px;color:var(--muted);background:var(--soft);border-radius:6px;padding:2px 7px;margin-right:8px;font-weight:500}
+.conn-st{font-size:12.5px;color:var(--muted)}
+.conn-st.bad{color:var(--r-kritik)}
+.conn-url{font-size:12.5px;color:var(--faint);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.conn-note{margin:8px 0 0 34px;font-size:12.5px;color:var(--muted);line-height:1.55}
+.row-action.show{opacity:1}
+.model-list{margin:10px 0 0 22px;display:flex;flex-direction:column}
+.model-row{display:flex;align-items:center;gap:10px;height:34px;padding:0 12px;border-radius:9px;font-size:13.5px;color:var(--ink-2);text-align:left;transition:background var(--t)}
+.model-row:hover{background:var(--hover)}
+.model-row.on{background:var(--sel);color:var(--ink);font-weight:600}
+.radio{width:14px;height:14px;border-radius:50%;border:1.5px solid #C9C8C3;flex-shrink:0;transition:border-color var(--t),box-shadow var(--t)}
+.model-row.on .radio{border-color:var(--ink);box-shadow:inset 0 0 0 3px #fff;background:var(--ink)}
+.in-use-tag{margin-left:auto;font-size:11.5px;color:var(--faint);font-weight:500}
+.inp{height:36px;padding:0 12px;border-radius:9px;border:0;background:var(--soft);font-size:13.5px;width:100%;transition:background var(--t),box-shadow var(--t)}
+.inp:hover{background:var(--soft-2)}
+.inp:focus{outline:none;background:#fff;box-shadow:0 0 0 1px var(--line),0 0 0 3px var(--focus)}
+.conn-form{display:flex;gap:10px;margin:12px 0 0 34px}
+.conn-form.grid{display:grid;grid-template-columns:1fr 1fr;gap:12px 14px}
+.conn-form label{display:flex;flex-direction:column;gap:6px;font-size:12px;color:var(--faint);font-weight:600}
+.conn-form-actions{grid-column:1/-1;display:flex;gap:10px}
+.btn.danger{color:var(--r-kritik)}
+.manual{display:flex;gap:10px;margin:12px 0 0 34px}
+#addConn{padding-top:18px;border-top:1px solid var(--line)}
+#addConn .conn-form{margin-left:0}
+.row-action.show:hover{color:var(--ink-2)}

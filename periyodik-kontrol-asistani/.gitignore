@@ -7,3 +7,5 @@ data/app.db
 .env
 .pytest_cache/
 data/skills/
+data/model_ayarlari.json
+data/*.tmp
