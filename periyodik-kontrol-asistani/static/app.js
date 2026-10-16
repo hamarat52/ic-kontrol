@@ -11,9 +11,10 @@ const HAT_ADI = { "1": "1 — Operasyonel yönetim", "2": "2 — Risk / uyum", "
 
 const S = {
   docs: [], sets: [], lib: [], health: null, meta: null,
-  route: { name: "home" }, set: null, gen: null,
+  route: { name: "home" }, set: null, poll: null,
   filter: "all", q: "", selectedId: null, chatBusy: false, fresh: new Set(),
 };
+const isGen = (s) => s && s.durum === "uretiliyor";
 
 /* ---------------------------------------------------------------- yardımcılar */
 async function api(path, opts = {}) {
@@ -88,11 +89,11 @@ async function route() {
     if (S.sets.length) { location.replace("#/set/" + S.sets[0].id); return; }
   }
   if (r.name === "set") {
-    if (S.gen && S.gen.set.id === r.id) S.set = S.gen.set;
-    else if (!S.set || S.set.id !== r.id || changed) {
+    if (!S.set || S.set.id !== r.id || changed) {
       try { S.set = await api("/api/sets/" + r.id); }
       catch { toast("Kontrol seti bulunamadı", true); location.replace("#/"); return; }
     }
+    if (isGen(S.set)) startPoll(S.set.id);
   }
   renderSidebar();
   renderView();
@@ -111,8 +112,8 @@ function renderSidebar() {
   const list = $("#setList");
   if (!S.sets.length) { list.innerHTML = `<div class="sec-empty">Henüz set yok</div>`; return; }
   list.innerHTML = S.sets.map((s) => {
-    const generating = S.gen && S.gen.set.id === s.id;
-    const title = (generating ? S.gen.set.baslik : s.baslik) || "Yeni kontrol seti";
+    const generating = isGen(s);
+    const title = s.baslik || "Yeni kontrol seti";
     return `<button class="nav-item${r.name === "set" && r.id === s.id ? " active" : ""}" data-set="${s.id}">
       <span class="ico">${setIco(title)}</span><span class="label">${esc(title)}</span>
       ${generating ? `<span class="gen-tag">üretiliyor</span>` : `<span class="count">${s.toplam || ""}</span>`}
@@ -157,10 +158,11 @@ function viewHome() {
 /* --- belgeler */
 function viewDocs() {
   setTop(`<b>Belgeler</b>`);
-  const busy = !!S.gen;
+  const busy = S.sets.some(isGen);
+  const usable = S.docs.filter((d) => !d.uyari || d.char_count > 0);
   $("#view").innerHTML = `
     <h1>Belgeler</h1>
-    <p class="lead">Kontrol çıkarılacak süreç, prosedür ve politika belgelerini ekle. Yeni kontrol seti, burada listelenen tüm belgelerden üretilir.</p>
+    <p class="lead">Kontrol çıkarılacak süreç, prosedür ve politika belgelerini ekle. Yeni kontrol seti, burada listelenen tüm belgelerden üretilir; uzun belgeler bölümlere ayrılıp tek tek okunur.</p>
     <div class="drop" id="drop" tabindex="0">
       <div class="big">📄</div>
       <div><strong>Belgeleri sürükle bırak</strong> ya da seçmek için tıkla</div>
@@ -168,15 +170,16 @@ function viewDocs() {
     </div>
     <div class="doc-list">
       ${S.docs.map((d) => `<div class="doc-row">
-          <span class="ico">📄</span>
+          <span class="ico">${d.uyari && !d.char_count ? "⚠️" : "📄"}</span>
           <div><div class="title">${esc(d.filename)}</div>
-            <div class="meta">${(d.char_count || 0).toLocaleString("tr-TR")} karakter<span class="sep">·</span>${fmtDate(d.uploaded_at, true)}</div></div>
+            <div class="meta">${(d.char_count || 0).toLocaleString("tr-TR")} karakter<span class="sep">·</span>${fmtDate(d.uploaded_at, true)}</div>
+            ${d.uyari ? `<div class="warn">${esc(d.uyari)}</div>` : ""}</div>
           <button class="row-action" data-act="del-doc" data-id="${d.id}">Kaldır</button>
         </div>`).join("")}
     </div>
     <div class="cta">
-      <button class="btn btn-ink" data-act="generate" ${!S.docs.length || busy ? "disabled" : ""}>Periyodik kontrolleri çıkart</button>
-      <span class="hint">${busy ? "Bir set şu an üretiliyor." : S.docs.length ? `${S.docs.length} belge kullanılacak · yerel modelde birkaç dakika sürebilir` : "Önce en az bir belge ekle."}</span>
+      <button class="btn btn-ink" data-act="generate" ${!usable.length || busy ? "disabled" : ""}>Periyodik kontrolleri çıkart</button>
+      <span class="hint">${busy ? "Bir set şu an üretiliyor." : usable.length ? `${usable.length} belge kullanılacak · yerel modelde belge uzunluğuna göre dakikalar sürebilir, sayfayı kapatsan da devam eder` : "Önce metin içeren en az bir belge ekle."}</span>
     </div>`;
   const drop = $("#drop");
   drop.onclick = () => $("#fileInput").click();
@@ -215,7 +218,7 @@ function visibleControls() {
 
 function viewSet() {
   const s = S.set;
-  const generating = S.gen && S.gen.set.id === s.id;
+  const generating = isGen(s);
   const exportable = !generating && s.controls.some((c) => c.status !== "red");
   setTop(
     `Kontrol Setleri <span>/</span> <b>${esc(s.baslik || "Yeni kontrol seti")}</b>`,
@@ -228,22 +231,36 @@ function viewSet() {
   renderSetHead(); renderSetBody(); renderGaps(); updateAskPlaceholder();
 }
 
+function progressText(s) {
+  const p = s.progress || {}, n = s.controls.length;
+  if (p.asama === "ozet") return "Başlık ve özet yazılıyor…";
+  if (!p.toplam) return "Belgeler hazırlanıyor…";
+  const where = p.belge ? ` · ${esc(p.belge)}${p.bolum ? " — " + esc(p.bolum) : ""}` : "";
+  return `Bölüm ${Math.min((p.i || 0) + 1, p.toplam)}/${p.toplam}${where}${n ? ` · ${n} kontrol` : ""}`;
+}
+
 function renderSetHead() {
   const s = S.set, el = $("#setHead"); if (!el) return;
-  const generating = S.gen && S.gen.set.id === s.id;
+  const generating = isGen(s);
   const n = s.controls.length;
   const belge = (s.belge_adlari || []).length;
+  const ist = s.istatistik || {};
   let status = "";
-  if (generating) status = `<div class="status-line"><span class="orb"></span><span class="thinking"><span>${n ? `${n} kontrol hazır, devam ediyor…` : s.baslik ? "Kontroller yazılıyor…" : "Belgeler okunuyor…"}</span></span></div>`;
-  else if (s.hata && (s.durum === "hata" || !n)) status = `<div class="status-line error">${esc(s.hata)}</div>`;
-  else if (s.hata) status = `<div class="status-line">${esc(s.hata)}</div>`;
+  if (generating) status = `<div class="status-line"><span class="orb"></span><span class="thinking"><span>${progressText(s)}</span></span>
+      <button class="pill-btn" data-act="cancel" style="height:26px;margin-left:4px">Durdur</button></div>`;
+  else if (s.hata) status = `<div class="status-line${s.durum === "hata" ? " error" : ""}">${esc(s.hata)}</div>`;
+  const notes = [];
+  if (!generating && ist.tekrar) notes.push(`${ist.tekrar} tekrar ayıklandı`);
+  if (ist.dogrulanamayan) notes.push(`${ist.dogrulanamayan} alıntı belgede bulunamadı`);
   el.innerHTML = `
-    <h1 class="${s.baslik ? "" : "placeholder"}">${esc(s.baslik || (generating ? "Kontrol seti oluşturuluyor…" : "Adsız kontrol seti"))}</h1>
+    <h1>${esc(s.baslik || "Adsız kontrol seti")}</h1>
     <div class="source">
-      <span>📄 ${belge} belge</span><span class="sep">·</span><span>${fmtDate(s.created_at)}</span>
+      <span>📄 ${belge} belge</span>${ist.bolum ? `<span class="sep">·</span><span>${ist.bolum} bölüm</span>` : ""}
+      <span class="sep">·</span><span>${fmtDate(s.created_at)}</span>
       <span class="sep">·</span><span>${n} kontrol</span><span class="sep">·</span><span>${esc(s.model || "")}</span>
     </div>
-    ${s.ozet ? `<p class="lead">${esc(s.ozet)}</p>` : generating ? `<p class="lead muted">Kontroller hazırlandıkça aşağıda listelenecek. Bu sırada başka sayfalara geçebilirsin.</p>` : `<div style="height:22px"></div>`}
+    ${notes.length ? `<div class="notes">${notes.map(esc).join(" · ")}</div>` : ""}
+    ${s.ozet ? `<p class="lead">${esc(s.ozet)}</p>` : generating ? `<p class="lead muted">Belgeler bölüm bölüm okunuyor; kontroller hazırlandıkça aşağıya eklenecek. Sayfayı kapatsan da üretim devam eder.</p>` : `<div style="height:22px"></div>`}
     ${status}`;
 }
 
@@ -290,46 +307,59 @@ function renderGaps() {
   el.innerHTML = g.length ? `<div class="gaps"><h2>Tespit edilen boşluklar</h2><ul>${g.map((x) => `<li>${esc(x)}</li>`).join("")}</ul></div>` : "";
 }
 
-/* --- üretim (akışlı) */
+/* --- üretim (arka planda; yoklama ile izlenir) */
 async function generate() {
-  if (S.gen) return;
-  let res;
-  try { res = await fetch("/api/sets", { method: "POST" }); }
-  catch (e) { toast("Sunucuya ulaşılamadı", true); return; }
-  if (!res.ok) { let m = res.status; try { m = (await res.json()).detail; } catch {} toast(m, true); return; }
-  const reader = res.body.getReader(); const dec = new TextDecoder();
-  let buf = "";
-  const handle = (ev) => {
-    if (ev.event === "set") {
-      S.gen = { set: { ...ev.set, controls: [], messages: [], bosluklar: [] } };
-      S.sets.unshift({ id: ev.set.id, baslik: "", toplam: 0, kabul: 0, red: 0, created_at: ev.set.created_at });
-      go("#/set/" + ev.set.id);
-      return;
-    }
-    if (!S.gen) return;
-    const g = S.gen.set, viewing = S.route.name === "set" && S.route.id === g.id;
-    if (ev.event === "meta") { g.baslik = ev.baslik; g.ozet = ev.ozet; renderSidebar(); if (viewing) { renderSetHead(); $("#crumb b") && ($("#crumb b").textContent = g.baslik); } }
-    else if (ev.event === "control") { g.controls.push(ev.control); S.fresh.add(ev.control.id); const it = S.sets.find((x) => x.id === g.id); if (it) it.toplam = g.controls.length; if (viewing) { renderSetHead(); renderSetBody(); } }
-    else if (ev.event === "gap") { g.bosluklar.push(ev.metin); if (viewing) renderGaps(); }
-    else if (ev.event === "error") { g.hata = ev.error; if (viewing) renderSetHead(); }
-    else if (ev.event === "done") { Object.assign(g, ev.set, { controls: g.controls, messages: g.messages }); }
-  };
-  try {
-    while (true) {
-      const { done, value } = await reader.read();
-      if (done) break;
-      buf += dec.decode(value, { stream: true });
-      let i;
-      while ((i = buf.indexOf("\n")) >= 0) {
-        const line = buf.slice(0, i).trim(); buf = buf.slice(i + 1);
-        if (line) { try { handle(JSON.parse(line)); } catch (e) { console.error(e); } }
-      }
-    }
-  } catch (e) { if (S.gen) S.gen.set.hata = "Bağlantı koptu: " + e.message; }
-  const g = S.gen && S.gen.set; S.gen = null;
+  if (S.sets.some(isGen)) { toast("Bir set zaten üretiliyor"); return; }
+  let s;
+  try { s = await api("/api/sets", { method: "POST" }); }
+  catch (e) { toast(e.message, true); return; }
+  s.controls = []; s.messages = [];
+  S.set = s;
   await refreshSets();
-  if (g && S.route.name === "set" && S.route.id === g.id) { S.set = g; viewSet(); }
-  if (g) toast(g.controls.length ? `${g.controls.length} kontrol hazır` : "Kontrol üretilemedi", !g.controls.length);
+  go("#/set/" + s.id);
+  startPoll(s.id);
+}
+
+function startPoll(id) {
+  if (S.poll && S.poll.id === id) return;
+  stopPoll();
+  const known = S.set && S.set.id === id ? S.set.controls : [];
+  S.poll = { id, lastId: known.length ? Math.max(...known.map((c) => c.id)) : 0, timer: null };
+  pollTick();
+}
+function stopPoll() { if (S.poll) clearTimeout(S.poll.timer); S.poll = null; }
+
+async function pollTick() {
+  const p = S.poll; if (!p) return;
+  let r;
+  try { r = await api(`/api/sets/${p.id}/progress?after=${p.lastId}`); }
+  catch { p.timer = setTimeout(pollTick, 3000); return; }
+  if (S.poll !== p) return;
+  const item = S.sets.find((x) => x.id === p.id);
+  if (item) { item.baslik = r.baslik; item.durum = r.durum; item.toplam = r.toplam_kontrol; }
+  const viewing = S.route.name === "set" && S.route.id === p.id && S.set && S.set.id === p.id;
+  if (r.controls.length) p.lastId = Math.max(p.lastId, ...r.controls.map((c) => c.id));
+  if (viewing) {
+    const s = S.set;
+    const have = new Set(s.controls.map((c) => c.id));
+    r.controls.forEach((c) => { if (!have.has(c.id)) { s.controls.push(c); S.fresh.add(c.id); } });
+    const titleChanged = s.baslik !== r.baslik;
+    ["baslik", "ozet", "bosluklar", "progress", "istatistik", "durum", "hata"].forEach((k) => (s[k] = r[k]));
+    renderSetHead();
+    if (r.controls.length) renderSetBody();
+    renderGaps();
+    if (titleChanged && $("#crumb b")) $("#crumb b").textContent = s.baslik;
+  }
+  renderSidebar();
+  if (r.durum === "uretiliyor") { p.timer = setTimeout(pollTick, 1200); return; }
+
+  // bitti
+  stopPoll();
+  await refreshSets();
+  if (viewing) { S.set = await api("/api/sets/" + p.id); viewSet(); }
+  const n = r.toplam_kontrol;
+  if (r.durum === "iptal") toast(`Üretim durduruldu · ${n} kontrol`);
+  else toast(n ? `${n} kontrol hazır` : "Kontrol üretilemedi", !n);
 }
 
 /* --- kararlar ve düzenleme */
@@ -384,6 +414,19 @@ function opts(list, val) {
   return all.map((o) => `<option ${o === val ? "selected" : ""}>${esc(o)}</option>`).join("");
 }
 
+function kaynakBlock(c) {
+  if (!c.kaynak && !c.kaynak_belge) return "";
+  const where = c.kaynak_belge ? `<div class="src">📄 ${esc(c.kaynak_belge)}${c.kaynak_bolum ? ` — ${esc(c.kaynak_bolum)}` : ""}</div>` : "";
+  let quote = "";
+  if (c.kaynak) {
+    const v = c.kaynak_dogrulandi;
+    quote = `<div class="quote${v === 0 ? " unverified" : ""}">“${esc(c.kaynak)}”</div>`
+      + (v === 0 ? `<div class="verify bad">Bu alıntı belgede bulunamadı; model uydurmuş olabilir. Kaynağı kontrol et.</div>`
+        : v === 1 ? `<div class="verify ok">Alıntı belgede doğrulandı</div>` : "");
+  }
+  return `<div class="blk"><h4>Kaynak</h4>${where}${quote}</div>`;
+}
+
 function renderPanel(c) {
   const m = S.meta || { kategoriler: KAT_ORDER, sikliklar: [], riskler: [], eforlar: [] };
   $("#panel").innerHTML = `
@@ -399,7 +442,7 @@ function renderPanel(c) {
         <dt>Hat</dt><dd><select data-field="hat">${["1", "2", "3"].map((h) => `<option value="${h}" ${String(c.hat) === h ? "selected" : ""}>${HAT_ADI[h]}</option>`).join("")}</select></dd>
       </dl>
       <div class="blk"><h4>Gerekçe</h4><textarea class="auto" data-field="gerekce" rows="1" placeholder="Gerekçe ekle">${esc(c.gerekce)}</textarea></div>
-      ${c.kaynak ? `<div class="blk"><h4>Kaynak</h4><div class="quote">“${esc(c.kaynak)}”</div></div>` : ""}
+      ${kaynakBlock(c)}
       <div class="blk"><h4>Dayanak</h4><textarea class="auto" data-field="dayanak" rows="1" placeholder="Mevzuat / politika maddesi ekle">${esc(c.dayanak)}</textarea></div>
       <div class="blk"><h4>Geçmiş</h4><ul class="hist" id="hist"><li><time></time>Yükleniyor…</li></ul></div>
     </div>
@@ -432,7 +475,7 @@ function updateAskPlaceholder() {
 }
 function openChat() {
   if (S.route.name !== "set" || !S.set) return;
-  if (S.gen && S.gen.set.id === S.set.id) { toast("Üretim bitince sohbet açılır"); return; }
+  if (isGen(S.set)) { toast("Üretim bitince sohbet açılır"); return; }
   if (!S.set.controls.length) return;
   $("#ask").classList.add("open"); renderChat();
   setTimeout(() => $("#chatInput").focus(), 60);
@@ -585,6 +628,11 @@ document.addEventListener("click", async (e) => {
   }
   if (a === "close-panel") return closePanel();
   if (a === "generate") return generate();
+  if (a === "cancel") {
+    act.disabled = true; act.textContent = "Durduruluyor…";
+    try { await api(`/api/sets/${S.set.id}/cancel`, { method: "POST" }); } catch (err) { toast(err.message, true); }
+    return;
+  }
   if (a === "to-docs") return go("#/belgeler");
   if (a === "del-doc") {
     try { await api("/api/documents/" + act.dataset.id, { method: "DELETE" }); S.docs = await api("/api/documents"); renderSidebar(); viewDocs(); }
@@ -656,5 +704,7 @@ window.addEventListener("hashchange", route);
   api("/api/health").then((h) => { S.health = h; renderHealth(); }).catch(() => renderHealth());
   try { S.meta = await api("/api/meta"); } catch {}
   try { await loadBase(); } catch (e) { toast("Sunucuya ulaşılamadı", true); }
+  const running = S.sets.find(isGen);
+  if (running) startPoll(running.id);   // sayfa yenilendiyse üretimi izlemeye devam et
   route();
 })();

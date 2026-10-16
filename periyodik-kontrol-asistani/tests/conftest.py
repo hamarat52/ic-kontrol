@@ -59,5 +59,22 @@ def read_ndjson(resp) -> list[dict]:
     return [json.loads(line) for line in resp.text.splitlines() if line.strip()]
 
 
+def wait_set(client, set_id, timeout=15.0) -> dict:
+    """Arka plan üretiminin bitmesini bekler, tam seti döner."""
+    import time
+    end = time.time() + timeout
+    while time.time() < end:
+        s = client.get(f"/api/sets/{set_id}/progress?after=999999").json()
+        if s["durum"] != "uretiliyor":
+            from app import jobs
+            for _ in range(50):  # iş parçacığının tamamen çıkmasını bekle
+                if not jobs.is_running():
+                    break
+                time.sleep(0.02)
+            return client.get(f"/api/sets/{set_id}").json()
+        time.sleep(0.05)
+    raise AssertionError("üretim zamanında bitmedi")
+
+
 def jsonl(*objs) -> str:
     return "\n".join(json.dumps(o, ensure_ascii=False) for o in objs) + "\n"

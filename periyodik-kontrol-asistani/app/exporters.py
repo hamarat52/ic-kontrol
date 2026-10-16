@@ -95,6 +95,13 @@ def build_word(control_set: dict, controls: list[dict]) -> BytesIO:
                 d = row[0].add_paragraph().add_run(f"Dayanak: {c['dayanak']}")
                 d.font.size = Pt(8.5)
                 d.font.color.rgb = MUTED
+            if c.get("kaynak_belge"):
+                src = f"Kaynak: {c['kaynak_belge']} · {c.get('kaynak_bolum') or ''}".rstrip(" ·")
+                if c.get("kaynak_dogrulandi") == 0:
+                    src += " (alıntı belgede bulunamadı)"
+                k = row[0].add_paragraph().add_run(src)
+                k.font.size = Pt(8.5)
+                k.font.color.rgb = MUTED
             for i, val in enumerate([c.get("siklik"), c.get("risk"), c.get("efor"), c.get("hat"), _durum(c)], start=1):
                 row[i].text = str(val or "")
         for row in table.rows:
@@ -122,9 +129,16 @@ def build_word(control_set: dict, controls: list[dict]) -> BytesIO:
 EXCEL_COLS = [
     ("Kontrol", "kontrol_adi", 48), ("Kategori", "kategori", 20), ("Hat", "hat", 6),
     ("Sıklık", "siklik", 16), ("Risk", "risk", 10), ("Efor", "efor", 10),
-    ("Gerekçe", "gerekce", 60), ("Dayanak", "dayanak", 30), ("Kaynak alıntı", "kaynak", 50),
+    ("Gerekçe", "gerekce", 60), ("Dayanak", "dayanak", 30),
+    ("Kaynak belge", "kaynak_belge", 28), ("Kaynak bölüm", "kaynak_bolum", 28),
+    ("Kaynak alıntı", "kaynak", 50), ("Alıntı doğrulandı", "_dogrulama", 14),
     ("Durum", None, 12),
 ]
+
+
+def _dogrulama(c):
+    v = c.get("kaynak_dogrulandi")
+    return "—" if v is None else ("Evet" if v else "Hayır — belgede bulunamadı")
 
 
 def build_excel(control_set: dict, controls: list[dict]) -> BytesIO:
@@ -143,7 +157,15 @@ def build_excel(control_set: dict, controls: list[dict]) -> BytesIO:
 
     for kategori, items in _grouped(controls):
         for c in items:
-            ws.append([(_durum(c) if key is None else (c.get(key) or "")) for _, key, _ in EXCEL_COLS])
+            row = []
+            for _, key, _ in EXCEL_COLS:
+                if key is None:
+                    row.append(_durum(c))
+                elif key == "_dogrulama":
+                    row.append(_dogrulama(c))
+                else:
+                    row.append(c.get(key) or "")
+            ws.append(row)
 
     for i, (_, _, width) in enumerate(EXCEL_COLS, start=1):
         ws.column_dimensions[get_column_letter(i)].width = width

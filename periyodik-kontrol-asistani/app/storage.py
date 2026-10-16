@@ -85,13 +85,16 @@ CREATE INDEX IF NOT EXISTS idx_messages_set ON set_messages(set_id);
 
 # Eski veritabanlarına sonradan eklenen sütunlar
 MIGRATIONS = {
-    "documents": {"char_count": "INTEGER DEFAULT 0"},
-    "suggestions": {"dayanak": "TEXT", "kaynak": "TEXT"},
+    "documents": {"char_count": "INTEGER DEFAULT 0", "uyari": "TEXT"},
+    "suggestions": {"dayanak": "TEXT", "kaynak": "TEXT", "kaynak_belge": "TEXT",
+                    "kaynak_bolum": "TEXT", "kaynak_dogrulandi": "INTEGER"},
+    "control_sets": {"progress": "TEXT", "istatistik": "TEXT", "iptal": "INTEGER DEFAULT 0"},
 }
 
 
 def get_conn():
-    conn = sqlite3.connect(config.DB_PATH)
+    # Üretim arka planda ayrı bir iş parçacığında yazar; kısa kilitlerde beklesin.
+    conn = sqlite3.connect(config.DB_PATH, timeout=15)
     conn.row_factory = sqlite3.Row
     return conn
 
@@ -99,6 +102,7 @@ def get_conn():
 def init_db():
     conn = get_conn()
     try:
+        conn.execute("PRAGMA journal_mode=WAL")
         conn.executescript(SCHEMA)
         for table, cols in MIGRATIONS.items():
             existing = {r["name"] for r in conn.execute(f"PRAGMA table_info({table})")}

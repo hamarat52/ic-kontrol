@@ -1,0 +1,57 @@
+ÖRNEK BANKA A.Ş.
+ÖDEME VE FON TRANSFERİ İŞLEMLERİ UYGULAMA ESASLARI (SENTETİK TEST BELGESİ)
+Bu belge test amaçlı uydurulmuştur; gerçek bir kuruma ait değildir.
+
+1. Amaç
+Bu uygulama esasları, şube ve dijital kanallardan gerçekleştirilen EFT, havale, FAST ve SWIFT
+işlemlerinin güvenli, mevzuata uygun ve izlenebilir şekilde yürütülmesine ilişkin kuralları belirler.
+
+2. Kapsam ve Tanımlar
+2.1. Bu esaslar Genel Müdürlük Ödeme Sistemleri Müdürlüğü, Operasyon Merkezi ve tüm şubeleri kapsar.
+2.2. "Çift onay": bir işlemin bir personel tarafından girilip farklı bir yetkili tarafından onaylanmasıdır.
+2.3. "Mesai dışı işlem": 18:00-08:30 saatleri arasında veya resmi tatillerde başlatılan işlemdir.
+
+3. İşlem Girişi
+3.1. Şube personeli müşteri talimatını aldıktan sonra işlemi ödeme sistemine girer.
+3.2. Yazılı talimatlarda müşteri imzası, imza sirkülerindeki imza ile karşılaştırılır.
+3.3. Telefonla veya e-posta ile alınan talimatlar, müşterinin kayıtlı telefon numarası aranarak teyit edilmeden işleme alınmaz.
+3.4. Teyit görüşmesinin tarihi, saati ve teyidi yapan personel işlem kaydına not düşülür.
+
+4. Onay Yetkileri ve Limitler
+4.1. 250.000 TL'ye kadar olan işlemler şube operasyon yetkilisinin onayı ile gerçekleştirilir.
+4.2. 250.000 TL - 1.000.000 TL arası işlemler şube müdürü onayı gerektirir.
+4.3. 1.000.000 TL üzerindeki işlemler Operasyon Merkezi tarafından ikinci kez onaylanır.
+4.4. İşlemi giren personel aynı işlemi onaylayamaz; sistem bu kontrolü otomatik yapar.
+4.5. Yetki limitleri yılda bir kez gözden geçirilir ve Yönetim Kurulu onayına sunulur.
+
+5. Mesai Dışı ve Acil İşlemler
+5.1. Mesai dışı işlemler yalnızca Operasyon Merkezi nöbetçi yetkilisi tarafından onaylanabilir.
+5.2. Acil durumlarda şube müdürü telefonla onay verebilir; bu onay ertesi iş günü sisteme yazılı olarak girilir.
+5.3. Mesai dışı gerçekleştirilen tüm işlemler ertesi iş günü Operasyon Merkezi tarafından listelenir.
+
+6. Yurt Dışı Transferler (SWIFT)
+6.1. SWIFT mesajları iki farklı kullanıcı tarafından oluşturulur ve onaylanır.
+6.2. Alıcı banka ve alıcı adı, yaptırım listelerine karşı otomatik taranır.
+6.3. Yaptırım taramasında eşleşme çıkan işlemler Uyum Birimi onayı olmadan gönderilemez.
+6.4. Muhabir banka mutabakatları günlük olarak yapılır; açık kalemler beş iş günü içinde kapatılır.
+
+7. İade ve İptal
+7.1. Hatalı gönderilen işlemlerin iadesi için karşı bankaya talep yazısı gönderilir.
+7.2. İade talepleri ve sonuçları iade takip listesinde izlenir.
+7.3. Otuz günü aşan sonuçsuz iade talepleri bölge müdürlüğüne raporlanır.
+
+8. Şüpheli İşlemler
+8.1. Müşteri profiliyle uyumsuz, sık ve parçalı (bölünmüş) transferler şube tarafından Uyum Birimine bildirilir.
+8.2. Uyum Birimi değerlendirme sonucunu MASAK'a şüpheli işlem bildirimi olarak iletir.
+8.3. Şüpheli işlem bildirimi yapıldığı bilgisi müşteriye veya üçüncü kişilere hiçbir şekilde açıklanmaz.
+8.4. Şube personeli, bildirim sürecine ilişkin müşteri sorularını standart yanıt metniyle karşılar.
+
+9. Kayıtların Saklanması
+9.1. İşlem talimatları, teyit kayıtları ve onay kayıtları en az on yıl saklanır.
+9.2. Fiziksel talimatlar taranarak doküman yönetim sistemine yüklenir.
+9.3. Ödeme sistemine erişim ve işlem logları en az iki yıl çevrimiçi olarak tutulur.
+
+10. Mutabakat ve Raporlama
+10.1. EFT ve FAST hesapları gün sonunda TCMB kayıtlarıyla mutabakata tabi tutulur.
+10.2. Mutabakat farkları aynı gün Mali Kontrol Müdürlüğüne bildirilir.
+10.3. Aylık işlem hacmi ve iptal/iade istatistikleri üst yönetime raporlanır.

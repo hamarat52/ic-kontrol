@@ -19,25 +19,31 @@ EFORLAR = ["Düşük", "Orta", "Yüksek"]
 EDITABLE_FIELDS = ("kontrol_adi", "kategori", "hat", "siklik", "risk", "efor", "gerekce", "dayanak")
 
 SET_SYSTEM_PROMPT = f"""Sen bir bankanın iç kontrol biriminde periyodik kontrol tasarlayan \
-kıdemli bir uzmansın. Sana şirketin süreç/prosedür belgeleri ve birikmiş bilgi tabanı \
-(skill'ler) verilecek. Belgedeki süreçler için somut, test edilebilir periyodik kontroller öner.
+kıdemli bir uzmansın. Sana şirketin bir süreç/prosedür belgesinden TEK BİR BÖLÜM ve birikmiş \
+bilgi tabanı (skill'ler) verilecek. Yalnız bu bölümde anlatılan süreçler için somut, test \
+edilebilir periyodik kontroller öner. Bölüm bir başlığın ortasından başlayabilir.
 
 ÇIKTI BİÇİMİ — ÇOK ÖNEMLİ: JSON Lines. Her satır tek bir JSON objesi. Başka hiçbir metin, \
 açıklama, liste parantezi veya kod bloğu yazma.
 
-1) İlk satır (bir kez):
-{{"tip":"baslik","baslik":"<süreç adı, kısa>","ozet":"<2-3 cümlelik özet: neler incelendi, kontroller nerede yoğunlaşıyor>"}}
+Her kontrol için bir satır:
+{{"tip":"kontrol","kontrol_adi":"<kısa, eylem odaklı>","kategori":"<{' | '.join(KATEGORILER)}>","hat":"<1, 2 veya 3 — tek rakam>","siklik":"<{' | '.join(SIKLIKLAR)}>","risk":"<{' | '.join(RISKLER)}>","efor":"<{' | '.join(EFORLAR)}>","gerekce":"<neden gerekli, 1-2 cümle>","dayanak":"<mevzuat/politika maddesi ya da boş>","kaynak":"<bu bölümden kısa BİREBİR alıntı ya da boş>"}}
 
-2) Her kontrol için bir satır:
-{{"tip":"kontrol","kontrol_adi":"<kısa, eylem odaklı>","kategori":"<{' | '.join(KATEGORILER)}>","hat":"<1, 2 veya 3 — tek rakam>","siklik":"<{' | '.join(SIKLIKLAR)}>","risk":"<{' | '.join(RISKLER)}>","efor":"<{' | '.join(EFORLAR)}>","gerekce":"<neden gerekli, 1-2 cümle>","dayanak":"<mevzuat/politika maddesi ya da boş>","kaynak":"<belgeden kısa birebir alıntı ya da boş>"}}
-
-3) Belgede tespit ettiğin her boşluk/tutarsızlık için bir satır:
+Bölümde tespit ettiğin her boşluk/tutarsızlık için bir satır:
 {{"tip":"bosluk","metin":"<boşluğun tek cümlelik açıklaması>"}}
 
+Bölümde kontrol edilecek bir süreç yoksa (ör. yalnız amaç/kapsam/tanımlar) sadece şunu yaz:
+{{"tip":"yok"}}
+
 Kurallar: kategori, sıklık, risk ve efor değerlerini YALNIZ yukarıdaki listelerden seç. \
-Kaynak alıntısını uydurma; belgede yoksa boş bırak. AML / Şüpheli İşlem kontrollerinin \
-gerekçesine tipping-off (5549 m.4/2) riskini ekle. Bilgi tabanındaki "Öğrenilenler" \
-maddelerini uygula."""
+Kaynak alıntısını uydurma; bölümde kelimesi kelimesine geçmiyorsa boş bırak. Bölümde \
+dayanağı olmayan genel kontroller üretme. AML / Şüpheli İşlem kontrollerinin gerekçesine \
+tipping-off (5549 m.4/2) riskini ekle. Bilgi tabanındaki "Öğrenilenler" maddelerini uygula."""
+
+SUMMARY_SYSTEM_PROMPT = """Bir kontrol seti için kısa başlık ve özet yaz. SADECE şu JSON objesini \
+döndür, başka metin yazma:
+{"baslik":"<incelenen süreç(ler)in kısa adı, en fazla 6 kelime>","ozet":"<2-3 cümle: hangi \
+belgeler incelendi, kontroller nerede yoğunlaşıyor, öne çıkan boşluk varsa ne>"}"""
 
 CHAT_SYSTEM_PROMPT = """Sen bir bankanın iç kontrol biriminde, kullanıcının bir kontrol setine \
 veya tek bir kontrole verdiği serbest metin geri bildirimini uygulayan bir uzmansın.
@@ -175,6 +181,8 @@ def _parse_line(line: str):
 
 def _classify(obj: dict):
     tip = (obj.get("tip") or "").lower()
+    if tip == "yok":
+        return {"event": "empty"}
     if tip == "baslik" or ("baslik" in obj and "kontrol_adi" not in obj):
         return {"event": "meta", "baslik": obj.get("baslik") or "", "ozet": obj.get("ozet") or ""}
     if tip == "bosluk" or ("metin" in obj and "kontrol_adi" not in obj):
@@ -184,20 +192,29 @@ def _classify(obj: dict):
     return None
 
 
-def stream_control_set(document_text: str, skills_text: str) -> Iterator[dict]:
-    """Model çıktısını satır satır okuyup olay üretir:
-    {"event":"meta"|"control"|"gap"|"error", ...}. Asla exception fırlatmaz."""
+def stream_control_set(chunk_text: str, skills_text: str, context: dict | None = None,
+                       should_stop=None) -> Iterator[dict]:
+    """Bir bölüm için model çıktısını satır satır okuyup olay üretir:
+    {"event":"control"|"gap"|"meta"|"empty"|"error", ...}. Asla exception fırlatmaz.
+    `should_stop()` True dönerse akışı keser."""
+    ctx = context or {}
+    where = ""
+    if ctx:
+        where = (f"BELGE: {ctx.get('belge', '')}\nBÖLÜM: {ctx.get('bolum', '')} "
+                 f"({ctx.get('index', 0) + 1}/{ctx.get('toplam', 1)})\n")
     messages = [
         {"role": "system", "content": SET_SYSTEM_PROMPT},
+        # Sabit kısım (bilgi tabanı) önce: yerel sunucular ortak öneki önbellekleyebilir.
         {"role": "user", "content": (
             f"BİLGİ TABANI (skill'ler):\n{skills_text}\n\n"
-            f"ŞİRKET BELGELERİ (ilk ~14000 karakter):\n{document_text[:14000]}\n\n"
+            f"{where}BÖLÜM METNİ:\n{chunk_text}\n\n"
             "Şimdi JSON Lines çıktısını üret."
         )},
     ]
     payload = {"model": config.LLM_MODEL, "messages": messages, "temperature": 0.2, "stream": True}
     buffer, full = "", ""
     emitted = 0
+    stop = should_stop or (lambda: False)
     try:
         with httpx.Client(timeout=httpx.Timeout(config.LLM_TIMEOUT_S, connect=10)) as client:
             with client.stream("POST", _url(), json=payload, headers=_headers()) as resp:
@@ -206,6 +223,8 @@ def stream_control_set(document_text: str, skills_text: str) -> Iterator[dict]:
                     yield {"event": "error", "error": connection_error_text(f"HTTP {resp.status_code}: {resp.text[:200]}")}
                     return
                 for raw in resp.iter_lines():
+                    if stop():
+                        return
                     if not raw or not raw.startswith("data:"):
                         continue
                     data = raw[5:].strip()
@@ -234,7 +253,7 @@ def stream_control_set(document_text: str, skills_text: str) -> Iterator[dict]:
         emitted += 1
         yield ev
 
-    if emitted == 0:
+    if emitted == 0 and full.strip():
         # Model JSON Lines yerine tek bir JSON (liste/obje) döndürdüyse kurtarmayı dene.
         try:
             parsed = _extract_json_payload(full)
@@ -247,7 +266,29 @@ def stream_control_set(document_text: str, skills_text: str) -> Iterator[dict]:
         except Exception:
             pass
     if emitted == 0:
-        yield {"event": "error", "error": "Model geçerli bir kontrol listesi döndürmedi. Tekrar deneyin ya da daha güçlü bir model seçin."}
+        yield {"event": "error", "error": "Model bu bölüm için geçerli bir çıktı vermedi (biçim hatası)."}
+
+
+def summarize_set(doc_names: list[str], headings: list[str], titles: list[str], gaps: list[str]) -> dict | None:
+    """Set başlığı ve özeti; başarısızlıkta None (çağıran geçici başlığı korur)."""
+    user = (
+        f"BELGELER: {', '.join(doc_names)}\n"
+        f"BÖLÜMLER: {'; '.join(headings[:40])}\n"
+        f"KONTROLLER ({len(titles)}): {'; '.join(titles[:60])}\n"
+        f"BOŞLUKLAR: {'; '.join(gaps[:10]) or 'yok'}"
+    )
+    result = call_chat_completion(
+        [{"role": "system", "content": SUMMARY_SYSTEM_PROMPT}, {"role": "user", "content": user}]
+    )
+    if not result["ok"]:
+        return None
+    try:
+        parsed = _extract_json_payload(result["content"])
+        baslik = str(parsed.get("baslik") or "").strip().strip('"')[:80]
+        ozet = str(parsed.get("ozet") or "").strip()
+        return {"baslik": baslik, "ozet": ozet} if baslik else None
+    except Exception:
+        return None
 
 
 # ---------------------------------------------------------------- sohbet / geri bildirim

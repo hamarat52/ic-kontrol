@@ -6,7 +6,7 @@ from docx import Document
 from openpyxl import load_workbook
 
 from app import llm
-from conftest import jsonl, read_ndjson
+from conftest import jsonl, wait_set
 
 DOC = ("KREDİ TAHSİS PROSEDÜRÜ\n4.1. Her kredi başvurusu, tahsis onayından önce Risk Analizi Biriminin "
        "değerlendirmesinden geçer.\n5.3. Aynı kullanıcı hem tahsis teklifini hazırlayıp hem onaylayamaz.\n")
@@ -22,8 +22,9 @@ SET_OUTPUT = jsonl(
 )
 
 
-def set_responder(text):
-    return lambda messages, stream: text
+def set_responder(text, summary=None):
+    summary = summary or json.dumps({"baslik": "Kredi Tahsis", "ozet": "Tahsis süreci incelendi."}, ensure_ascii=False)
+    return lambda messages, stream: text if stream else summary
 
 
 # ------------------------------------------------------------------ birim
@@ -66,15 +67,16 @@ def test_stream_reports_model_failure(env):
 def _create_set(client, env):
     client.post("/api/documents", files={"file": ("prosedur.txt", DOC.encode(), "text/plain")})
     env.responder = set_responder(SET_OUTPUT)
-    events = read_ndjson(client.post("/api/sets"))
-    assert events[0]["event"] == "set" and events[-1]["event"] == "done"
-    return events
+    r = client.post("/api/sets")
+    assert r.status_code == 202 and r.json()["durum"] == "uretiliyor"
+    s = wait_set(client, r.json()["id"])
+    assert s["durum"] == "hazir"
+    return s
 
 
 def test_full_flow(client, env):
-    events = _create_set(client, env)
-    set_id = events[0]["set"]["id"]
-    s = client.get(f"/api/sets/{set_id}").json()
+    s = _create_set(client, env)
+    set_id = s["id"]
     assert s["baslik"] == "Kredi Tahsis" and s["durum"] == "hazir"
     assert len(s["controls"]) == 2 and s["bosluklar"] == ["Hızlı onay yolu tanımsız."]
 
@@ -93,7 +95,7 @@ def test_full_flow(client, env):
 
 
 def test_exports_are_valid(client, env):
-    set_id = _create_set(client, env)[0]["set"]["id"]
+    set_id = _create_set(client, env)["id"]
     w = client.get(f"/api/export/word?set_id={set_id}")
     assert w.status_code == 200
     doc = Document(io.BytesIO(w.content))
@@ -105,7 +107,7 @@ def test_exports_are_valid(client, env):
 
 
 def test_rejected_controls_not_exported(client, env):
-    set_id = _create_set(client, env)[0]["set"]["id"]
+    set_id = _create_set(client, env)["id"]
     ids = [c["id"] for c in client.get(f"/api/sets/{set_id}").json()["controls"]]
     client.post(f"/api/controls/{ids[0]}/decision", json={"karar": "red"})
     wb = load_workbook(io.BytesIO(client.get(f"/api/export/excel?set_id={set_id}").content))
@@ -113,7 +115,7 @@ def test_rejected_controls_not_exported(client, env):
 
 
 def test_chat_applies_changes_and_learns(client, env):
-    set_id = _create_set(client, env)[0]["set"]["id"]
+    set_id = _create_set(client, env)["id"]
     cid = client.get(f"/api/sets/{set_id}").json()["controls"][0]["id"]
     env.responder = lambda m, s: json.dumps({
         "yanit": "Sıklığı düşürdüm.",
@@ -137,7 +139,5 @@ def test_generation_without_documents_is_rejected(client, env):
 def test_generation_model_down_marks_set_failed(client, env):
     client.post("/api/documents", files={"file": ("p.txt", DOC.encode(), "text/plain")})
     env.status = 503
-    events = read_ndjson(client.post("/api/sets"))
-    assert any(e["event"] == "error" for e in events)
-    set_id = events[0]["set"]["id"]
-    assert client.get(f"/api/sets/{set_id}").json()["durum"] == "hata"
+    s = wait_set(client, client.post("/api/sets").json()["id"])
+    assert s["durum"] == "hata" and "işlenemedi" in s["hata"]

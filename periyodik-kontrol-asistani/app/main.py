@@ -8,10 +8,12 @@ from fastapi.responses import FileResponse, StreamingResponse
 from fastapi.staticfiles import StaticFiles
 from pydantic import BaseModel
 
-from . import config, documents, exporters, llm, skills, storage
+from . import config, documents, exporters, jobs, llm, skills, storage
 
 app = FastAPI(title="Periyodik Kontrol Asistanı")
 storage.init_db()
+skills.ensure_seed()
+jobs.recover_interrupted()
 
 STATIC_DIR = Path(__file__).resolve().parent.parent / "static"
 
@@ -40,6 +42,11 @@ def _load_set(conn, set_id: str) -> dict | None:
             s[key] = json.loads(s[key]) if s[key] else []
         except json.JSONDecodeError:
             s[key] = []
+    for key in ("progress", "istatistik"):
+        try:
+            s[key] = json.loads(s[key]) if s[key] else None
+        except json.JSONDecodeError:
+            s[key] = None
     return s
 
 
@@ -115,13 +122,13 @@ async def upload_document(file: UploadFile = File(...)):
         raise HTTPException(400, "Yalnız pdf, docx, txt ve md dosyaları kabul edilir.")
     dest = config.UPLOADS_DIR / f"{uuid.uuid4().hex}{suffix}"
     dest.write_bytes(await file.read())
-    text = documents.extract_text(dest)
+    text, warning = documents.extract(dest)
     with storage.db_session() as conn:
         cur = conn.execute(
-            "INSERT INTO documents (filename, stored_path, text_excerpt, char_count) VALUES (?,?,?,?)",
-            (name, str(dest), text[:2000], len(text)),
+            "INSERT INTO documents (filename, stored_path, text_excerpt, char_count, uyari) VALUES (?,?,?,?,?)",
+            (name, str(dest), text[:2000], len(text.strip()), warning),
         )
-        doc = _row(conn.execute("SELECT id, filename, char_count, uploaded_at FROM documents WHERE id=?",
+        doc = _row(conn.execute("SELECT id, filename, char_count, uyari, uploaded_at FROM documents WHERE id=?",
                                 (cur.lastrowid,)).fetchone())
     return doc
 
@@ -130,7 +137,7 @@ async def upload_document(file: UploadFile = File(...)):
 def list_documents():
     with storage.db_session() as conn:
         rows = conn.execute(
-            "SELECT id, filename, char_count, uploaded_at FROM documents ORDER BY id DESC"
+            "SELECT id, filename, char_count, uyari, uploaded_at FROM documents ORDER BY id DESC"
         ).fetchall()
     return [dict(r) for r in rows]
 
@@ -178,6 +185,8 @@ def get_set(set_id: str):
 
 @app.delete("/api/sets/{set_id}")
 def delete_set(set_id: str):
+    if jobs.is_running() == set_id:
+        raise HTTPException(409, "Bu set şu an üretiliyor; önce durdurun.")
     with storage.db_session() as conn:
         ids = [r["id"] for r in conn.execute("SELECT id FROM suggestions WHERE run_id = ?", (set_id,))]
         if ids:
@@ -189,89 +198,69 @@ def delete_set(set_id: str):
     return {"ok": True}
 
 
-@app.post("/api/sets")
+@app.post("/api/sets", status_code=202)
 def create_set():
-    """Yüklü belgelerden yeni kontrol seti üretir. Yanıt NDJSON akışıdır:
-    set → meta → control* → gap* → done | error."""
+    """Yüklü belgelerden yeni kontrol seti üretimini arka planda başlatır.
+    İlerleme: GET /api/sets/{id}/progress"""
+    if jobs.is_running():
+        raise HTTPException(409, "Şu an başka bir set üretiliyor. Bitmesini bekleyin ya da durdurun.")
     with storage.db_session() as conn:
-        docs = conn.execute("SELECT filename, stored_path FROM documents ORDER BY id").fetchall()
-    if not docs:
+        rows = conn.execute("SELECT filename, stored_path FROM documents ORDER BY id").fetchall()
+    if not rows:
         raise HTTPException(400, "Önce en az bir belge yükleyin.")
 
-    combined, names = "", []
-    for d in docs:
+    docs, skipped = [], []
+    for d in rows:
         p = Path(d["stored_path"])
-        if p.exists():
-            names.append(d["filename"])
-            combined += f"\n\n--- Belge: {d['filename']} ---\n{documents.extract_text(p)}"
+        text = documents.extract_text(p) if p.exists() else ""
+        if text.strip():
+            docs.append((d["filename"], text))
+        else:
+            skipped.append(d["filename"])
+    if not docs:
+        raise HTTPException(400, "Yüklü belgelerin hiçbirinden metin okunamadı.")
 
     set_id = uuid.uuid4().hex[:10]
+    names = [n for n, _ in docs]
+    provisional = jobs.pretty_title(names[0]) if len(names) == 1 else f"{len(names)} belge"
     with storage.db_session() as conn:
         conn.execute(
-            "INSERT INTO control_sets (id, baslik, belge_adlari, model, durum) VALUES (?,?,?,?, 'uretiliyor')",
-            (set_id, "", json.dumps(names, ensure_ascii=False), config.LLM_MODEL),
+            """INSERT INTO control_sets (id, baslik, belge_adlari, model, durum, hata)
+               VALUES (?,?,?,?, 'uretiliyor', ?)""",
+            (set_id, provisional, json.dumps(names, ensure_ascii=False), config.LLM_MODEL,
+             f"Metni okunamayan belgeler atlandı: {', '.join(skipped)}" if skipped else None),
         )
-    skills_text = skills.read_all_skills_text()
+    try:
+        jobs.start(set_id, docs)
+    except jobs.Busy:
+        with storage.db_session() as conn:
+            conn.execute("DELETE FROM control_sets WHERE id = ?", (set_id,))
+        raise HTTPException(409, "Şu an başka bir set üretiliyor.")
+    with storage.db_session() as conn:
+        return _load_set(conn, set_id)
 
-    def line(obj):
-        return json.dumps(obj, ensure_ascii=False) + "\n"
 
-    def gen():
-        gaps, count, finished = [], 0, False
-        try:
-            with storage.db_session() as conn:
-                yield line({"event": "set", "set": _load_set(conn, set_id)})
-            for ev in llm.stream_control_set(combined, skills_text):
-                kind = ev["event"]
-                if kind == "meta":
-                    with storage.db_session() as conn:
-                        conn.execute("UPDATE control_sets SET baslik = ?, ozet = ? WHERE id = ?",
-                                     (ev["baslik"], ev["ozet"], set_id))
-                    yield line(ev)
-                elif kind == "control":
-                    c = ev["control"]
-                    with storage.db_session() as conn:
-                        cur = conn.execute(
-                            """INSERT INTO suggestions (run_id, kontrol_adi, kategori, hat, siklik, risk,
-                                                         efor, gerekce, dayanak, kaynak)
-                               VALUES (?,?,?,?,?,?,?,?,?,?)""",
-                            (set_id, c["kontrol_adi"], c["kategori"], c["hat"], c["siklik"], c["risk"],
-                             c["efor"], c["gerekce"], c["dayanak"], c["kaynak"]),
-                        )
-                        row = dict(conn.execute("SELECT * FROM suggestions WHERE id = ?",
-                                                (cur.lastrowid,)).fetchone())
-                    row["edited"] = 0
-                    count += 1
-                    yield line({"event": "control", "control": row})
-                elif kind == "gap":
-                    if ev["metin"]:
-                        gaps.append(ev["metin"])
-                        yield line(ev)
-                elif kind == "error":
-                    with storage.db_session() as conn:
-                        conn.execute("UPDATE control_sets SET hata = ? WHERE id = ?", (ev["error"], set_id))
-                    yield line(ev)
-            with storage.db_session() as conn:
-                conn.execute(
-                    """UPDATE control_sets SET durum = ?, bosluklar = ?,
-                         baslik = CASE WHEN baslik IS NULL OR baslik = '' THEN ? ELSE baslik END
-                       WHERE id = ?""",
-                    ("hazir" if count else "hata", json.dumps(gaps, ensure_ascii=False),
-                     (Path(names[0]).stem if names else "Kontrol seti"), set_id),
-                )
-                final = _load_set(conn, set_id)
-            finished = True
-            yield line({"event": "done", "set": final, "count": count})
-        finally:
-            if not finished:  # istemci bağlantıyı kesti
-                with storage.db_session() as conn:
-                    conn.execute(
-                        "UPDATE control_sets SET durum = ?, bosluklar = ?, hata = COALESCE(hata, 'Üretim yarıda kesildi') WHERE id = ?",
-                        ("hazir" if count else "hata", json.dumps(gaps, ensure_ascii=False), set_id),
-                    )
+@app.get("/api/sets/{set_id}/progress")
+def set_progress(set_id: str, after: int = 0):
+    """Yoklama uç noktası: setin durumu + `after` id'sinden sonra eklenen kontroller."""
+    with storage.db_session() as conn:
+        s = _load_set(conn, set_id)
+        if not s:
+            raise HTTPException(404, "Kontrol seti bulunamadı.")
+        rows = conn.execute(
+            "SELECT *, 0 AS edited FROM suggestions WHERE run_id = ? AND id > ? ORDER BY id", (set_id, after)
+        ).fetchall()
+        s["controls"] = [dict(r) for r in rows]
+        s["toplam_kontrol"] = conn.execute(
+            "SELECT COUNT(*) FROM suggestions WHERE run_id = ?", (set_id,)).fetchone()[0]
+    return s
 
-    return StreamingResponse(gen(), media_type="application/x-ndjson",
-                             headers={"Cache-Control": "no-cache", "X-Accel-Buffering": "no"})
+
+@app.post("/api/sets/{set_id}/cancel")
+def cancel_set(set_id: str):
+    with storage.db_session() as conn:
+        cur = conn.execute("UPDATE control_sets SET iptal = 1 WHERE id = ? AND durum = 'uretiliyor'", (set_id,))
+    return {"ok": True, "cancelled": cur.rowcount > 0}
 
 
 class ChatIn(BaseModel):
