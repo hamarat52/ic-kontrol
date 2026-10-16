@@ -5,3 +5,4 @@ data/uploads/*
 data/app.db
 !data/uploads/.gitkeep
 .env
+.pytest_cache/
