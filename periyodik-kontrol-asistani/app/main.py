@@ -3,11 +3,11 @@ from pathlib import Path
 
 from fastapi import FastAPI, UploadFile, File, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
-from fastapi.responses import FileResponse
+from fastapi.responses import FileResponse, StreamingResponse
 from fastapi.staticfiles import StaticFiles
 from pydantic import BaseModel
 
-from . import config, documents, llm, skills, storage
+from . import config, documents, exporters, llm, skills, storage
 
 app = FastAPI(title="Periyodik Kontrol Asistanı")
 app.add_middleware(
@@ -287,3 +287,42 @@ def prompt_feedback(suggestion_id: int, body: PromptFeedbackIn):
         "lesson": lesson,
         "suggestion": dict(updated_row),
     }
+
+
+def _suggestions_for_export(run_id: str | None) -> list[dict]:
+    with storage.db_session() as conn:
+        if run_id:
+            rows = conn.execute(
+                "SELECT * FROM suggestions WHERE run_id = ? ORDER BY id ASC", (run_id,)
+            ).fetchall()
+        else:
+            rows = conn.execute("SELECT * FROM suggestions ORDER BY id ASC").fetchall()
+    return [dict(row) for row in rows]
+
+
+@app.get("/api/export/word")
+def export_word(run_id: str | None = None):
+    suggestions = _suggestions_for_export(run_id)
+    if not suggestions:
+        raise HTTPException(400, "Dışa aktarılacak öneri yok.")
+    buf = exporters.build_word(suggestions, run_id or "tumu")
+    filename = f"periyodik-kontroller-{run_id or 'tumu'}.docx"
+    return StreamingResponse(
+        buf,
+        media_type="application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+        headers={"Content-Disposition": f'attachment; filename="{filename}"'},
+    )
+
+
+@app.get("/api/export/excel")
+def export_excel(run_id: str | None = None):
+    suggestions = _suggestions_for_export(run_id)
+    if not suggestions:
+        raise HTTPException(400, "Dışa aktarılacak öneri yok.")
+    buf = exporters.build_excel(suggestions, run_id or "tumu")
+    filename = f"periyodik-kontroller-{run_id or 'tumu'}.xlsx"
+    return StreamingResponse(
+        buf,
+        media_type="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+        headers={"Content-Disposition": f'attachment; filename="{filename}"'},
+    )

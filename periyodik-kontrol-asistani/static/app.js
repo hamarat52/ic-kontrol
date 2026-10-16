@@ -1,14 +1,32 @@
 const docList = document.getElementById("docList");
 const fileInput = document.getElementById("fileInput");
-const uploadBtn = document.getElementById("uploadBtn");
+const dropZone = document.getElementById("dropZone");
 const generateBtn = document.getElementById("generateBtn");
 const generateStatus = document.getElementById("generateStatus");
 const tbody = document.querySelector("#suggestionsTable tbody");
+const emptyState = document.getElementById("emptyState");
 const skillsList = document.getElementById("skillsList");
+const toastContainer = document.getElementById("toastContainer");
+const llmDot = document.getElementById("llmDot");
+const llmStatusText = document.getElementById("llmStatusText");
+const exportWordBtn = document.getElementById("exportWordBtn");
+const exportExcelBtn = document.getElementById("exportExcelBtn");
+const steps = document.querySelectorAll(".step");
 
 const FIELD_ORDER = ["kontrol_adi", "kategori", "hat", "siklik", "risk", "efor", "gerekce"];
 let currentSuggestions = [];
+let currentRunId = null;
 
+// ---------- Toast ----------
+function showToast(message, type = "default") {
+  const el = document.createElement("div");
+  el.className = `toast ${type}`;
+  el.textContent = message;
+  toastContainer.appendChild(el);
+  setTimeout(() => el.remove(), 3000);
+}
+
+// ---------- fetch helper ----------
 async function fetchJSON(url, options) {
   const res = await fetch(url, options);
   if (!res.ok) {
@@ -18,46 +36,89 @@ async function fetchJSON(url, options) {
   return res.json();
 }
 
+function setActiveStep(n) {
+  steps.forEach((s) => s.classList.toggle("active", Number(s.dataset.step) <= n));
+}
+
+// ---------- health ----------
+async function checkHealth() {
+  try {
+    const h = await fetchJSON("/api/health");
+    llmDot.classList.add("ok");
+    llmStatusText.textContent = `Lokal model: ${h.llm_model} (${h.llm_base_url})`;
+  } catch (e) {
+    llmDot.classList.add("bad");
+    llmStatusText.textContent = "Sunucuya ulaşılamadı";
+  }
+}
+
+// ---------- documents ----------
+function docIconSvg() {
+  return `<svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8l-6-6Z"/><path d="M14 2v6h6"/></svg>`;
+}
+
 async function loadDocuments() {
   const docs = await fetchJSON("/api/documents");
   docList.innerHTML = "";
   docs.forEach((d) => {
     const li = document.createElement("li");
-    li.innerHTML = `<span>${d.filename}</span>
-      <button data-id="${d.id}" class="fb-btn del-doc">Sil</button>`;
+    li.className = "doc-item";
+    li.innerHTML = `
+      <span class="doc-name">${docIconSvg()} ${escapeHtml(d.filename)}</span>
+      <button data-id="${d.id}" class="btn btn-sm btn-ghost del-doc">Sil</button>`;
     docList.appendChild(li);
   });
   docList.querySelectorAll(".del-doc").forEach((btn) => {
     btn.onclick = async () => {
       await fetchJSON(`/api/documents/${btn.dataset.id}`, { method: "DELETE" });
+      showToast("Belge silindi");
       loadDocuments();
     };
   });
+  if (docs.length) setActiveStep(2);
 }
 
+// ---------- skills ----------
 async function loadSkills() {
   const skills = await fetchJSON("/api/skills");
   skillsList.innerHTML = "";
   skills.forEach((s) => {
-    const details = document.createElement("details");
-    details.innerHTML = `<summary>${s.name}</summary><pre class="skill">${escapeHtml(s.content)}</pre>`;
-    skillsList.appendChild(details);
+    const card = document.createElement("div");
+    card.className = "skill-card";
+    card.innerHTML = `
+      <div class="skill-summary">
+        <span>${escapeHtml(s.name)}</span>
+        <svg class="chevron" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg>
+      </div>
+      <div class="skill-body">${escapeHtml(s.content)}</div>`;
+    card.querySelector(".skill-summary").onclick = () => card.classList.toggle("open");
+    skillsList.appendChild(card);
   });
 }
 
 function escapeHtml(str) {
-  return (str || "").replace(/[&<>]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;" }[c]));
+  return (str || "").toString().replace(/[&<>]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;" }[c]));
 }
 
 function riskClass(risk) {
   if (!risk) return "";
-  return "risk-" + risk.toLowerCase().replace("ş", "s").replace("ı", "i").replace("ü", "u");
+  const norm = risk.toLowerCase().replace("ş", "s").replace("ı", "i").replace("ü", "u");
+  return "pill risk-" + norm;
 }
 
+// ---------- suggestions rendering ----------
 function renderSuggestions(suggestions) {
   currentSuggestions = suggestions;
   tbody.innerHTML = "";
-  suggestions.forEach((s) => tbody.appendChild(buildRow(s)));
+  emptyState.style.display = suggestions.length ? "none" : "block";
+  exportWordBtn.disabled = !suggestions.length;
+  exportExcelBtn.disabled = !suggestions.length;
+  suggestions.forEach((s, i) => {
+    const row = buildRow(s);
+    row.style.animationDelay = `${i * 40}ms`;
+    tbody.appendChild(row);
+  });
+  if (suggestions.length) setActiveStep(3);
 }
 
 function buildRow(s) {
@@ -74,19 +135,19 @@ function displayRowHtml(s) {
     <td data-field="kategori">${escapeHtml(s.kategori)}</td>
     <td data-field="hat"><span class="badge">${escapeHtml(s.hat) || "-"}</span></td>
     <td data-field="siklik">${escapeHtml(s.siklik)}</td>
-    <td data-field="risk" class="${riskClass(s.risk)}">${escapeHtml(s.risk)}</td>
+    <td data-field="risk"><span class="${riskClass(s.risk)}">${escapeHtml(s.risk)}</span></td>
     <td data-field="efor">${escapeHtml(s.efor)}</td>
     <td data-field="gerekce">${escapeHtml(s.gerekce)}</td>
     <td class="fb-cell">
       <div class="fb-row">
-        <button class="fb-btn" data-action="kabul">Kabul</button>
-        <button class="fb-btn" data-action="red">Red</button>
-        <button class="fb-btn" data-action="duzenle">Düzenle</button>
+        <button class="btn btn-sm btn-success" data-action="kabul">Kabul</button>
+        <button class="btn btn-sm btn-danger" data-action="red">Red</button>
+        <button class="btn btn-sm btn-ghost" data-action="duzenle">Düzenle</button>
       </div>
       <div class="status-note">${s.status && s.status !== "bekliyor" ? "Durum: " + escapeHtml(s.status) : ""}</div>
       <div class="prompt-row">
         <input type="text" class="prompt-input" placeholder="Bu kontrole feedback yaz (ör: ayda bir yeterli)..." />
-        <button class="fb-btn" data-action="prompt">Gönder</button>
+        <button class="btn btn-sm btn-ghost" data-action="prompt">Gönder</button>
       </div>
       <div class="lesson-note"></div>
     </td>`;
@@ -101,8 +162,8 @@ function editRowHtml(s) {
     ${inputs}
     <td class="fb-cell">
       <div class="fb-row">
-        <button class="fb-btn primary" data-action="kaydet">Kaydet</button>
-        <button class="fb-btn" data-action="iptal">İptal</button>
+        <button class="btn btn-sm btn-primary" data-action="kaydet">Kaydet</button>
+        <button class="btn btn-sm btn-ghost" data-action="iptal">İptal</button>
       </div>
     </td>`;
 }
@@ -115,15 +176,21 @@ function attachDisplayHandlers(tr, s) {
 
 async function handleAction(tr, s, action) {
   if (action === "kabul" || action === "red") {
-    await fetchJSON(`/api/suggestions/${s.id}/feedback`, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ karar: action }),
-    });
-    s.status = action;
-    tr.innerHTML = displayRowHtml(s);
-    attachDisplayHandlers(tr, s);
-    loadSkills();
+    try {
+      await fetchJSON(`/api/suggestions/${s.id}/feedback`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ karar: action }),
+      });
+      s.status = action;
+      tr.innerHTML = displayRowHtml(s);
+      attachDisplayHandlers(tr, s);
+      tr.classList.add(action === "kabul" ? "flash-success" : "flash-danger");
+      showToast(action === "kabul" ? "Kontrol kabul edildi" : "Kontrol reddedildi", action === "kabul" ? "success" : "error");
+      loadSkills();
+    } catch (e) {
+      showToast("Hata: " + e.message, "error");
+    }
     return;
   }
 
@@ -151,6 +218,7 @@ async function handleAction(tr, s, action) {
       });
       if (!result.ok) {
         lessonNote.textContent = "Hata: " + result.error;
+        showToast("Geri bildirim işlenemedi", "error");
       } else {
         Object.assign(s, result.suggestion);
         tr.innerHTML = displayRowHtml(s);
@@ -158,10 +226,13 @@ async function handleAction(tr, s, action) {
         tr.querySelector(".lesson-note").textContent = result.applied_fields
           ? "Güncellendi + öğrenildi: " + result.lesson
           : "Öğrenildi: " + result.lesson;
+        tr.classList.add("flash-success");
+        showToast("Geri bildirim kaydedildi", "success");
         loadSkills();
       }
     } catch (e) {
       lessonNote.textContent = "Hata: " + e.message;
+      showToast("Hata: " + e.message, "error");
     }
     if (btn) btn.disabled = false;
     input.value = "";
@@ -179,54 +250,95 @@ async function handleEditAction(tr, s, action) {
     tr.querySelectorAll(".edit-input").forEach((inp) => {
       payload[inp.dataset.field] = inp.value;
     });
-    const result = await fetchJSON(`/api/suggestions/${s.id}`, {
-      method: "PATCH",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(payload),
-    });
-    if (result.changed) {
-      Object.assign(s, result.suggestion);
+    try {
+      const result = await fetchJSON(`/api/suggestions/${s.id}`, {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(payload),
+      });
+      if (result.changed) {
+        Object.assign(s, result.suggestion);
+        showToast("Değişiklikler kaydedildi", "success");
+      }
+      tr.innerHTML = displayRowHtml(s);
+      attachDisplayHandlers(tr, s);
+      tr.classList.add("flash-success");
+      loadSkills();
+    } catch (e) {
+      showToast("Hata: " + e.message, "error");
     }
-    tr.innerHTML = displayRowHtml(s);
-    attachDisplayHandlers(tr, s);
-    loadSkills();
   }
 }
 
-uploadBtn.onclick = async () => {
-  const files = fileInput.files;
+// ---------- upload ----------
+async function uploadFiles(files) {
   if (!files.length) return;
-  uploadBtn.disabled = true;
   for (const file of files) {
     const fd = new FormData();
     fd.append("file", file);
     try {
       await fetchJSON("/api/documents", { method: "POST", body: fd });
+      showToast(`${file.name} yüklendi`, "success");
     } catch (e) {
-      alert("Yükleme hatası: " + e.message);
+      showToast("Yükleme hatası: " + e.message, "error");
     }
   }
-  uploadBtn.disabled = false;
-  fileInput.value = "";
   loadDocuments();
-};
+}
 
+fileInput.addEventListener("change", () => {
+  uploadFiles(fileInput.files);
+  fileInput.value = "";
+});
+
+["dragenter", "dragover"].forEach((evt) =>
+  dropZone.addEventListener(evt, (e) => {
+    e.preventDefault();
+    dropZone.classList.add("dragover");
+  })
+);
+["dragleave", "drop"].forEach((evt) =>
+  dropZone.addEventListener(evt, (e) => {
+    e.preventDefault();
+    dropZone.classList.remove("dragover");
+  })
+);
+dropZone.addEventListener("drop", (e) => {
+  if (e.dataTransfer?.files?.length) uploadFiles(e.dataTransfer.files);
+});
+
+// ---------- generate ----------
 generateBtn.onclick = async () => {
   generateBtn.disabled = true;
-  generateStatus.textContent = "Üretiliyor... (lokal LLM uç noktasına bağlanıyor)";
+  generateStatus.innerHTML = `<span class="spinner"></span> Üretiliyor... (lokal LLM uç noktasına bağlanıyor)`;
   try {
     const result = await fetchJSON("/api/periyodik-kontrolleri-cikart", { method: "POST" });
     if (!result.ok) {
       generateStatus.textContent = "Hata: " + result.error;
+      showToast("Öneri üretilemedi", "error");
     } else {
-      generateStatus.textContent = `${result.suggestions.length} öneri üretildi (run ${result.run_id}).`;
+      currentRunId = result.run_id;
+      generateStatus.textContent = `${result.suggestions.length} öneri üretildi (çalışma: ${result.run_id}).`;
       renderSuggestions(result.suggestions);
+      showToast(`${result.suggestions.length} öneri üretildi`, "success");
     }
   } catch (e) {
     generateStatus.textContent = "Hata: " + e.message;
+    showToast("Hata: " + e.message, "error");
   }
   generateBtn.disabled = false;
 };
 
+// ---------- export ----------
+exportWordBtn.onclick = () => {
+  if (!currentRunId) return;
+  window.open(`/api/export/word?run_id=${currentRunId}`, "_blank");
+};
+exportExcelBtn.onclick = () => {
+  if (!currentRunId) return;
+  window.open(`/api/export/excel?run_id=${currentRunId}`, "_blank");
+};
+
+checkHealth();
 loadDocuments();
 loadSkills();
