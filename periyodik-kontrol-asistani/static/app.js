@@ -629,7 +629,9 @@ async function viewModel(fresh = true) {
 }
 
 function connBlock(b, a) {
-  const status = b.hata
+  const status = b.tur === "bulut" && !b.anahtar_var
+    ? `<span class="conn-st">anahtar bekleniyor</span>`
+    : b.hata
     ? `<span class="conn-st bad">${esc(b.hata)}</span>`
     : `<span class="conn-st ok"><span class="dot ok"></span>${b.modeller.length} model</span>`;
   const editing = S.editConn === b.id;
