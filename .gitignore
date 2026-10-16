@@ -1,0 +1,12 @@
+istemde oluşan dosyalar
+.DS_Store
+node_modules/
+.env
+.env.*
+*.key
+*.pem
+credentials*.json
+*.log
+.cache/
+dist/
+build/
