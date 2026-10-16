@@ -53,7 +53,21 @@ ul#docList li {
 .risk-yüksek, .risk-yuksek { color: #ffa94d; }
 .risk-orta { color: #ffd43b; }
 .risk-düşük, .risk-dusuk { color: #69db7c; }
-.fb-btn { font-size: 12px; padding: 4px 8px; margin-right: 4px; }
+.fb-btn { font-size: 12px; padding: 4px 8px; margin-right: 4px; margin-bottom: 4px; }
+.fb-btn.primary { background: var(--accent); border-color: var(--accent); color: #fff; }
+.fb-cell { min-width: 220px; }
+.fb-row { display: flex; flex-wrap: wrap; margin-bottom: 4px; }
+.status-note { font-size: 11px; color: var(--muted); margin-bottom: 4px; }
+.prompt-row { display: flex; gap: 4px; margin-bottom: 4px; }
+.prompt-input {
+  flex: 1; background: #10131a; border: 1px solid var(--border); border-radius: 6px;
+  color: var(--text); padding: 4px 6px; font-size: 12px;
+}
+.lesson-note { font-size: 11px; color: var(--accent); }
+.edit-input {
+  width: 100%; background: #10131a; border: 1px solid var(--border); border-radius: 6px;
+  color: var(--text); padding: 4px 6px; font-size: 12px;
+}
 pre.skill { white-space: pre-wrap; font-size: 12px; color: var(--muted); max-height: 220px; overflow:auto; }
 details summary { cursor: pointer; margin-bottom: 6px; }
 #generateStatus { color: var(--muted); font-size: 13px; }

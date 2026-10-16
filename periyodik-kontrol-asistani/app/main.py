@@ -133,16 +133,21 @@ def generate():
 
 
 @app.get("/api/suggestions")
-def list_suggestions():
+def list_suggestions(run_id: str | None = None):
     with storage.db_session() as conn:
-        rows = conn.execute(
-            "SELECT * FROM suggestions ORDER BY id DESC"
-        ).fetchall()
+        if run_id:
+            rows = conn.execute(
+                "SELECT * FROM suggestions WHERE run_id = ? ORDER BY id ASC", (run_id,)
+            ).fetchall()
+        else:
+            rows = conn.execute(
+                "SELECT * FROM suggestions ORDER BY id DESC"
+            ).fetchall()
     return [dict(row) for row in rows]
 
 
 class FeedbackIn(BaseModel):
-    karar: str  # "kabul" | "red" | "duzenle"
+    karar: str  # "kabul" | "red"
     not_metni: str | None = None
 
 
@@ -175,3 +180,110 @@ def submit_feedback(suggestion_id: int, body: FeedbackIn):
     skills.append_learning(skill_name, learning)
 
     return {"ok": True, "updated_skill": skill_name}
+
+
+EDITABLE_FIELDS = ("kontrol_adi", "kategori", "hat", "siklik", "risk", "efor", "gerekce")
+
+
+class EditIn(BaseModel):
+    kontrol_adi: str | None = None
+    kategori: str | None = None
+    hat: str | None = None
+    siklik: str | None = None
+    risk: str | None = None
+    efor: str | None = None
+    gerekce: str | None = None
+
+
+@app.patch("/api/suggestions/{suggestion_id}")
+def edit_suggestion(suggestion_id: int, body: EditIn):
+    """Kullanıcının bir önerinin içeriğini doğrudan değiştirmesi (serbest metin değil)."""
+    with storage.db_session() as conn:
+        row = conn.execute(
+            "SELECT * FROM suggestions WHERE id = ?", (suggestion_id,)
+        ).fetchone()
+        if not row:
+            raise HTTPException(404, "Öneri bulunamadı.")
+
+        updates = {
+            k: v for k, v in body.model_dump().items() if v is not None and v != row[k]
+        }
+        if not updates:
+            return {"ok": True, "changed": False}
+
+        diffs = [f"{k}: '{row[k]}' -> '{v}'" for k, v in updates.items()]
+        set_clause = ", ".join(f"{k} = ?" for k in updates) + ", status = 'düzenlendi'"
+        conn.execute(
+            f"UPDATE suggestions SET {set_clause} WHERE id = ?",
+            (*updates.values(), suggestion_id),
+        )
+        conn.execute(
+            "INSERT INTO feedback (suggestion_id, karar, not_metni) VALUES (?, 'duzenle', ?)",
+            (suggestion_id, "; ".join(diffs)),
+        )
+        updated_row = conn.execute(
+            "SELECT * FROM suggestions WHERE id = ?", (suggestion_id,)
+        ).fetchone()
+
+    skill_name = skills.guess_skill_for_category(updates.get("kategori", row["kategori"]))
+    skills.append_learning(
+        skill_name, f"Öneri '{row['kontrol_adi']}' manuel düzenlendi: {'; '.join(diffs)}"
+    )
+    return {"ok": True, "changed": True, "suggestion": dict(updated_row)}
+
+
+class PromptFeedbackIn(BaseModel):
+    prompt: str
+
+
+@app.post("/api/suggestions/{suggestion_id}/prompt-feedback")
+def prompt_feedback(suggestion_id: int, body: PromptFeedbackIn):
+    """Kullanıcının bir öneriye serbest metinle ('bu kontrol çok sık olmuş' vb.) verdiği
+    geri bildirimi LLM ile değerlendirir: gerekirse alanları günceller, her durumda
+    genelleştirilmiş bir dersi ilgili skill dosyasına ekler."""
+    with storage.db_session() as conn:
+        row = conn.execute(
+            "SELECT * FROM suggestions WHERE id = ?", (suggestion_id,)
+        ).fetchone()
+        if not row:
+            raise HTTPException(404, "Öneri bulunamadı.")
+    suggestion_dict = dict(row)
+
+    skills_text = skills.read_all_skills_text()
+    result = llm.process_prompt_feedback(suggestion_dict, skills_text, body.prompt)
+    if not result["ok"]:
+        return {"ok": False, "error": result["error"]}
+
+    applied_fields = None
+    raw_updates = result.get("alan_guncellemesi") or {}
+    updates = {k: v for k, v in raw_updates.items() if k in EDITABLE_FIELDS and v}
+
+    with storage.db_session() as conn:
+        conn.execute(
+            "INSERT INTO feedback (suggestion_id, karar, not_metni) VALUES (?, 'prompt', ?)",
+            (suggestion_id, body.prompt),
+        )
+        if updates:
+            set_clause = ", ".join(f"{k} = ?" for k in updates) + ", status = 'düzenlendi (prompt)'"
+            conn.execute(
+                f"UPDATE suggestions SET {set_clause} WHERE id = ?",
+                (*updates.values(), suggestion_id),
+            )
+            applied_fields = updates
+        updated_row = conn.execute(
+            "SELECT * FROM suggestions WHERE id = ?", (suggestion_id,)
+        ).fetchone()
+
+    skill_name = skills.guess_skill_for_category(suggestion_dict["kategori"])
+    lesson = result.get("ders") or (
+        f"Kullanıcı '{suggestion_dict['kontrol_adi']}' önerisine şu geri bildirimi verdi: "
+        f"{body.prompt}"
+    )
+    skills.append_learning(skill_name, lesson)
+
+    return {
+        "ok": True,
+        "applied_fields": applied_fields,
+        "lesson": lesson,
+        "suggestion": dict(updated_row),
+    }

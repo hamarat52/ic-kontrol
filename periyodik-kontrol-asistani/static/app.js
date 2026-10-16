@@ -6,6 +6,9 @@ const generateStatus = document.getElementById("generateStatus");
 const tbody = document.querySelector("#suggestionsTable tbody");
 const skillsList = document.getElementById("skillsList");
 
+const FIELD_ORDER = ["kontrol_adi", "kategori", "hat", "siklik", "risk", "efor", "gerekce"];
+let currentSuggestions = [];
+
 async function fetchJSON(url, options) {
   const res = await fetch(url, options);
   if (!res.ok) {
@@ -43,44 +46,151 @@ async function loadSkills() {
 }
 
 function escapeHtml(str) {
-  return str.replace(/[&<>]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;" }[c]));
+  return (str || "").replace(/[&<>]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;" }[c]));
 }
 
 function riskClass(risk) {
   if (!risk) return "";
-  return "risk-" + risk.toLowerCase().replace("ş", "s").replace("ı", "i").replace("ü","u");
+  return "risk-" + risk.toLowerCase().replace("ş", "s").replace("ı", "i").replace("ü", "u");
 }
 
 function renderSuggestions(suggestions) {
+  currentSuggestions = suggestions;
   tbody.innerHTML = "";
-  suggestions.forEach((s) => {
-    const tr = document.createElement("tr");
-    tr.innerHTML = `
-      <td>${s.kontrol_adi || ""}</td>
-      <td>${s.kategori || ""}</td>
-      <td><span class="badge">${s.hat || "-"}</span></td>
-      <td>${s.siklik || ""}</td>
-      <td class="${riskClass(s.risk)}">${s.risk || ""}</td>
-      <td>${s.efor || ""}</td>
-      <td>${s.gerekce || ""}</td>
-      <td>
-        <button class="fb-btn" data-karar="kabul" data-id="${s.id}">Kabul</button>
-        <button class="fb-btn" data-karar="red" data-id="${s.id}">Red</button>
-      </td>`;
-    tbody.appendChild(tr);
+  suggestions.forEach((s) => tbody.appendChild(buildRow(s)));
+}
+
+function buildRow(s) {
+  const tr = document.createElement("tr");
+  tr.dataset.id = s.id;
+  tr.innerHTML = displayRowHtml(s);
+  attachDisplayHandlers(tr, s);
+  return tr;
+}
+
+function displayRowHtml(s) {
+  return `
+    <td data-field="kontrol_adi">${escapeHtml(s.kontrol_adi)}</td>
+    <td data-field="kategori">${escapeHtml(s.kategori)}</td>
+    <td data-field="hat"><span class="badge">${escapeHtml(s.hat) || "-"}</span></td>
+    <td data-field="siklik">${escapeHtml(s.siklik)}</td>
+    <td data-field="risk" class="${riskClass(s.risk)}">${escapeHtml(s.risk)}</td>
+    <td data-field="efor">${escapeHtml(s.efor)}</td>
+    <td data-field="gerekce">${escapeHtml(s.gerekce)}</td>
+    <td class="fb-cell">
+      <div class="fb-row">
+        <button class="fb-btn" data-action="kabul">Kabul</button>
+        <button class="fb-btn" data-action="red">Red</button>
+        <button class="fb-btn" data-action="duzenle">Düzenle</button>
+      </div>
+      <div class="status-note">${s.status && s.status !== "bekliyor" ? "Durum: " + escapeHtml(s.status) : ""}</div>
+      <div class="prompt-row">
+        <input type="text" class="prompt-input" placeholder="Bu kontrole feedback yaz (ör: ayda bir yeterli)..." />
+        <button class="fb-btn" data-action="prompt">Gönder</button>
+      </div>
+      <div class="lesson-note"></div>
+    </td>`;
+}
+
+function editRowHtml(s) {
+  const inputs = FIELD_ORDER.map(
+    (f) =>
+      `<td data-field="${f}"><input type="text" class="edit-input" data-field="${f}" value="${escapeHtml(s[f]).replace(/"/g, "&quot;")}" /></td>`
+  ).join("");
+  return `
+    ${inputs}
+    <td class="fb-cell">
+      <div class="fb-row">
+        <button class="fb-btn primary" data-action="kaydet">Kaydet</button>
+        <button class="fb-btn" data-action="iptal">İptal</button>
+      </div>
+    </td>`;
+}
+
+function attachDisplayHandlers(tr, s) {
+  tr.querySelectorAll("button[data-action]").forEach((btn) => {
+    btn.onclick = () => handleAction(tr, s, btn.dataset.action);
   });
-  tbody.querySelectorAll("button[data-karar]").forEach((btn) => {
-    btn.onclick = async () => {
-      btn.disabled = true;
-      await fetchJSON(`/api/suggestions/${btn.dataset.id}/feedback`, {
+}
+
+async function handleAction(tr, s, action) {
+  if (action === "kabul" || action === "red") {
+    await fetchJSON(`/api/suggestions/${s.id}/feedback`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ karar: action }),
+    });
+    s.status = action;
+    tr.innerHTML = displayRowHtml(s);
+    attachDisplayHandlers(tr, s);
+    loadSkills();
+    return;
+  }
+
+  if (action === "duzenle") {
+    tr.innerHTML = editRowHtml(s);
+    tr.querySelectorAll("button[data-action]").forEach((btn) => {
+      btn.onclick = () => handleEditAction(tr, s, btn.dataset.action);
+    });
+    return;
+  }
+
+  if (action === "prompt") {
+    const input = tr.querySelector(".prompt-input");
+    const promptText = input.value.trim();
+    if (!promptText) return;
+    const lessonNote = tr.querySelector(".lesson-note");
+    const btn = tr.querySelector('button[data-action="prompt"]');
+    btn.disabled = true;
+    lessonNote.textContent = "İşleniyor...";
+    try {
+      const result = await fetchJSON(`/api/suggestions/${s.id}/prompt-feedback`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ karar: btn.dataset.karar }),
+        body: JSON.stringify({ prompt: promptText }),
       });
-      btn.textContent = btn.dataset.karar === "kabul" ? "Kabul edildi ✓" : "Reddedildi";
-      loadSkills();
-    };
-  });
+      if (!result.ok) {
+        lessonNote.textContent = "Hata: " + result.error;
+      } else {
+        Object.assign(s, result.suggestion);
+        tr.innerHTML = displayRowHtml(s);
+        attachDisplayHandlers(tr, s);
+        tr.querySelector(".lesson-note").textContent = result.applied_fields
+          ? "Güncellendi + öğrenildi: " + result.lesson
+          : "Öğrenildi: " + result.lesson;
+        loadSkills();
+      }
+    } catch (e) {
+      lessonNote.textContent = "Hata: " + e.message;
+    }
+    if (btn) btn.disabled = false;
+    input.value = "";
+  }
+}
+
+async function handleEditAction(tr, s, action) {
+  if (action === "iptal") {
+    tr.innerHTML = displayRowHtml(s);
+    attachDisplayHandlers(tr, s);
+    return;
+  }
+  if (action === "kaydet") {
+    const payload = {};
+    tr.querySelectorAll(".edit-input").forEach((inp) => {
+      payload[inp.dataset.field] = inp.value;
+    });
+    const result = await fetchJSON(`/api/suggestions/${s.id}`, {
+      method: "PATCH",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(payload),
+    });
+    if (result.changed) {
+      Object.assign(s, result.suggestion);
+    }
+    tr.innerHTML = displayRowHtml(s);
+    attachDisplayHandlers(tr, s);
+    loadSkills();
+  }
 }
 
 uploadBtn.onclick = async () => {

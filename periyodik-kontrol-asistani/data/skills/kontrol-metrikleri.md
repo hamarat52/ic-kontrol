@@ -39,4 +39,3 @@ Gerekçe / dayanak (belge referansı veya mevzuat maddesi):
 
 ## Öğrenilenler
 _(henüz geri bildirim yok — kullanım arttıkça buraya eklenir)_
-
