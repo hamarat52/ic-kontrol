@@ -84,33 +84,62 @@ def _run_safe(set_id, docs):
         _update(set_id, durum="hata", hata=f"Beklenmeyen hata: {exc}")
 
 
+RETRY_MIN_CHARS = 800   # bundan uzun bir bölüm boş dönerse bir kez daha sorulur
+RETRY_HINT = ("UYARI: Bu bölüm için önceki denemede hiç kontrol çıkmadı. Bölümde onay, süre, "
+              "limit, kayıt, bildirim veya inceleme içeren kurallar var; her biri için en az bir kontrol yaz.")
+
+
+def _history() -> tuple[str, list[str]]:
+    """Kurumun önceki kararları: (prompt'a eklenecek örnek metni, reddedilen başlıklar)."""
+    with storage.db_session() as conn:
+        acc = conn.execute("""SELECT kontrol_adi, kategori, hat, siklik FROM library
+                              ORDER BY id DESC LIMIT 12""").fetchall()
+        rej = [r["kontrol_adi"] for r in conn.execute(
+            """SELECT kontrol_adi FROM suggestions WHERE status = 'red'
+               GROUP BY kontrol_adi ORDER BY MAX(id) DESC LIMIT 40""")]
+    if not acc and not rej:
+        return "", rej
+    lines = ["KURUMUN ÖNCEKİ KARARLARI:"]
+    if acc:
+        lines.append("Kabul edilen kontrollerden örnekler (ad, ayrıntı düzeyi ve sınıflandırma için örnek al):")
+        lines += [f"- {r['kontrol_adi']} ({r['kategori']}, Hat {r['hat']}, {r['siklik']})" for r in acc]
+    if rej:
+        lines.append("Reddedilen kontroller (bunlara benzer kontrol ÖNERME):")
+        lines += [f"- {t}" for t in rej[:20]]
+    return "\n".join(lines), rej
+
+
 def run(set_id: str, docs: list[tuple[str, str]]):
     chunks = []
     for name, text in docs:
         chunks.extend(processing.split_document(text, name))
     total = len(chunks)
-    stats = {"bolum": total, "islenen": 0, "basarisiz": 0, "tekrar": 0, "dogrulanamayan": 0}
+    stats = {"bolum": total, "islenen": 0, "basarisiz": 0, "tekrar": 0, "dogrulanamayan": 0,
+             "reddedilene_benzer": 0, "yeniden_denenen": 0}
     _update(set_id, progress={"i": 0, "toplam": total}, istatistik=stats)
 
     skills_text = skills.read_all_skills_text()
+    examples, rejected = _history()
     titles: list[str] = []
     gaps: list[str] = []
     last_error = None
     cancelled = False
 
-    for n, chunk in enumerate(chunks):
-        if _cancelled(set_id):
-            cancelled = True
-            break
-        _update(set_id, progress={"i": n, "toplam": total, "belge": chunk["belge"], "bolum": chunk["bolum"]})
-        ctx = {k: chunk[k] for k in ("belge", "bolum", "index", "toplam")}
-        failed = False
-        for ev in llm.stream_control_set(chunk["text"], skills_text, ctx, should_stop=_StopCheck(set_id)):
+    def process(chunk, ctx, hint="") -> tuple[int, bool]:
+        """Bir bölümü modele sorar; (modelin önerdiği kontrol sayısı, hata oldu mu) döner."""
+        nonlocal last_error
+        added, failed = 0, False
+        for ev in llm.stream_control_set(chunk["text"], skills_text, ctx, should_stop=_StopCheck(set_id),
+                                         examples=examples, hint=hint):
             kind = ev["event"]
             if kind == "control":
                 c = ev["control"]
+                added += 1
                 if processing.is_duplicate(c["kontrol_adi"], titles):
                     stats["tekrar"] += 1
+                    continue
+                if processing.is_duplicate(c["kontrol_adi"], rejected):
+                    stats["reddedilene_benzer"] += 1
                     continue
                 verified = processing.verify_quote(c["kaynak"], chunk["text"])
                 if verified is False:
@@ -132,6 +161,19 @@ def run(set_id: str, docs: list[tuple[str, str]]):
             elif kind == "error":
                 failed = True
                 last_error = ev["error"]
+        return added, failed
+
+    for n, chunk in enumerate(chunks):
+        if _cancelled(set_id):
+            cancelled = True
+            break
+        _update(set_id, progress={"i": n, "toplam": total, "belge": chunk["belge"], "bolum": chunk["bolum"]})
+        ctx = {k: chunk[k] for k in ("belge", "bolum", "index", "toplam")}
+        added, failed = process(chunk, ctx)
+        if (not added and not failed and len(chunk["text"]) >= RETRY_MIN_CHARS
+                and not _cancelled(set_id)):
+            stats["yeniden_denenen"] += 1
+            added, failed = process(chunk, ctx, hint=RETRY_HINT)
         if _cancelled(set_id):
             cancelled = True
             break

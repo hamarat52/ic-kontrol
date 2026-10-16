@@ -20,20 +20,43 @@ EDITABLE_FIELDS = ("kontrol_adi", "kategori", "hat", "siklik", "risk", "efor", "
 
 SET_SYSTEM_PROMPT = f"""Sen bir bankanın iç kontrol biriminde periyodik kontrol tasarlayan \
 kıdemli bir uzmansın. Sana şirketin bir süreç/prosedür belgesinden TEK BİR BÖLÜM ve birikmiş \
-bilgi tabanı (skill'ler) verilecek. Yalnız bu bölümde anlatılan süreçler için somut, test \
-edilebilir periyodik kontroller öner. Bölüm bir başlığın ortasından başlayabilir.
+bilgi tabanı verilecek. Bu bölümde anlatılan süreçler için somut, test edilebilir periyodik \
+kontroller öner.
+
+BÖLÜMÜ OKUMA: Bölüm birden fazla alt başlık içerebilir ve bir başlığın ortasından başlayabilir. \
+HER alt başlığı ayrı değerlendir. İlk alt başlık "Amaç", "Kapsam" ya da "Tanımlar" olsa bile \
+sonraki alt başlıkları atlama.
+
+KATEGORİ (birini seç):
+- Operasyonel: talimat, onay zinciri, işlem girişi, mutabakat, iade, teminat, kullandırım gibi işin doğru ve zamanında yapılması.
+- Mevzuat Uyum: kanun/yönetmelik sınırları, düzenleyici bildirim ve raporlar, kayıt saklama süreleri.
+- Bilgi Sistemleri: kullanıcı erişimi, yetki atama/gözden geçirme, parola, log, ayrıcalıklı hesap, sistem parametresi, görevler ayrılığının sistemde uygulanması.
+- Finansal Raporlama: muhasebe kaydı, hesap mutabakatının finansal tablolara yansıması, yönetim raporlaması.
+- AML / Şüpheli İşlem: şüpheli işlem bildirimi (MASAK), yaptırım listesi taraması, müşteri tanıma.
+
+HAT (kontrolü kim uygular):
+- 1: işi yapan birim kendi işini kontrol eder (şube, operasyon, ilgili müdürlük).
+- 2: iç kontrol, uyum, risk yönetimi veya bilgi güvenliği birimi birinci hattın kontrolünü test eder.
+- 3: teftiş kurulu bağımsız denetim yapar.
+
+SIKLIK: Belgede süre ya da sıklık geçiyorsa (günlük, haftalık, aylık, altı ayda bir, yılda bir, \
+ertesi iş günü, gün sonu) ona uygun değeri seç. Geçmiyorsa riske ve işlem hacmine göre seç.
+
+KONTROL ADI: neyin nasıl test edileceğini söyleyen kısa bir ifade. \
+İyi: "Mesai dışı işlemlerin ertesi gün listelenip incelendiğinin teyidi". Kötü: "Log İzleme". \
+Aynı kontrolü farklı adlarla tekrar etme.
 
 ÇIKTI BİÇİMİ — ÇOK ÖNEMLİ: JSON Lines. Her satır tek bir JSON objesi. Başka hiçbir metin, \
 açıklama, liste parantezi veya kod bloğu yazma.
 
 Her kontrol için bir satır:
-{{"tip":"kontrol","kontrol_adi":"<kısa, eylem odaklı>","kategori":"<{' | '.join(KATEGORILER)}>","hat":"<1, 2 veya 3 — tek rakam>","siklik":"<{' | '.join(SIKLIKLAR)}>","risk":"<{' | '.join(RISKLER)}>","efor":"<{' | '.join(EFORLAR)}>","gerekce":"<neden gerekli, 1-2 cümle>","dayanak":"<mevzuat/politika maddesi ya da boş>","kaynak":"<bu bölümden kısa BİREBİR alıntı ya da boş>"}}
+{{"tip":"kontrol","kontrol_adi":"...","kategori":"<{' | '.join(KATEGORILER)}>","hat":"<1, 2 veya 3>","siklik":"<{' | '.join(SIKLIKLAR)}>","risk":"<{' | '.join(RISKLER)}>","efor":"<{' | '.join(EFORLAR)}>","gerekce":"<neden gerekli, en fazla 2 cümle>","dayanak":"<belge maddesi ya da mevzuat; yoksa boş>","kaynak":"<bu bölümden kısa BİREBİR alıntı ya da boş>"}}
 
-Bölümde tespit ettiğin her boşluk/tutarsızlık için bir satır:
-{{"tip":"bosluk","metin":"<boşluğun tek cümlelik açıklaması>"}}
+Bölümde gerçek bir boşluk/tutarsızlık görürsen (ör. tanımlı bir adımı atlayan yol, süresi \
+belirtilmemiş bir takip) bir satır:
+{{"tip":"bosluk","metin":"<tek cümle>"}}
 
-Bölümde kontrol edilecek bir süreç yoksa (ör. yalnız amaç/kapsam/tanımlar) sadece şunu yaz:
-{{"tip":"yok"}}
+Yalnız bölümün TAMAMI amaç/kapsam/tanım ise sadece şunu yaz: {{"tip":"yok"}}
 
 Kurallar: kategori, sıklık, risk ve efor değerlerini YALNIZ yukarıdaki listelerden seç. \
 Kaynak alıntısını uydurma; bölümde kelimesi kelimesine geçmiyorsa boş bırak. Bölümde \
@@ -193,10 +216,11 @@ def _classify(obj: dict):
 
 
 def stream_control_set(chunk_text: str, skills_text: str, context: dict | None = None,
-                       should_stop=None) -> Iterator[dict]:
+                       should_stop=None, examples: str = "", hint: str = "") -> Iterator[dict]:
     """Bir bölüm için model çıktısını satır satır okuyup olay üretir:
     {"event":"control"|"gap"|"meta"|"empty"|"error", ...}. Asla exception fırlatmaz.
-    `should_stop()` True dönerse akışı keser."""
+    `should_stop()` True dönerse akışı keser. `examples`: kurumun kabul/ret geçmişi,
+    `hint`: boş dönen bölümü yeniden denerken eklenen uyarı."""
     ctx = context or {}
     where = ""
     if ctx:
@@ -207,8 +231,10 @@ def stream_control_set(chunk_text: str, skills_text: str, context: dict | None =
         # Sabit kısım (bilgi tabanı) önce: yerel sunucular ortak öneki önbellekleyebilir.
         {"role": "user", "content": (
             f"BİLGİ TABANI (skill'ler):\n{skills_text}\n\n"
-            f"{where}BÖLÜM METNİ:\n{chunk_text}\n\n"
-            "Şimdi JSON Lines çıktısını üret."
+            + (f"{examples}\n\n" if examples else "")
+            + f"{where}BÖLÜM METNİ:\n{chunk_text}\n\n"
+            + (f"{hint}\n\n" if hint else "")
+            + "Şimdi JSON Lines çıktısını üret."
         )},
     ]
     payload = {"model": config.LLM_MODEL, "messages": messages, "temperature": 0.2, "stream": True}

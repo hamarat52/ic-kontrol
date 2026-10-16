@@ -146,19 +146,45 @@ _STOP = {
 }
 
 
+def _stem(w: str) -> str:
+    """Kaba Türkçe kök: ekleri atmak için ilk 5 harf (hesaplarla→hesap, işlemleri→islem)."""
+    return w[:5]
+
+
 def _tokens(title: str) -> set[str]:
     stop = {norm(w) for w in _STOP}
-    return {w for w in norm(title).split() if len(w) > 2 and w not in stop}
+    return {_stem(w) for w in norm(title).split() if len(w) > 2 and w not in stop}
 
 
-def is_duplicate(title: str, existing: list[str], threshold: float = 0.75) -> bool:
-    a = _tokens(title)
-    if not a:
-        return False
-    for other in existing:
-        b = _tokens(other)
-        if not b:
-            continue
-        if a == b or len(a & b) / len(a | b) >= threshold:
-            return True
-    return False
+def similarity(a_title: str, b_title: str) -> float:
+    """0..1 benzerlik. Biri diğerini kapsıyor ve en fazla bir kelime fazlası varsa 1 sayılır."""
+    a, b = _tokens(a_title), _tokens(b_title)
+    if not a or not b:
+        return 0.0
+    small, big = (a, b) if len(a) <= len(b) else (b, a)
+    if len(small) >= 2 and small <= big and len(big) - len(small) <= 1:
+        return 1.0
+    return len(a & b) / len(a | b)
+
+
+def find_similar(title: str, existing: list[str], threshold: float = 0.66) -> int | None:
+    """En benzer kaydın indeksini döner (eşik üstündeyse)."""
+    best, best_i = 0.0, None
+    for i, other in enumerate(existing):
+        s = similarity(title, other)
+        if s > best:
+            best, best_i = s, i
+    return best_i if best >= threshold else None
+
+
+def is_duplicate(title: str, existing: list[str], threshold: float = 0.66) -> bool:
+    return find_similar(title, existing, threshold) is not None
+
+
+def relevance(text: str, title: str) -> float:
+    """Bir kontrol başlığının bir metinle ilgisi (başlık kelimelerinin metinde geçme oranı)."""
+    t = _tokens(title)
+    if not t:
+        return 0.0
+    words = {_stem(w) for w in norm(text).split()}
+    return len(t & words) / len(t)

@@ -168,7 +168,7 @@ h2.group .count{margin-left:0}
 .row:hover .row-action{opacity:1}
 .row-action:hover{color:var(--r-kritik)}
 
-.status-line{display:flex;align-items:center;gap:10px;margin:18px 0 0;color:var(--muted);font-size:13px}
+.status-line{display:flex;align-items:center;gap:10px;margin:18px 0 22px;color:var(--muted);font-size:13px;min-height:26px}
 .status-line.error{color:var(--r-kritik)}
 .gaps{margin-top:34px}
 .gaps h2{font-size:18px;letter-spacing:-.01em;margin:0 0 10px}

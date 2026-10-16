@@ -251,6 +251,7 @@ function renderSetHead() {
   else if (s.hata) status = `<div class="status-line${s.durum === "hata" ? " error" : ""}">${esc(s.hata)}</div>`;
   const notes = [];
   if (!generating && ist.tekrar) notes.push(`${ist.tekrar} tekrar ayıklandı`);
+  if (ist.reddedilene_benzer) notes.push(`daha önce reddedilene benzeyen ${ist.reddedilene_benzer} öneri elendi`);
   if (ist.dogrulanamayan) notes.push(`${ist.dogrulanamayan} alıntı belgede bulunamadı`);
   el.innerHTML = `
     <h1>${esc(s.baslik || "Adsız kontrol seti")}</h1>

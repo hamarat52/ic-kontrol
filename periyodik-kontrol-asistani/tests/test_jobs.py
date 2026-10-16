@@ -23,6 +23,11 @@ def bolum_of(messages):
     return m.group(1), int(m.group(2)), int(m.group(3)), user
 
 
+TOPICS = ["Teminat değerleme raporu", "Kredi limit aşımı", "Kullandırım teyidi", "İade talebi takibi",
+          "Mutabakat farkı bildirimi", "Yaptırım listesi taraması", "Parola politikası uyumu", "Ayrıcalıklı hesap kaydı",
+          "Muhabir banka mutabakatı", "Görev ayrılığı ihlali", "Mesai dışı onay", "Talimat imza karşılaştırması"]
+
+
 def summary(_m=None):
     return json.dumps({"baslik": "Test Seti", "ozet": "Özet."}, ensure_ascii=False)
 
@@ -38,7 +43,7 @@ def test_every_section_is_processed_with_source(client, env):
         if not stream:
             return summary()
         bolum, i, total, _ = bolum_of(messages)
-        return jsonl({"tip": "kontrol", "kontrol_adi": f"Benzersiz kontrol {i} {bolum} zeta{i}", "kategori": "Operasyonel"})
+        return jsonl({"tip": "kontrol", "kontrol_adi": TOPICS[i], "kategori": "Operasyonel"})
 
     env.responder = responder
     s = wait_set(client, client.post("/api/sets").json()["id"])
@@ -87,7 +92,7 @@ def test_one_bad_section_does_not_stop_the_rest(client, env):
             return "Üzgünüm, bunu yapamam."              # biçim hatası
         if i == 2:
             return jsonl({"tip": "yok"})                  # meşru boş bölüm
-        return jsonl({"tip": "kontrol", "kontrol_adi": f"Kontrol numara {i} omega{i}"})
+        return jsonl({"tip": "kontrol", "kontrol_adi": TOPICS[i]})
 
     env.responder = responder
     s = wait_set(client, client.post("/api/sets").json()["id"])
@@ -104,7 +109,7 @@ def test_cancel_stops_generation(client, env):
     def slow(messages, stream):
         time.sleep(0.25)
         _, i, _, _ = bolum_of(messages) if stream else (0, 0, 0, "")
-        return jsonl({"tip": "kontrol", "kontrol_adi": f"Yavaş kontrol {i} sigma{i}"}) if stream else summary()
+        return jsonl({"tip": "kontrol", "kontrol_adi": TOPICS[i]}) if stream else summary()
 
     env.responder = slow
     set_id = client.post("/api/sets").json()["id"]
@@ -185,3 +190,59 @@ def test_exports_include_source(client, env):
     header = [c.value for c in ws[1]]
     row = dict(zip(header, [c.value for c in ws[2]]))
     assert row["Kaynak belge"] == "p.txt" and row["Alıntı doğrulandı"].startswith("Hayır")
+
+
+# --- Adım 2: öğrenme geri beslemesi ve yeniden deneme
+
+def test_history_feeds_prompt_and_rejected_are_filtered(client, env):
+    upload(client, "p.txt", "1. A\nmetin burada\n")
+    env.responder = lambda m, stream: jsonl(
+        {"tip": "kontrol", "kontrol_adi": "Teminat değerleme raporu güncelliği", "kategori": "Operasyonel"},
+        {"tip": "kontrol", "kontrol_adi": "Kredi limit aşımı izlemesi", "kategori": "Operasyonel"},
+    ) if stream else summary()
+    s = wait_set(client, client.post("/api/sets").json()["id"])
+    by = {c["kontrol_adi"]: c["id"] for c in s["controls"]}
+    client.post(f"/api/controls/{by['Teminat değerleme raporu güncelliği']}/decision", json={"karar": "kabul"})
+    client.post(f"/api/controls/{by['Kredi limit aşımı izlemesi']}/decision", json={"karar": "red"})
+
+    env.calls.clear()
+    s2 = wait_set(client, client.post("/api/sets").json()["id"])
+    user = next(m["content"] for m in env.calls[0]["messages"] if m["role"] == "user")
+    assert "KURUMUN ÖNCEKİ KARARLARI" in user
+    assert "Teminat değerleme raporu güncelliği (Operasyonel" in user
+    assert "Reddedilen kontroller" in user and "- Kredi limit aşımı izlemesi" in user
+    assert [c["kontrol_adi"] for c in s2["controls"]] == ["Teminat değerleme raporu güncelliği"]
+    assert s2["istatistik"]["reddedilene_benzer"] == 1
+
+
+def test_no_history_means_no_examples_block(client, env):
+    upload(client, "p.txt", "1. A\nmetin\n")
+    env.responder = lambda m, stream: jsonl({"tip": "kontrol", "kontrol_adi": "K"}) if stream else summary()
+    wait_set(client, client.post("/api/sets").json()["id"])
+    user = next(m["content"] for m in env.calls[0]["messages"] if m["role"] == "user")
+    assert "KURUMUN ÖNCEKİ KARARLARI" not in user
+
+
+def test_empty_long_section_is_retried_once(client, env):
+    upload(client, "uzun.txt", long_doc(1))   # tek, uzun bölüm
+
+    def responder(messages, stream):
+        if not stream:
+            return summary()
+        user = next(m["content"] for m in messages if m["role"] == "user")
+        if "önceki denemede hiç kontrol çıkmadı" in user:
+            return jsonl({"tip": "kontrol", "kontrol_adi": "İkinci denemede gelen kontrol"})
+        return jsonl({"tip": "yok"})
+
+    env.responder = responder
+    s = wait_set(client, client.post("/api/sets").json()["id"])
+    assert s["istatistik"]["yeniden_denenen"] == 1
+    assert [c["kontrol_adi"] for c in s["controls"]] == ["İkinci denemede gelen kontrol"]
+
+
+def test_short_empty_section_is_not_retried(client, env):
+    upload(client, "p.txt", "1. Amaç\nBu belge kredi sürecini anlatır.\n")
+    env.responder = lambda m, stream: jsonl({"tip": "yok"}) if stream else summary()
+    s = wait_set(client, client.post("/api/sets").json()["id"])
+    assert s["istatistik"]["yeniden_denenen"] == 0
+    assert len([c for c in env.calls if c.get("stream")]) == 1

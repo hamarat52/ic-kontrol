@@ -69,3 +69,14 @@ def test_duplicates():
     existing = ["Risk analizi yapılmadan onaylanan başvuruların tespiti"]
     assert P.is_duplicate("Risk Analizi Yapılmadan Onaylanan Başvuruların Kontrolü", existing)
     assert not P.is_duplicate("Teminat değerleme raporlarının güncelliği", existing)
+    # gerçek model çıktısından görülen tekrarlar
+    assert P.is_duplicate("Ayrıcalıklı Hesaplar Kullanımı", ["Ayrıcalıklı Hesaplar"])
+    # farklı kontroller ayrı kalmalı
+    assert not P.is_duplicate("Mesai dışı işlem onayının ertesi iş günü sisteme girilmesi", ["Mesai dışı işlem onayı"])
+    assert P.find_similar("Ayrıcalıklı hesap kullanımı", ["Log izleme", "Ayrıcalıklı hesap kullanımı incelemesi"]) == 1
+
+
+def test_relevance():
+    text = "Ayrıcalıklı hesaplarla yapılan işlemler haftalık incelenir."
+    assert P.relevance(text, "Ayrıcalıklı hesap işlemleri") == 1.0
+    assert P.relevance(text, "Teminat değerleme raporu") == 0.0
