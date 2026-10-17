@@ -80,7 +80,8 @@ button:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-vis
 .sec-head svg{transition:transform 180ms cubic-bezier(.2,0,0,1)}
 .sec.closed .sec-head svg{transform:rotate(-90deg)}
 .sec.closed .sec-body{display:none}
-.sec-body{overflow-y:auto;min-height:0}
+/* aktif öğenin sağ kenardaki çizgisi (right:-10px) kutunun içinde kalsın: yatay kaydırma çıkmasın */
+.sec-body{overflow-y:auto;overflow-x:hidden;min-height:0;margin-right:-10px;padding-right:10px}
 .sec-empty{padding:6px 10px;font-size:12.5px;color:var(--faint)}
 .side-foot{margin-top:auto;padding-top:10px;display:flex;flex-direction:column;gap:6px}
 .new-btn{
@@ -121,7 +122,7 @@ button:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-vis
 .menu button:hover{background:var(--hover)}
 .menu button.danger{color:var(--r-kritik)}
 
-.scroll{flex:1;overflow-y:auto;padding:22px 0 140px}
+.scroll{flex:1;overflow-y:auto;overflow-x:hidden;padding:22px 0 140px}
 .doc{max-width:760px;margin:0 auto;padding:0 40px}
 .doc h1{font-size:38px;line-height:1.12;letter-spacing:-.025em;font-weight:700;margin:6px 0 14px}
 .doc h1.placeholder{color:var(--faint)}
@@ -283,7 +284,7 @@ kbd.k{font-family:inherit;font-size:11px;color:var(--faint);padding:3px 7px;bord
 .panel-top{display:flex;align-items:center;justify-content:space-between;height:52px;padding:0 14px 0 22px;color:var(--faint);font-size:12.5px;flex-shrink:0}
 .saved{opacity:0;transition:opacity var(--t);color:var(--r-dusuk);margin-left:8px}
 .saved.on{opacity:1}
-.panel-body{flex:1;overflow-y:auto;padding:4px 22px 20px}
+.panel-body{flex:1;overflow-y:auto;overflow-x:hidden;padding:4px 22px 20px}
 .auto{display:block;width:100%;border:0;resize:none;overflow:hidden;background:transparent;border-radius:8px;
   padding:4px 8px;margin-left:-8px;width:calc(100% + 16px);transition:background var(--t)}
 .auto:hover{background:var(--hover)}
