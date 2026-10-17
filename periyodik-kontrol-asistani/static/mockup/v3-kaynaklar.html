@@ -1,0 +1,283 @@
+<!doctype html>
+<html lang="tr">
+<head>
+<meta charset="utf-8" />
+<title>Mockup v3 — Kaynaklar ve kapsam seçimi</title>
+<link rel="stylesheet" href="/static/style.css" />
+<style>
+/* ---- v3 eklemeleri: yalnız ton/opaklık; yer değiştiren tek şey sağ panel ---- */
+.win.wide-panel{grid-template-columns:252px 1fr 460px}
+.lead{max-width:640px}
+
+/* Belgeler: iki sekme + gruplar */
+.doc-tabs{margin:22px 0 8px}
+.grp{margin-top:26px}
+.grp-head{display:flex;align-items:baseline;gap:10px;margin-bottom:6px}
+.grp-head h2{font-size:15px;font-weight:600;color:var(--ink);margin:0;display:flex;align-items:center;gap:8px}
+.grp-head .count{font-size:12.5px;color:var(--faint);font-weight:500;margin-left:0}
+.grp-head .note{font-size:12.5px;color:var(--faint);margin-left:auto}
+.grp-sub{font-size:12.5px;color:var(--muted);margin:-2px 0 6px}
+.alan{display:inline-flex;align-items:center;height:20px;padding:0 8px;border-radius:6px;background:var(--soft);font-size:11.5px;color:var(--muted);white-space:nowrap}
+.alan.sug{background:#EEF1FB;color:#3B4C8C}
+.badge-src{font-size:11.5px;color:var(--faint)}
+.doc-row .meta{gap:6px;flex-wrap:wrap}
+.lock{font-size:11.5px;color:var(--faint)}
+.empty-grp{padding:14px 16px;border-radius:12px;background:var(--side);font-size:13px;color:var(--muted);display:flex;align-items:center;gap:12px}
+.empty-grp .btn{height:30px;padding:0 12px;font-size:12.5px;margin-left:auto}
+.sel-inline{display:inline-flex;align-items:center;gap:4px;height:22px;padding:0 8px;border-radius:6px;background:#fff;box-shadow:0 0 0 1px var(--line);font-size:12px;color:var(--ink-2);cursor:pointer;transition:background var(--t)}
+.sel-inline:hover{background:var(--hover)}
+.sel-inline small{color:var(--faint);font-size:11px}
+.classify{margin-top:8px;display:flex;align-items:center;gap:8px;flex-wrap:wrap;font-size:12.5px;color:var(--muted)}
+.classify .ai{font-size:11.5px;color:#3B4C8C}
+
+/* Kapsam paneli */
+.scope{display:flex;flex-direction:column;height:100%}
+.scope .panel-body{padding:4px 22px 18px}
+.scope h3{font-size:19px;font-weight:650;color:var(--ink);margin:4px 0 4px;letter-spacing:-.01em}
+.scope .sub{font-size:13px;color:var(--muted);margin:0 0 16px;line-height:1.5}
+.step{margin-top:20px}
+.step-h{display:flex;align-items:baseline;gap:8px;font-size:12px;font-weight:600;color:var(--muted);text-transform:none;margin-bottom:8px}
+.step-h .n{display:inline-grid;place-items:center;width:18px;height:18px;border-radius:50%;background:var(--soft-2);color:var(--ink-2);font-size:11px}
+.step-h .r{margin-left:auto;font-weight:500;color:var(--faint)}
+.chips{display:flex;flex-wrap:wrap;gap:6px}
+.chip{display:inline-flex;align-items:center;gap:6px;height:30px;padding:0 11px;border-radius:9px;background:var(--soft);font-size:12.5px;color:var(--ink-2);cursor:pointer;transition:background var(--t),color var(--t)}
+.chip:hover{background:var(--soft-2)}
+.chip.on{background:var(--ink);color:#fff}
+.chip .c{color:var(--faint);font-size:11.5px}
+.chip.on .c{color:rgba(255,255,255,.6)}
+.chip.dim{opacity:.5}
+.picks{border-radius:12px;box-shadow:0 0 0 1px var(--line);overflow:hidden}
+.pick{display:grid;grid-template-columns:20px 1fr auto;gap:10px;align-items:start;padding:10px 12px;font-size:13px;color:var(--ink-2);border-top:1px solid var(--line);cursor:pointer;transition:background var(--t)}
+.pick:first-child{border-top:0}
+.pick:hover{background:var(--hover)}
+.pick .cb{margin-top:1px}
+.pick .cb svg{opacity:1;display:block}
+.pick .m{font-size:11.5px;color:var(--faint);margin-top:2px}
+.pick .r{font-size:11.5px;color:var(--faint);white-space:nowrap}
+.pick.off{color:var(--muted)}
+.pick.off .cb{background:#fff;border-color:#D4D3CE}
+.pick.off .cb svg{display:none}
+.more{display:block;padding:9px 12px;font-size:12.5px;color:var(--muted);border-top:1px solid var(--line);cursor:pointer}
+.more:hover{background:var(--hover)}
+.role{font-size:12px;color:var(--faint);margin:6px 2px 0;line-height:1.5}
+.switch-row{display:flex;align-items:center;gap:12px;padding:12px;border-radius:12px;box-shadow:0 0 0 1px var(--line);font-size:13px;color:var(--ink-2)}
+.switch-row .m{font-size:11.5px;color:var(--faint);margin-top:2px}
+.sw{margin-left:auto;width:32px;height:18px;border-radius:9px;background:var(--ink);position:relative;flex-shrink:0}
+.sw::after{content:"";position:absolute;right:2px;top:2px;width:14px;height:14px;border-radius:50%;background:#fff}
+.sw.off{background:#D4D3CE}.sw.off::after{right:auto;left:2px}
+.scope-foot{padding:14px 22px 16px;border-top:1px solid var(--line);display:flex;align-items:center;gap:12px}
+.scope-foot .sum{font-size:12.5px;color:var(--muted);line-height:1.45}
+.scope-foot .sum b{color:var(--ink-2);font-weight:600}
+.scope-foot .btn{margin-left:auto}
+.inp-name{width:100%;height:36px;border-radius:9px;border:0;box-shadow:0 0 0 1px var(--line);padding:0 12px;font:inherit;font-size:13.5px;color:var(--ink);background:#fff}
+
+/* Kontrol detayı: dayanak */
+.basis{display:flex;flex-direction:column;gap:8px}
+.basis-item{padding:10px 12px;border-radius:10px;background:var(--side);font-size:12.5px;color:var(--muted);line-height:1.5;cursor:pointer;transition:background var(--t)}
+.basis-item:hover{background:var(--hover)}
+.basis-item .h{display:flex;gap:8px;align-items:baseline;color:var(--ink-2);font-weight:600;font-size:12.5px;margin-bottom:2px}
+.basis-item .k{font-size:11px;font-weight:500;color:var(--faint);margin-left:auto;white-space:nowrap}
+.owner{display:flex;align-items:center;gap:8px;font-size:13.5px;color:var(--ink-2);min-height:30px}
+.owner small{color:var(--faint);font-size:11.5px}
+.scene-note{position:fixed;right:22px;bottom:18px;z-index:60;background:#fff;border-radius:10px;padding:8px 12px;font-size:12px;color:var(--muted);box-shadow:0 0 0 1px rgba(0,0,0,.06),0 6px 20px rgba(30,30,40,.08)}
+.row .alan{margin-left:2px}
+</style>
+</head>
+<body>
+<div class="win" id="win"></div>
+<script>
+const CHECK = '<svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg>';
+const SIDE = (active) => `
+<aside class="side">
+  <button class="search"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>Ara<kbd>⌘K</kbd></button>
+  <nav>
+    <button class="nav-item ${active==='docs'?'active':''}"><span class="ico">📄</span><span class="label">Belgeler</span><span class="count">27</span></button>
+    <button class="nav-item"><span class="ico">✅</span><span class="label">Kontroller</span><span class="count">31</span></button>
+    <button class="nav-item"><span class="ico">💡</span><span class="label">Öğrenilenler</span></button>
+  </nav>
+  <div class="sec"><button class="sec-head"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg>Kontrol Setleri<span class="sec-count">3</span></button>
+    <div class="sec-body">
+      <button class="nav-item ${active==='set'?'active':''}"><span class="ico">🛡️</span><span class="label">Veri Güvenliği — Ekim 2026</span><span class="count">24</span></button>
+      <button class="nav-item"><span class="ico">💸</span><span class="label">Ödeme Sistemleri — Ekim 2026</span><span class="count">18</span></button>
+      <button class="nav-item"><span class="ico">🏦</span><span class="label">Kredi — Eylül 2026</span><span class="count">22</span></button>
+    </div></div>
+  <div class="side-foot">
+    <button class="new-btn"><span class="ico">＋</span>Yeni kontrol seti</button>
+    <button class="user"><div class="avatar">Y</div><div>Yusuf<small><span class="dot ok"></span>lokal-but-not-lokal</small></div></button>
+  </div>
+</aside>`;
+
+const docRow = (ico, name, meta, extra = "", act = "Kaldır") =>
+  `<div class="doc-row"><span class="ico">${ico}</span><div><div class="title">${name}</div><div class="meta">${meta}</div>${extra}</div>${act ? `<button class="row-action">${act}</button>` : ""}</div>`;
+const A = (...xs) => xs.map(x => `<span class="alan">${x}</span>`).join("");
+const S = '<span class="sep">·</span>';
+
+const TABS = (on) => `<div class="seg doc-tabs">
+  <button class="${on==='sirket'?'on':''}">Şirket belgeleri<span>4</span></button>
+  <button class="${on==='acik'?'on':''}">Mevzuat ve standartlar<span>23</span></button></div>`;
+
+/* ---------- 1) Belgeler · Şirket belgeleri ---------- */
+function sceneSirket() {
+  win("", SIDE("docs") + `
+  <section class="main"><div class="topbar"><div class="crumb"><b>Belgeler</b></div><div class="actions"></div></div>
+    <div class="scroll"><div class="doc">
+      <h1>Belgeler</h1>
+      <p class="lead">Kontroller şirket belgelerinden üretilir. Mevzuat ve standartlar uygulamayla birlikte gelir; model onları kontrolün dayanağını göstermek için kullanır.</p>
+      ${TABS("sirket")}
+      <div class="drop" style="margin-top:14px"><div class="big">📄</div><div><strong>Belgeleri sürükle bırak</strong> ya da seçmek için tıkla</div><small>PDF · Word · TXT · Markdown — türünü ve alanını model önerir, sen onaylarsın</small></div>
+
+      <div class="grp"><div class="grp-head"><h2>📘 Uygulama esasları</h2><span class="count">3</span><span class="note">Kontroller bunlardan çıkar</span></div>
+        <div class="doc-list">
+          ${docRow("📄","Bilgi Güvenliği ve Erişim Yönetimi Uygulama Esasları.docx", `${A("Bilgi Sistemleri ve Veri Güvenliği")}${S}48 sayfa${S}14 bölüm${S}<span class="used">1 sette kullanıldı</span>`)}
+          ${docRow("📄","Ödeme ve Fon Transferi Uygulama Esasları.pdf", `${A("Ödeme Sistemleri","AML / Uyum")}${S}31 sayfa${S}9 bölüm${S}<span class="used">1 sette kullanıldı</span>`)}
+          ${docRow("📄","Kişisel Verilerin Saklanması ve İmhası Uygulama Esasları.docx", `${A("Kişisel Verilerin Korunması")}${S}22 sayfa${S}yeni`,
+            `<div class="classify"><span class="ai">✦ Model önerdi</span>Tür <span class="sel-inline">Uygulama esası <small>▾</small></span> Alan <span class="sel-inline">Kişisel Verilerin Korunması <small>▾</small></span><span class="sel-inline">＋ alan</span></div>`)}
+        </div></div>
+
+      <div class="grp"><div class="grp-head"><h2>🏢 Organizasyon ve görevler</h2><span class="count">1</span><span class="note">İsteğe bağlı · kontrolün sorumlusunu ve hattını belirlemekte kullanılır</span></div>
+        <div class="doc-list">
+          ${docRow("📄","Organizasyon Şeması ve Görev Tanımları 2026.xlsx", `Tüm alanlar${S}86 birim / görev${S}<span class="used">2 sette kullanıldı</span>`)}
+        </div></div>
+
+      <div class="cta"><button class="btn btn-ink">Periyodik kontrolleri çıkart…</button><span class="hint">Önce alanı ve belgeleri seçersin</span></div>
+    </div></div>
+  </section><aside class="panel"></aside>`);
+}
+
+/* ---------- 2) Belgeler · Mevzuat ve standartlar ---------- */
+function sceneAcik() {
+  const r = (n, kurum, alanlar, ek = "") => docRow(kurum, n, `${A(...alanlar)}${S}<span class="badge-src">güncel metin · 17.10.2026</span>${ek}`, "", "");
+  win("", SIDE("docs") + `
+  <section class="main"><div class="topbar"><div class="crumb"><b>Belgeler</b> <span>/</span> Mevzuat ve standartlar</div><div class="actions"></div></div>
+    <div class="scroll"><div class="doc">
+      <h1>Belgeler</h1>
+      <p class="lead">Mevzuat ve standartlar uygulamayla birlikte gelir; internet gerekmez. Kurumunun lisanslı bir standardını (COSO, ISO 27001…) da buraya ekleyebilirsin.</p>
+      ${TABS("acik")}
+      <div class="grp"><div class="grp-head"><h2>🇹🇷 Resmi düzenlemeler · Türkiye</h2><span class="count">15</span><span class="note">mevzuat.gov.tr · değişiklikler işlenmiş metin · 17.10.2026</span></div>
+        <div class="doc-list">
+          ${r("Bankaların Bilgi Sistemleri ve Elektronik Bankacılık Hizmetleri Hakkında Yönetmelik","🏛️",["Bilgi Sistemleri ve Veri Güvenliği","Ödeme Sistemleri"], `${S}BDDK${S}83 madde`)}
+          ${r("Bankaların İç Sistemleri ve İçsel Sermaye Yeterliliği Değerlendirme Süreci Hakkında Yönetmelik","🏛️",["Kurumsal Yönetim ve İç Sistemler"], `${S}BDDK${S}67 madde`)}
+          ${r("Suç Gelirlerinin Aklanmasının ve Terörün Finansmanının Önlenmesine Dair Tedbirler Hakkında Yönetmelik","🏛️",["AML / Uyum"], `${S}MASAK${S}60 madde`)}
+          ${r("6698 sayılı Kişisel Verilerin Korunması Kanunu","🏛️",["Kişisel Verilerin Korunması"], `${S}TBMM${S}33 madde`)}
+          <span class="more" style="border:0;padding-left:16px">+ 11 düzenleme daha</span>
+        </div></div>
+      <div class="grp"><div class="grp-head"><h2>🌐 Global standartlar</h2><span class="count">8</span></div>
+        <div class="doc-list">
+          ${r("BCBS — Framework for Internal Control Systems in Banking Organisations","🌐",["Kurumsal Yönetim ve İç Sistemler"], `${S}Basel Komitesi`)}
+          ${r("NIST Cybersecurity Framework 2.0","🌐",["Bilgi Sistemleri ve Veri Güvenliği"], `${S}NIST`)}
+          <span class="more" style="border:0;padding-left:16px">+ 6 standart daha</span>
+        </div></div>
+      <div class="grp"><div class="grp-head"><h2>🔒 Lisanslı standartlar</h2><span class="count">0</span></div>
+        <div class="empty-grp">COSO, IIA standartları, ISO 27001/27002, COBIT telifli olduğu için uygulamayla gelmez. Kurumunun kopyası varsa ekle; yalnız bu sunucuda kalır.<button class="btn btn-ghost">Standart ekle</button></div></div>
+    </div></div>
+  </section><aside class="panel"></aside>`);
+}
+
+/* ---------- 3) Kapsam seçimi (sağ panel) ---------- */
+function sceneKapsam() {
+  const pick = (t, m, r, off = false) => `<div class="pick ${off?'off':''}"><button class="cb" style="${off?'':'background:var(--ink);border-color:var(--ink)'}">${CHECK}</button><div>${t}<div class="m">${m}</div></div><span class="r">${r}</span></div>`;
+  win("wide-panel", SIDE("docs") + `
+  <section class="main"><div class="topbar"><div class="crumb"><b>Belgeler</b></div><div class="actions"></div></div>
+    <div class="scroll"><div class="doc">
+      <h1>Belgeler</h1>
+      <p class="lead">Kontroller şirket belgelerinden üretilir. Mevzuat ve standartlar uygulamayla birlikte gelir; model onları kontrolün dayanağını göstermek için kullanır.</p>
+      ${TABS("sirket")}
+      <div class="grp"><div class="grp-head"><h2>📘 Uygulama esasları</h2><span class="count">3</span></div>
+        <div class="doc-list">
+          ${docRow("📄","Bilgi Güvenliği ve Erişim Yönetimi Uygulama Esasları.docx", `${A("Bilgi Sistemleri ve Veri Güvenliği")}${S}14 bölüm`)}
+          ${docRow("📄","Ödeme ve Fon Transferi Uygulama Esasları.pdf", `${A("Ödeme Sistemleri","AML / Uyum")}${S}9 bölüm`)}
+          ${docRow("📄","Kişisel Verilerin Saklanması ve İmhası Uygulama Esasları.docx", `${A("Kişisel Verilerin Korunması")}${S}6 bölüm`)}
+        </div></div>
+      <div class="grp"><div class="grp-head"><h2>🏢 Organizasyon ve görevler</h2><span class="count">1</span></div>
+        <div class="doc-list">${docRow("📄","Organizasyon Şeması ve Görev Tanımları 2026.xlsx", `Tüm alanlar${S}86 birim / görev`)}</div></div>
+    </div></div>
+  </section>
+  <aside class="panel"><div class="scope">
+    <div class="panel-top"><span>Yeni kontrol seti</span><button class="pill-btn icon-btn">✕</button></div>
+    <div class="panel-body">
+      <h3>Hangi alanda kontrol üretelim?</h3>
+      <p class="sub">Yalnız seçtiğin alanın belgeleri işlenir. Birden fazla alan seçebilirsin.</p>
+
+      <div class="step" style="margin-top:6px"><div class="step-h"><span class="n">1</span>Alan</div>
+        <div class="chips">
+          <span class="chip on">🛡️ Bilgi Sistemleri ve Veri Güvenliği <span class="c">1</span></span>
+          <span class="chip">🔐 Kişisel Verilerin Korunması <span class="c">1</span></span>
+          <span class="chip">💸 Ödeme Sistemleri <span class="c">1</span></span>
+          <span class="chip">🔍 AML / Uyum <span class="c">1</span></span>
+          <span class="chip dim">🏦 Kredi <span class="c">0</span></span>
+          <span class="chip dim">🏛️ Kurumsal Yönetim <span class="c">0</span></span>
+          <span class="chip dim">⚙️ Operasyonel Risk <span class="c">0</span></span>
+        </div></div>
+
+      <div class="step"><div class="step-h"><span class="n">2</span>Kontrol üretilecek uygulama esasları<span class="r">1 / 1</span></div>
+        <div class="picks">${pick("Bilgi Güvenliği ve Erişim Yönetimi Uygulama Esasları", "14 bölüm · Ekim 2026 sürümü", "~4 dk")}</div></div>
+
+      <div class="step"><div class="step-h"><span class="n">3</span>Dayanak olarak bakılacak kaynaklar<span class="r">5 / 5</span></div>
+        <div class="picks">
+          ${pick("BDDK — Bilgi Sistemleri ve Elektronik Bankacılık Yönetmeliği", "Resmi · Türkiye", "")}
+          ${pick("BDDK — Bilgi Sistemleri ve İş Süreçleri Bağımsız Denetimi Yönetmeliği", "Resmi · Türkiye", "")}
+          ${pick("BDDK — İç Sistemler Yönetmeliği", "Resmi · Türkiye", "")}
+          ${pick("NIST Cybersecurity Framework 2.0", "Global standart", "")}
+          ${pick("BCBS — Principles for Operational Resilience", "Global standart", "")}
+          <span class="more">Diğer kaynaklardan ekle…</span>
+        </div>
+        <p class="role">Bunlardan kontrol üretilmez; model her kontrol için ilgili maddeyi bulup “Dayanak” olarak gösterir.</p></div>
+
+      <div class="step"><div class="step-h"><span class="n">4</span>Şirket bağlamı</div>
+        <div class="switch-row"><div>Organizasyon ve görev tanımlarını kullan<div class="m">Kontrolün sorumlu birimini ve savunma hattını belirlemek için</div></div><span class="sw"></span></div></div>
+
+      <div class="step"><div class="step-h"><span class="n">5</span>Set adı</div>
+        <input class="inp-name" value="Veri Güvenliği — Ekim 2026" /></div>
+    </div>
+    <div class="scope-foot"><div class="sum"><b>1 belge · 14 bölüm</b><br>5 dayanak kaynağı · tahmini ~4 dk</div><button class="btn btn-ink">Kontrolleri üret</button></div>
+  </div></aside>`);
+}
+
+/* ---------- 4) Sonuç: kontrol detayında dayanak + sorumlu ---------- */
+function sceneSonuc() {
+  const row = (t, meta, risk, cls = "") => `<div class="row ${cls}"><button class="cb">${CHECK}</button><div><div class="title">${t}</div><div class="meta">${meta}</div></div><span class="risk r-${risk.toLowerCase().replace('ü','u')}"><i></i>${risk}</span></div>`;
+  const M = (s, h, b) => `${s}${S}Hat ${h}${S}${b}`;
+  win("has-panel", SIDE("set") + `
+  <section class="main"><div class="topbar"><div class="crumb">Kontrol Setleri <span>/</span> <b>Veri Güvenliği — Ekim 2026</b></div><div class="actions"><button class="pill-btn">↓ Word</button><button class="pill-btn">↓ Excel</button><button class="pill-btn icon-btn">⋯</button></div></div>
+    <div class="scroll"><div class="doc">
+      <h1>Veri Güvenliği — Ekim 2026</h1>
+      <div class="head-pills"><div class="source"><span>🛡️ Bilgi Sistemleri ve Veri Güvenliği</span>${S}<span>1 uygulama esası</span>${S}<span>5 dayanak kaynağı</span>${S}<span>17 Eki 2026</span></div>
+        <span class="gap-pill">⚠️ 3 boşluk tespit edildi ↓</span></div>
+      <div class="toolbar" style="margin-top:22px"><div class="seg"><button class="on">Tümü<span>24</span></button><button>Bekleyen<span>24</span></button><button>Kabul<span>0</span></button><button>Red<span>0</span></button></div></div>
+      <h2 class="group"><span class="ico">🛡️</span>Bilgi Sistemleri <span class="count">18</span></h2>
+      ${row("Ayrıcalıklı hesap işlemlerinin Bilgi Güvenliği tarafından haftalık incelendiğinin teyidi", M("Haftalık","2","Bilgi Güvenliği Müdürlüğü"), "Yüksek", "selected")}
+      ${row("Kullanıcı erişim yetkilerinin yıllık gözden geçirmesinin tamamlandığının kontrolü", M("Yıllık","1","BT Operasyon"), "Yüksek")}
+      ${row("Ayrılan personel hesaplarının aynı gün kapatıldığının örneklem testi", M("Aylık","1","İnsan Kaynakları + BT"), "Kritik")}
+      ${row("Acil erişim hesabının yalnız olay kaydıyla açıldığının teyidi", M("Aylık","2","Bilgi Güvenliği Müdürlüğü"), "Yüksek")}
+      ${row("Yedeklerden geri dönüş testinin planlanan sıklıkta yapıldığının kontrolü", M("Üç aylık","1","BT Altyapı"), "Orta")}
+    </div></div>
+  </section>
+  <aside class="panel"><div class="panel-in" style="opacity:1">
+    <div class="panel-top"><span>Kontrol detayı · 1 / 24</span><button class="pill-btn icon-btn">✕</button></div>
+    <div class="panel-body">
+      <textarea class="auto p-title" rows="3">Ayrıcalıklı hesap işlemlerinin Bilgi Güvenliği tarafından haftalık incelendiğinin teyidi</textarea>
+      <dl class="fields">
+        <dt>Kategori</dt><dd><select><option>Bilgi Sistemleri</option></select></dd>
+        <dt>Sıklık</dt><dd><select><option>Haftalık</option></select></dd>
+        <dt>Risk</dt><dd><select><option>Yüksek</option></select></dd>
+        <dt>Hat</dt><dd><select><option>2 — Risk / uyum</option></select></dd>
+        <dt>Sorumlu</dt><dd><div class="owner">Bilgi Güvenliği Müdürlüğü <small>görev tanımından</small></div></dd>
+      </dl>
+      <div class="blk"><h4>Kaynak</h4><div class="src">📘 Bilgi Güvenliği ve Erişim Yönetimi Uygulama Esasları<span class="src-sec">6.2 Ayrıcalıklı Hesaplar</span></div>
+        <div class="quote">“Ayrıcalıklı hesaplarla yapılan tüm işlemler kayıt altına alınır ve Bilgi Güvenliği Müdürlüğü tarafından haftalık incelenir.”</div>
+        <div class="verify ok">Alıntı belgede doğrulandı</div></div>
+      <div class="blk"><h4>Dayanak</h4><div class="basis">
+        <div class="basis-item"><div class="h">🏛️ BDDK Bilgi Sistemleri Yönetmeliği — Madde 11<span class="k">Resmi · TR</span></div>Kimlik ve erişim yönetimi: ayrıcalıklı hesapların kullanımı kayıt altına alınır, izlenir…</div>
+        <div class="basis-item"><div class="h">🌐 NIST CSF 2.0 — PR.AA-05<span class="k">Global</span></div>Erişim izinleri ve yetkiler en az ayrıcalık ilkesiyle yönetilir ve gözden geçirilir…</div>
+      </div></div>
+    </div>
+  </div></aside>`);
+  document.body.insertAdjacentHTML("beforeend", `<div class="scene-note">Dayanağa tıklayınca mevzuat metni ilgili maddede açılır</div>`);
+}
+
+function win(cls, html) { const w = document.getElementById("win"); w.className = "win " + cls; w.innerHTML = html; }
+const s = new URLSearchParams(location.search).get("s") || "sirket";
+({ sirket: sceneSirket, acik: sceneAcik, kapsam: sceneKapsam, sonuc: sceneSonuc }[s] || sceneSirket)();
+</script>
+</body>
+</html>
