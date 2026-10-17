@@ -1,0 +1,2226 @@
+
+    <style>
+        * {
+            font-size: 12pt !important;
+            line-height: 127% !important;
+        }
+
+        @media print {
+            a {
+                visibility: hidden;
+            }
+
+            #section-to-print, #section-to-print * {
+                visibility: visible;
+            }
+
+            #section-to-print {
+                position: absolute;
+                left: 0;
+                top: 0;
+            }
+        }
+        /*aşağıda js kodu var table width değiştirmek için*/
+        table {
+            width: 100% !important;
+            page-break-inside: initial !important;
+            white-space: initial !important;
+            padding: 0 !important;
+            text-indent: 0 !important;
+        }
+
+        @media screen and (max-width: 768px) {
+
+            tr, p, table {
+                width: initial !important;
+                page-break-inside: initial !important;
+                white-space: initial !important;
+                padding: 0 !important;
+                text-indent: 0 !important;
+            }
+
+            table {
+                width: 100% !important;
+            }
+
+
+            td {
+                /*white-space: nowrap !important;*/
+            }
+
+            img {
+                max-width: 100%;
+            }
+        }
+    </style>
+
+    <link href="/lib/tooltip/tooltip.css" rel="stylesheet" />
+<html>
+
+<head>
+<meta http-equiv=Content-Type content="text/html; charset=Windows-1254">
+<meta name=Generator content="Microsoft Word 15 (filtered)">
+<title>8049</title>
+<style>
+<!--
+ /* Font Definitions */
+ @font-face
+	{font-family:Helvetica;
+	panose-1:2 11 6 4 2 2 2 2 2 4;}
+@font-face
+	{font-family:Courier;
+	panose-1:2 7 3 9 2 2 5 2 4 4;}
+@font-face
+	{font-family:"Tms Rmn";
+	panose-1:2 2 6 3 4 5 5 2 3 4;}
+@font-face
+	{font-family:Helv;
+	panose-1:2 11 6 4 2 2 2 3 2 4;}
+@font-face
+	{font-family:"New York";
+	panose-1:2 4 5 3 6 5 6 2 3 4;}
+@font-face
+	{font-family:System;
+	panose-1:0 0 0 0 0 0 0 0 0 0;}
+@font-face
+	{font-family:Wingdings;
+	panose-1:5 0 0 0 0 0 0 0 0 0;}
+@font-face
+	{font-family:"MS Mincho";
+	panose-1:2 2 6 9 4 2 5 8 3 4;}
+@font-face
+	{font-family:Batang;
+	panose-1:2 3 6 0 0 1 1 1 1 1;}
+@font-face
+	{font-family:SimSun;
+	panose-1:2 1 6 0 3 1 1 1 1 1;}
+@font-face
+	{font-family:PMingLiU;
+	panose-1:2 1 6 1 0 1 1 1 1 1;}
+@font-face
+	{font-family:"MS Gothic";
+	panose-1:2 11 6 9 7 2 5 8 2 4;}
+@font-face
+	{font-family:Dotum;
+	panose-1:2 11 6 0 0 1 1 1 1 1;}
+@font-face
+	{font-family:SimHei;
+	panose-1:2 1 6 0 3 1 1 1 1 1;}
+@font-face
+	{font-family:MingLiU;
+	panose-1:2 1 6 9 0 1 1 1 1 1;}
+@font-face
+	{font-family:Mincho;
+	panose-1:2 2 6 9 4 3 5 8 3 5;}
+@font-face
+	{font-family:Gulim;
+	panose-1:2 11 6 0 0 1 1 1 1 1;}
+@font-face
+	{font-family:Century;
+	panose-1:2 4 6 4 5 5 5 2 3 4;}
+@font-face
+	{font-family:"Angsana New";
+	panose-1:2 2 6 3 5 4 5 2 3 4;}
+@font-face
+	{font-family:"Cordia New";
+	panose-1:2 11 3 4 2 2 2 2 2 4;}
+@font-face
+	{font-family:Mangal;
+	panose-1:0 0 4 0 0 0 0 0 0 0;}
+@font-face
+	{font-family:Latha;
+	panose-1:2 0 4 0 0 0 0 0 0 0;}
+@font-face
+	{font-family:Sylfaen;
+	panose-1:1 10 5 2 5 3 6 3 3 3;}
+@font-face
+	{font-family:Vrinda;
+	panose-1:0 0 4 0 0 0 0 0 0 0;}
+@font-face
+	{font-family:Raavi;
+	panose-1:2 0 5 0 0 0 0 0 0 0;}
+@font-face
+	{font-family:Shruti;
+	panose-1:2 0 5 0 0 0 0 0 0 0;}
+@font-face
+	{font-family:Sendnya;
+	panose-1:0 0 4 0 0 0 0 0 0 0;}
+@font-face
+	{font-family:Gautami;
+	panose-1:2 0 5 0 0 0 0 0 0 0;}
+@font-face
+	{font-family:Tunga;
+	panose-1:0 0 4 0 0 0 0 0 0 0;}
+@font-face
+	{font-family:"Estrangelo Edessa";
+	panose-1:0 0 0 0 0 0 0 0 0 0;}
+@font-face
+	{font-family:"Cambria Math";
+	panose-1:2 4 5 3 5 4 6 3 2 4;}
+@font-face
+	{font-family:"Yu Gothic";
+	panose-1:2 11 4 0 0 0 0 0 0 0;}
+@font-face
+	{font-family:DengXian;
+	panose-1:2 1 6 0 3 1 1 1 1 1;}
+@font-face
+	{font-family:"Arial Unicode MS";
+	panose-1:2 11 6 4 2 2 2 2 2 4;}
+@font-face
+	{font-family:"Calibri Light";
+	panose-1:2 15 3 2 2 2 4 3 2 4;}
+@font-face
+	{font-family:Calibri;
+	panose-1:2 15 5 2 2 2 4 3 2 4;}
+@font-face
+	{font-family:"\30D2\30E9\30AE\30CE\660E\671D Pro W3";}
+@font-face
+	{font-family:Times;
+	panose-1:2 2 6 3 5 4 5 2 3 4;}
+@font-face
+	{font-family:Verdana;
+	panose-1:2 11 6 4 3 5 4 4 2 4;}
+@font-face
+	{font-family:Tahoma;
+	panose-1:2 11 6 4 3 5 4 4 2 4;}
+@font-face
+	{font-family:"TR Arial";}
+@font-face
+	{font-family:Cambria;
+	panose-1:2 4 5 3 5 4 6 3 2 4;}
+@font-face
+	{font-family:Consolas;
+	panose-1:2 11 6 9 2 2 4 3 2 4;}
+@font-face
+	{font-family:"\@\30D2\30E9\30AE\30CE\660E\671D Pro W3";}
+@font-face
+	{font-family:"\@Arial Unicode MS";
+	panose-1:2 11 6 4 2 2 2 2 2 4;}
+ /* Style Definitions */
+ p.MsoNormal, li.MsoNormal, div.MsoNormal
+	{margin:0cm;
+	margin-bottom:.0001pt;
+	text-autospace:none;
+	font-size:10.0pt;
+	font-family:"Times New Roman",serif;}
+h1
+	{mso-style-link:"Başlık 1 Char";
+	margin:0cm;
+	margin-bottom:.0001pt;
+	text-align:center;
+	line-height:16.0pt;
+	page-break-after:avoid;
+	text-autospace:none;
+	font-size:12.0pt;
+	font-family:"Times",serif;
+	font-weight:bold;}
+h2
+	{mso-style-link:"Başlık 2 Char";
+	margin:0cm;
+	margin-bottom:.0001pt;
+	text-align:center;
+	text-indent:17.0pt;
+	line-height:11.0pt;
+	page-break-after:avoid;
+	text-autospace:none;
+	font-size:12.0pt;
+	font-family:"Times New Roman",serif;
+	font-weight:bold;}
+h3
+	{mso-style-link:"Başlık 3 Char\,+ Char";
+	margin:0cm;
+	margin-bottom:.0001pt;
+	text-align:center;
+	page-break-after:avoid;
+	text-autospace:none;
+	font-size:8.0pt;
+	font-family:"Times New Roman",serif;
+	color:black;
+	font-weight:bold;}
+h4
+	{mso-style-link:"Başlık 4 Char";
+	margin:0cm;
+	margin-bottom:.0001pt;
+	page-break-after:avoid;
+	text-autospace:none;
+	font-size:8.0pt;
+	font-family:"Times New Roman",serif;
+	color:black;
+	font-weight:bold;}
+h5
+	{mso-style-link:"Başlık 5 Char";
+	margin:0cm;
+	margin-bottom:.0001pt;
+	text-align:justify;
+	text-indent:26.95pt;
+	line-height:10.0pt;
+	page-break-after:avoid;
+	text-autospace:none;
+	font-size:9.0pt;
+	font-family:"Times New Roman",serif;
+	font-weight:normal;
+	font-style:italic;}
+h6
+	{mso-style-link:"Başlık 6 Char";
+	margin:0cm;
+	margin-bottom:.0001pt;
+	text-align:justify;
+	text-indent:27.0pt;
+	line-height:12.0pt;
+	page-break-after:avoid;
+	text-autospace:none;
+	font-size:9.0pt;
+	font-family:"Times New Roman",serif;
+	font-weight:normal;
+	font-style:italic;}
+p.MsoHeading7, li.MsoHeading7, div.MsoHeading7
+	{mso-style-link:"Başlık 7 Char";
+	margin:0cm;
+	margin-bottom:.0001pt;
+	text-align:justify;
+	text-indent:1.0cm;
+	line-height:11.0pt;
+	page-break-after:avoid;
+	text-autospace:none;
+	font-size:9.0pt;
+	font-family:"Times New Roman",serif;
+	font-style:italic;}
+p.MsoHeading8, li.MsoHeading8, div.MsoHeading8
+	{mso-style-link:"Başlık 8 Char";
+	margin:0cm;
+	margin-bottom:.0001pt;
+	text-align:center;
+	line-height:12.0pt;
+	page-break-after:avoid;
+	text-autospace:none;
+	font-size:9.0pt;
+	font-family:"Times New Roman",serif;
+	font-style:italic;}
+p.MsoHeading9, li.MsoHeading9, div.MsoHeading9
+	{mso-style-link:"Başlık 9 Char";
+	margin-top:1.0pt;
+	margin-right:0cm;
+	margin-bottom:1.0pt;
+	margin-left:0cm;
+	text-align:justify;
+	text-indent:1.0cm;
+	line-height:10.0pt;
+	page-break-after:avoid;
+	text-autospace:none;
+	font-size:10.0pt;
+	font-family:"Times New Roman",serif;
+	layout-grid-mode:line;
+	font-weight:bold;}
+p.MsoIndex1, li.MsoIndex1, div.MsoIndex1
+	{margin-top:0cm;
+	margin-right:0cm;
+	margin-bottom:0cm;
+	margin-left:10.0pt;
+	margin-bottom:.0001pt;
+	text-indent:-10.0pt;
+	text-autospace:none;
+	font-size:10.0pt;
+	font-family:"Times New Roman",serif;}
+p.MsoIndex2, li.MsoIndex2, div.MsoIndex2
+	{margin-top:0cm;
+	margin-right:0cm;
+	margin-bottom:0cm;
+	margin-left:20.0pt;
+	margin-bottom:.0001pt;
+	text-indent:-10.0pt;
+	text-autospace:none;
+	font-size:10.0pt;
+	font-family:"Times New Roman",serif;}
+p.MsoIndex3, li.MsoIndex3, div.MsoIndex3
+	{margin-top:0cm;
+	margin-right:0cm;
+	margin-bottom:0cm;
+	margin-left:30.0pt;
+	margin-bottom:.0001pt;
+	text-indent:-10.0pt;
+	text-autospace:none;
+	font-size:10.0pt;
+	font-family:"Times New Roman",serif;}
+p.MsoIndex4, li.MsoIndex4, div.MsoIndex4
+	{margin-top:0cm;
+	margin-right:0cm;
+	margin-bottom:0cm;
+	margin-left:40.0pt;
+	margin-bottom:.0001pt;
+	text-indent:-10.0pt;
+	text-autospace:none;
+	font-size:10.0pt;
+	font-family:"Times New Roman",serif;}
+p.MsoIndex5, li.MsoIndex5, div.MsoIndex5
+	{margin-top:0cm;
+	margin-right:0cm;
+	margin-bottom:0cm;
+	margin-left:50.0pt;
+	margin-bottom:.0001pt;
+	text-indent:-10.0pt;
+	text-autospace:none;
+	font-size:10.0pt;
+	font-family:"Times New Roman",serif;}
+p.MsoIndex6, li.MsoIndex6, div.MsoIndex6
+	{margin-top:0cm;
+	margin-right:0cm;
+	margin-bottom:0cm;
+	margin-left:60.0pt;
+	margin-bottom:.0001pt;
+	text-indent:-10.0pt;
+	text-autospace:none;
+	font-size:10.0pt;
+	font-family:"Times New Roman",serif;}
+p.MsoIndex7, li.MsoIndex7, div.MsoIndex7
+	{margin-top:0cm;
+	margin-right:0cm;
+	margin-bottom:0cm;
+	margin-left:70.0pt;
+	margin-bottom:.0001pt;
+	text-indent:-10.0pt;
+	text-autospace:none;
+	font-size:10.0pt;
+	font-family:"Times New Roman",serif;}
+p.MsoIndex8, li.MsoIndex8, div.MsoIndex8
+	{margin-top:0cm;
+	margin-right:0cm;
+	margin-bottom:0cm;
+	margin-left:80.0pt;
+	margin-bottom:.0001pt;
+	text-indent:-10.0pt;
+	text-autospace:none;
+	font-size:10.0pt;
+	font-family:"Times New Roman",serif;}
+p.MsoIndex9, li.MsoIndex9, div.MsoIndex9
+	{margin-top:0cm;
+	margin-right:0cm;
+	margin-bottom:0cm;
+	margin-left:90.0pt;
+	margin-bottom:.0001pt;
+	text-indent:-10.0pt;
+	text-autospace:none;
+	font-size:10.0pt;
+	font-family:"Times New Roman",serif;}
+p.MsoFootnoteText, li.MsoFootnoteText, div.MsoFootnoteText
+	{mso-style-link:"Dipnot Metni Char";
+	margin:0cm;
+	margin-bottom:.0001pt;
+	font-size:10.0pt;
+	font-family:"Times New Roman",serif;}
+p.MsoCommentText, li.MsoCommentText, div.MsoCommentText
+	{mso-style-link:"Açıklama Metni Char";
+	margin-top:0cm;
+	margin-right:0cm;
+	margin-bottom:10.0pt;
+	margin-left:0cm;
+	line-height:115%;
+	font-size:10.0pt;
+	font-family:"Calibri",sans-serif;}
+p.MsoHeader, li.MsoHeader, div.MsoHeader
+	{mso-style-link:"Üstbilgi Char";
+	margin:0cm;
+	margin-bottom:.0001pt;
+	text-autospace:none;
+	font-size:10.0pt;
+	font-family:"Times New Roman",serif;}
+p.MsoFooter, li.MsoFooter, div.MsoFooter
+	{mso-style-link:"Altbilgi Char";
+	margin:0cm;
+	margin-bottom:.0001pt;
+	text-autospace:none;
+	font-size:10.0pt;
+	font-family:"Times New Roman",serif;}
+p.MsoIndexHeading, li.MsoIndexHeading, div.MsoIndexHeading
+	{margin:0cm;
+	margin-bottom:.0001pt;
+	text-autospace:none;
+	font-size:10.0pt;
+	font-family:"Times New Roman",serif;}
+p.MsoCaption, li.MsoCaption, div.MsoCaption
+	{margin:0cm;
+	margin-bottom:.0001pt;
+	text-autospace:none;
+	font-size:10.0pt;
+	font-family:"Times New Roman",serif;
+	font-weight:bold;}
+span.MsoFootnoteReference
+	{vertical-align:super;}
+p.MsoTitle, li.MsoTitle, div.MsoTitle
+	{mso-style-link:"Konu Başlığı Char";
+	margin-top:0cm;
+	margin-right:0cm;
+	margin-bottom:3.0pt;
+	margin-left:0cm;
+	text-align:center;
+	punctuation-wrap:simple;
+	text-autospace:none;
+	font-size:12.0pt;
+	font-family:"Times New Roman",serif;
+	font-weight:bold;}
+p.MsoBodyText, li.MsoBodyText, div.MsoBodyText
+	{mso-style-link:"Gövde Metni Char";
+	margin:0cm;
+	margin-bottom:.0001pt;
+	text-align:justify;
+	line-height:10.0pt;
+	layout-grid-mode:char;
+	text-autospace:none;
+	font-size:9.0pt;
+	font-family:"Times New Roman",serif;
+	font-weight:bold;}
+p.MsoBodyTextIndent, li.MsoBodyTextIndent, div.MsoBodyTextIndent
+	{mso-style-link:"Gövde Metni Girintisi Char";
+	margin-top:0cm;
+	margin-right:0cm;
+	margin-bottom:0cm;
+	margin-left:14.2pt;
+	margin-bottom:.0001pt;
+	text-align:justify;
+	text-indent:-14.2pt;
+	line-height:11.0pt;
+	text-autospace:none;
+	font-size:8.0pt;
+	font-family:"Times New Roman",serif;
+	font-style:italic;}
+p.MsoSubtitle, li.MsoSubtitle, div.MsoSubtitle
+	{mso-style-name:"Altyazı\,Alt Konu Başlığı";
+	mso-style-link:"Alt Konu Başlığı Char";
+	margin:0cm;
+	margin-bottom:.0001pt;
+	text-align:center;
+	line-height:150%;
+	punctuation-wrap:simple;
+	text-autospace:none;
+	font-size:26.0pt;
+	font-family:"Times New Roman",serif;
+	font-weight:bold;
+	text-decoration:underline;}
+p.MsoBodyText2, li.MsoBodyText2, div.MsoBodyText2
+	{mso-style-link:"Gövde Metni 2 Char";
+	margin-top:0cm;
+	margin-right:0cm;
+	margin-bottom:3.0pt;
+	margin-left:0cm;
+	text-autospace:none;
+	font-size:9.0pt;
+	font-family:"Times New Roman",serif;
+	layout-grid-mode:line;}
+p.MsoBodyText3, li.MsoBodyText3, div.MsoBodyText3
+	{mso-style-link:"Gövde Metni 3 Char";
+	margin:0cm;
+	margin-bottom:.0001pt;
+	text-align:justify;
+	line-height:90%;
+	text-autospace:none;
+	font-size:8.0pt;
+	font-family:"Times",serif;
+	font-style:italic;}
+p.MsoBodyTextIndent2, li.MsoBodyTextIndent2, div.MsoBodyTextIndent2
+	{mso-style-link:"Gövde Metni Girintisi 2 Char";
+	margin-top:0cm;
+	margin-right:0cm;
+	margin-bottom:0cm;
+	margin-left:21.3pt;
+	margin-bottom:.0001pt;
+	text-indent:-21.3pt;
+	text-autospace:none;
+	font-size:10.0pt;
+	font-family:"Times",serif;
+	font-style:italic;}
+p.MsoBodyTextIndent3, li.MsoBodyTextIndent3, div.MsoBodyTextIndent3
+	{mso-style-link:"Gövde Metni Girintisi 3 Char";
+	margin-top:0cm;
+	margin-right:0cm;
+	margin-bottom:0cm;
+	margin-left:18.0pt;
+	margin-bottom:.0001pt;
+	text-align:justify;
+	text-indent:-18.0pt;
+	text-autospace:none;
+	font-size:8.0pt;
+	font-family:"Times New Roman",serif;
+	font-style:italic;}
+p.MsoBlockText, li.MsoBlockText, div.MsoBlockText
+	{margin-top:0cm;
+	margin-right:42.5pt;
+	margin-bottom:3.0pt;
+	margin-left:42.55pt;
+	text-align:center;
+	text-autospace:none;
+	font-size:10.0pt;
+	font-family:"Times New Roman",serif;
+	font-weight:bold;}
+a:link, span.MsoHyperlink
+	{color:blue;
+	text-decoration:underline;}
+a:visited, span.MsoHyperlinkFollowed
+	{color:purple;
+	text-decoration:underline;}
+p.MsoDocumentMap, li.MsoDocumentMap, div.MsoDocumentMap
+	{mso-style-link:"Belge Bağlantıları Char";
+	margin:0cm;
+	margin-bottom:.0001pt;
+	background:navy;
+	text-autospace:none;
+	font-size:10.0pt;
+	font-family:"Tahoma",sans-serif;}
+p.MsoPlainText, li.MsoPlainText, div.MsoPlainText
+	{mso-style-link:"Düz Metin Char";
+	margin:0cm;
+	margin-bottom:.0001pt;
+	font-size:10.0pt;
+	font-family:"Courier New";}
+p
+	{margin-right:0cm;
+	margin-left:0cm;
+	font-size:12.0pt;
+	font-family:"Times New Roman",serif;}
+pre
+	{mso-style-link:"HTML Önceden Biçimlendirilmiş Char";
+	margin:0cm;
+	margin-bottom:.0001pt;
+	font-size:10.0pt;
+	font-family:"Arial Unicode MS",sans-serif;}
+p.MsoCommentSubject, li.MsoCommentSubject, div.MsoCommentSubject
+	{mso-style-link:"Açıklama Konusu Char";
+	margin-top:0cm;
+	margin-right:0cm;
+	margin-bottom:10.0pt;
+	margin-left:0cm;
+	line-height:115%;
+	font-size:10.0pt;
+	font-family:"Calibri",sans-serif;
+	font-weight:bold;}
+p.MsoAcetate, li.MsoAcetate, div.MsoAcetate
+	{mso-style-link:"Balon Metni Char";
+	margin:0cm;
+	margin-bottom:.0001pt;
+	text-autospace:none;
+	font-size:8.0pt;
+	font-family:"Tahoma",sans-serif;}
+p.MsoListParagraph, li.MsoListParagraph, div.MsoListParagraph
+	{margin-top:0cm;
+	margin-right:0cm;
+	margin-bottom:10.0pt;
+	margin-left:36.0pt;
+	line-height:115%;
+	font-size:11.0pt;
+	font-family:"Calibri",sans-serif;}
+p.MsoListParagraphCxSpFirst, li.MsoListParagraphCxSpFirst, div.MsoListParagraphCxSpFirst
+	{margin-top:0cm;
+	margin-right:0cm;
+	margin-bottom:0cm;
+	margin-left:36.0pt;
+	margin-bottom:.0001pt;
+	line-height:115%;
+	font-size:11.0pt;
+	font-family:"Calibri",sans-serif;}
+p.MsoListParagraphCxSpMiddle, li.MsoListParagraphCxSpMiddle, div.MsoListParagraphCxSpMiddle
+	{margin-top:0cm;
+	margin-right:0cm;
+	margin-bottom:0cm;
+	margin-left:36.0pt;
+	margin-bottom:.0001pt;
+	line-height:115%;
+	font-size:11.0pt;
+	font-family:"Calibri",sans-serif;}
+p.MsoListParagraphCxSpLast, li.MsoListParagraphCxSpLast, div.MsoListParagraphCxSpLast
+	{margin-top:0cm;
+	margin-right:0cm;
+	margin-bottom:10.0pt;
+	margin-left:36.0pt;
+	line-height:115%;
+	font-size:11.0pt;
+	font-family:"Calibri",sans-serif;}
+span.Balk1Char
+	{mso-style-name:"Başlık 1 Char";
+	mso-style-link:"Başlık 1";
+	font-family:"Times",serif;
+	font-weight:bold;}
+span.Balk2Char
+	{mso-style-name:"Başlık 2 Char";
+	mso-style-link:"Başlık 2";
+	font-weight:bold;}
+span.Balk3Char
+	{mso-style-name:"Başlık 3 Char\,+ Char";
+	mso-style-link:"Başlık 3";
+	color:black;
+	font-weight:bold;}
+span.Balk4Char
+	{mso-style-name:"Başlık 4 Char";
+	mso-style-link:"Başlık 4";
+	color:black;
+	font-weight:bold;}
+span.Balk5Char
+	{mso-style-name:"Başlık 5 Char";
+	mso-style-link:"Başlık 5";
+	font-style:italic;}
+span.Balk6Char
+	{mso-style-name:"Başlık 6 Char";
+	mso-style-link:"Başlık 6";
+	font-style:italic;}
+span.Balk7Char
+	{mso-style-name:"Başlık 7 Char";
+	mso-style-link:"Başlık 7";
+	font-style:italic;}
+span.Balk8Char
+	{mso-style-name:"Başlık 8 Char";
+	mso-style-link:"Başlık 8";
+	font-style:italic;}
+span.Balk9Char
+	{mso-style-name:"Başlık 9 Char";
+	mso-style-link:"Başlık 9";
+	layout-grid-mode:line;
+	font-weight:bold;}
+p.2, li.2, div.2
+	{mso-style-name:2;
+	margin-top:0cm;
+	margin-right:0cm;
+	margin-bottom:8.0pt;
+	margin-left:0cm;
+	line-height:12.0pt;
+	font-size:10.0pt;
+	font-family:"Verdana",sans-serif;}
+span.GvdeMetni3Char
+	{mso-style-name:"Gövde Metni 3 Char";
+	mso-style-link:"Gövde Metni 3";
+	font-family:"Times",serif;
+	font-style:italic;}
+p.Nor, li.Nor, div.Nor
+	{mso-style-name:"Nor\.";
+	margin:0cm;
+	margin-bottom:.0001pt;
+	text-align:justify;
+	text-autospace:none;
+	font-size:9.0pt;
+	font-family:"New York",serif;}
+span.GvdeMetniGirintisiChar
+	{mso-style-name:"Gövde Metni Girintisi Char";
+	mso-style-link:"Gövde Metni Girintisi";
+	font-style:italic;}
+span.GvdeMetniGirintisi2Char
+	{mso-style-name:"Gövde Metni Girintisi 2 Char";
+	mso-style-link:"Gövde Metni Girintisi 2";
+	font-family:"Times",serif;
+	font-style:italic;}
+span.GvdeMetniGirintisi3Char
+	{mso-style-name:"Gövde Metni Girintisi 3 Char";
+	mso-style-link:"Gövde Metni Girintisi 3";
+	font-style:italic;}
+span.HTMLncedenBiimlendirilmiChar
+	{mso-style-name:"HTML Önceden Biçimlendirilmiş Char";
+	mso-style-link:"HTML Önceden Biçimlendirilmiş";
+	font-family:"Arial Unicode MS",sans-serif;}
+span.GvdeMetniChar
+	{mso-style-name:"Gövde Metni Char";
+	mso-style-link:"Gövde Metni";
+	font-weight:bold;}
+span.GvdeMetni2Char
+	{mso-style-name:"Gövde Metni 2 Char";
+	mso-style-link:"Gövde Metni 2";
+	layout-grid-mode:line;}
+span.stbilgiChar
+	{mso-style-name:"Üstbilgi Char";
+	mso-style-link:Üstbilgi;}
+span.AltbilgiChar
+	{mso-style-name:"Altbilgi Char";
+	mso-style-link:Altbilgi;}
+p.ksmblm, li.ksmblm, div.ksmblm
+	{mso-style-name:kısımbölüm;
+	margin-top:2.85pt;
+	margin-right:0cm;
+	margin-bottom:0cm;
+	margin-left:0cm;
+	margin-bottom:.0001pt;
+	text-align:justify;
+	font-size:9.0pt;
+	font-family:"New York",serif;}
+p.KanTab, li.KanTab, div.KanTab
+	{mso-style-name:"Kan Tab";
+	margin:0cm;
+	margin-bottom:.0001pt;
+	text-align:justify;
+	font-size:11.0pt;
+	font-family:"New York",serif;
+	font-weight:bold;}
+p.Normal, li.Normal, div.Normal
+	{mso-style-name:Normal*;
+	margin:0cm;
+	margin-bottom:.0001pt;
+	text-align:justify;
+	font-size:9.0pt;
+	font-family:"New York",serif;}
+p.Ynetmelii, li.Ynetmelii, div.Ynetmelii
+	{mso-style-name:Yönetmeliği;
+	margin-top:8.5pt;
+	margin-right:0cm;
+	margin-bottom:2.85pt;
+	margin-left:0cm;
+	line-height:11.0pt;
+	font-size:11.0pt;
+	font-family:"New York",serif;
+	font-weight:bold;}
+span.KonuBalChar
+	{mso-style-name:"Konu Başlığı Char";
+	mso-style-link:"Konu Başlığı";
+	font-weight:bold;}
+span.AltKonuBalChar
+	{mso-style-name:"Alt Konu Başlığı Char";
+	mso-style-link:"Altyazı\,Alt Konu Başlığı";
+	font-weight:bold;
+	text-decoration:underline;}
+p.ALTBASLIK, li.ALTBASLIK, div.ALTBASLIK
+	{mso-style-name:ALTBASLIK;
+	margin:0cm;
+	margin-bottom:.0001pt;
+	text-align:center;
+	font-size:11.0pt;
+	font-family:"New York",serif;
+	font-weight:bold;}
+span.BelgeBalantlarChar
+	{mso-style-name:"Belge Bağlantıları Char";
+	mso-style-link:"Belge Bağlantıları";
+	font-family:"Tahoma",sans-serif;}
+span.BalonMetniChar
+	{mso-style-name:"Balon Metni Char";
+	mso-style-link:"Balon Metni";
+	font-family:"Tahoma",sans-serif;}
+p.MaddeBasl, li.MaddeBasl, div.MaddeBasl
+	{mso-style-name:"Madde Baslığı";
+	margin-top:5.65pt;
+	margin-right:0cm;
+	margin-bottom:0cm;
+	margin-left:0cm;
+	margin-bottom:.0001pt;
+	font-size:9.0pt;
+	font-family:"New York",serif;
+	font-style:italic;}
+p.ntanml, li.ntanml, div.ntanml
+	{mso-style-name:"Ön tanımlı";
+	margin:0cm;
+	margin-bottom:.0001pt;
+	layout-grid-mode:char;
+	font-size:12.0pt;
+	font-family:"Times New Roman",serif;}
+span.Normal1
+	{mso-style-name:Normal1;
+	font-family:"TR Arial";}
+p.Dipnot, li.Dipnot, div.Dipnot
+	{mso-style-name:Dipnot;
+	margin-top:0cm;
+	margin-right:0cm;
+	margin-bottom:0cm;
+	margin-left:18.45pt;
+	margin-bottom:.0001pt;
+	text-align:justify;
+	text-indent:-18.45pt;
+	line-height:18.0pt;
+	font-size:8.0pt;
+	font-family:"New York",serif;
+	font-style:italic;}
+span.normal10
+	{mso-style-name:normal1;
+	font-family:"TR Arial";}
+p.3-NormalYaz, li.3-NormalYaz, div.3-NormalYaz
+	{mso-style-name:"3-Normal Yazı";
+	mso-style-link:"3-Normal Yazı Char";
+	margin:0cm;
+	margin-bottom:.0001pt;
+	text-align:justify;
+	font-size:9.5pt;
+	font-family:"Times New Roman",serif;}
+span.3-NormalYazChar
+	{mso-style-name:"3-Normal Yazı Char";
+	mso-style-link:"3-Normal Yazı";}
+span.spelle
+	{mso-style-name:spelle;}
+span.DEKLK
+	{mso-style-name:DEĞİŞİKLİK;
+	color:blue;}
+p.GvdeMetniGirintisi21, li.GvdeMetniGirintisi21, div.GvdeMetniGirintisi21
+	{mso-style-name:"Gövde Metni Girintisi 21";
+	margin:0cm;
+	margin-bottom:.0001pt;
+	text-align:justify;
+	text-indent:35.4pt;
+	font-size:13.0pt;
+	font-family:"Times New Roman",serif;
+	font-weight:bold;}
+p.DzMetin2, li.DzMetin2, div.DzMetin2
+	{mso-style-name:"Düz Metin2";
+	margin:0cm;
+	margin-bottom:.0001pt;
+	text-autospace:ideograph-numeric;
+	font-size:10.0pt;
+	font-family:"Courier New";}
+p.GvdeMetni31, li.GvdeMetni31, div.GvdeMetni31
+	{mso-style-name:"Gövde Metni 31";
+	margin-top:0cm;
+	margin-right:0cm;
+	margin-bottom:6.0pt;
+	margin-left:0cm;
+	font-size:8.0pt;
+	font-family:"Times New Roman",serif;}
+p.DzMetin1, li.DzMetin1, div.DzMetin1
+	{mso-style-name:"Düz Metin1";
+	margin:0cm;
+	margin-bottom:.0001pt;
+	text-autospace:ideograph-numeric;
+	font-size:10.0pt;
+	font-family:"Courier New";
+	color:black;}
+p.GvdeMetni21, li.GvdeMetni21, div.GvdeMetni21
+	{mso-style-name:"Gövde Metni 21";
+	margin-top:0cm;
+	margin-right:0cm;
+	margin-bottom:6.0pt;
+	margin-left:0cm;
+	line-height:200%;
+	font-size:12.0pt;
+	font-family:"Times New Roman",serif;}
+p.Balk10, li.Balk10, div.Balk10
+	{mso-style-name:"Başlık 10";
+	margin-top:12.0pt;
+	margin-right:0cm;
+	margin-bottom:6.0pt;
+	margin-left:-144.0pt;
+	text-indent:-18.0pt;
+	page-break-after:avoid;
+	font-size:10.5pt;
+	font-family:"Arial",sans-serif;
+	color:black;
+	font-weight:bold;}
+p.2-OrtaBaslk, li.2-OrtaBaslk, div.2-OrtaBaslk
+	{mso-style-name:"2-Orta Baslık";
+	margin:0cm;
+	margin-bottom:.0001pt;
+	text-align:center;
+	font-size:9.5pt;
+	font-family:"Times New Roman",serif;
+	font-weight:bold;}
+span.DipnotMetniChar
+	{mso-style-name:"Dipnot Metni Char";
+	mso-style-link:"Dipnot Metni";}
+span.DzMetinChar
+	{mso-style-name:"Düz Metin Char";
+	mso-style-link:"Düz Metin";
+	font-family:"Courier New";}
+span.Gvdemetni
+	{mso-style-name:"Gövde metni_";
+	mso-style-link:"Gövde metni";
+	background:white;}
+p.Gvdemetni0, li.Gvdemetni0, div.Gvdemetni0
+	{mso-style-name:"Gövde metni";
+	mso-style-link:"Gövde metni_";
+	margin:0cm;
+	margin-bottom:.0001pt;
+	text-align:justify;
+	line-height:13.7pt;
+	background:white;
+	font-size:10.0pt;
+	font-family:"Times New Roman",serif;
+	background:white;}
+p.baslk, li.baslk, div.baslk
+	{mso-style-name:baslk;
+	margin-right:0cm;
+	margin-left:0cm;
+	font-size:12.0pt;
+	font-family:"Times New Roman",serif;}
+span.FontStyle11
+	{mso-style-name:"Font Style11";
+	font-family:"Times New Roman",serif;
+	font-weight:bold;}
+span.FontStyle12
+	{mso-style-name:"Font Style12";
+	font-family:"Times New Roman",serif;}
+p.Style2, li.Style2, div.Style2
+	{mso-style-name:Style2;
+	margin:0cm;
+	margin-bottom:.0001pt;
+	text-align:justify;
+	text-indent:34.8pt;
+	line-height:13.9pt;
+	text-autospace:none;
+	font-size:12.0pt;
+	font-family:"Times New Roman",serif;}
+p.Style3, li.Style3, div.Style3
+	{mso-style-name:Style3;
+	margin:0cm;
+	margin-bottom:.0001pt;
+	text-align:justify;
+	text-indent:32.65pt;
+	line-height:21.25pt;
+	text-autospace:none;
+	font-size:12.0pt;
+	font-family:"Cambria",serif;}
+p.nor0, li.nor0, div.nor0
+	{mso-style-name:nor;
+	margin-right:0cm;
+	margin-left:0cm;
+	font-size:12.0pt;
+	font-family:"Times New Roman",serif;}
+p.Style8, li.Style8, div.Style8
+	{mso-style-name:Style8;
+	margin:0cm;
+	margin-bottom:.0001pt;
+	text-align:justify;
+	text-indent:27.6pt;
+	line-height:13.7pt;
+	text-autospace:none;
+	font-size:12.0pt;
+	font-family:"Times New Roman",serif;}
+p.Style6, li.Style6, div.Style6
+	{mso-style-name:Style6;
+	margin:0cm;
+	margin-bottom:.0001pt;
+	text-align:justify;
+	text-indent:27.6pt;
+	line-height:13.45pt;
+	text-autospace:none;
+	font-size:12.0pt;
+	font-family:"Times New Roman",serif;}
+p.Style5, li.Style5, div.Style5
+	{mso-style-name:Style5;
+	margin:0cm;
+	margin-bottom:.0001pt;
+	text-align:justify;
+	text-indent:38.15pt;
+	line-height:21.0pt;
+	text-autospace:none;
+	font-size:12.0pt;
+	font-family:"Cambria",serif;}
+p.ListeParagraf2, li.ListeParagraf2, div.ListeParagraf2
+	{mso-style-name:"Liste Paragraf2";
+	margin-top:0cm;
+	margin-right:0cm;
+	margin-bottom:10.0pt;
+	margin-left:36.0pt;
+	line-height:115%;
+	font-size:11.0pt;
+	font-family:"Calibri",sans-serif;}
+p.kantabChar, li.kantabChar, div.kantabChar
+	{mso-style-name:"kantab Char";
+	margin-right:0cm;
+	margin-left:0cm;
+	font-size:12.0pt;
+	font-family:"Times New Roman",serif;}
+p.nor00, li.nor00, div.nor00
+	{mso-style-name:nor0;
+	margin-right:0cm;
+	margin-left:0cm;
+	font-size:12.0pt;
+	font-family:"Times New Roman",serif;}
+p.norf3, li.norf3, div.norf3
+	{mso-style-name:norf3;
+	margin-right:0cm;
+	margin-left:0cm;
+	font-size:12.0pt;
+	font-family:"Times New Roman",serif;}
+span.GvdemetniKaln
+	{mso-style-name:"Gövde metni + Kalın";
+	font-family:"Times New Roman",serif;
+	font-variant:normal !important;
+	letter-spacing:0pt;
+	font-weight:bold;
+	font-style:normal;
+	text-decoration:none none;}
+p.NormalWeb5, li.NormalWeb5, div.NormalWeb5
+	{mso-style-name:"Normal \(Web\)5";
+	margin-right:0cm;
+	margin-left:0cm;
+	text-align:justify;
+	line-height:10.2pt;
+	font-size:7.0pt;
+	font-family:"Tahoma",sans-serif;
+	color:black;}
+p.kantab0, li.kantab0, div.kantab0
+	{mso-style-name:kantab0;
+	margin:0cm;
+	margin-bottom:.0001pt;
+	text-align:justify;
+	font-size:11.0pt;
+	font-family:"New York",serif;
+	font-weight:bold;}
+p.normal0, li.normal0, div.normal0
+	{mso-style-name:normal;
+	margin:0cm;
+	margin-bottom:.0001pt;
+	font-size:12.0pt;
+	font-family:"Times New Roman",serif;}
+span.stil7char
+	{mso-style-name:stil7char;}
+p.3-normalyaz0, li.3-normalyaz0, div.3-normalyaz0
+	{mso-style-name:3-normalyaz;
+	margin-right:0cm;
+	margin-left:0cm;
+	font-size:12.0pt;
+	font-family:"Times New Roman",serif;}
+span.GvdeMetniChar1
+	{mso-style-name:"Gövde Metni Char1";}
+span.DzMetinChar1
+	{mso-style-name:"Düz Metin Char1";
+	font-family:Consolas;}
+span.AklamaMetniChar
+	{mso-style-name:"Açıklama Metni Char";
+	mso-style-link:"Açıklama Metni";
+	font-family:"Calibri",sans-serif;}
+span.AklamaKonusuChar
+	{mso-style-name:"Açıklama Konusu Char";
+	mso-style-link:"Açıklama Konusu";
+	font-family:"Calibri",sans-serif;
+	font-weight:bold;}
+p.CharCharCharChar, li.CharCharCharChar, div.CharCharCharChar
+	{mso-style-name:" Char Char Char Char";
+	mso-style-link:"Varsayılan Paragraf Yazı Tipi\, Char Char15";
+	margin-top:0cm;
+	margin-right:0cm;
+	margin-bottom:8.0pt;
+	margin-left:0cm;
+	line-height:12.0pt;
+	font-size:10.0pt;
+	font-family:"Verdana",sans-serif;}
+span.Char8
+	{mso-style-name:Char8;
+	font-family:"Times New Roman",serif;
+	font-weight:bold;}
+span.CommentSubjectChar
+	{mso-style-name:"Comment Subject Char";
+	font-family:"Times New Roman",serif;
+	font-weight:bold;}
+span.TitleChar
+	{mso-style-name:"Title Char";
+	font-weight:bold;}
+span.KonuBalChar1
+	{mso-style-name:"Konu Başlığı Char1";
+	font-family:"Cambria",serif;
+	color:#17365D;
+	letter-spacing:.25pt;}
+span.CharChar1
+	{mso-style-name:"Char Char1";
+	font-family:"Arial",sans-serif;
+	font-weight:bold;}
+span.AltKonuBalChar1
+	{mso-style-name:"Alt Konu Başlığı Char1";
+	font-family:"Cambria",serif;}
+span.fontstyle42
+	{mso-style-name:fontstyle42;}
+span.fontstyle43
+	{mso-style-name:fontstyle43;}
+span.apple-converted-space
+	{mso-style-name:apple-converted-space;}
+p.Metin, li.Metin, div.Metin
+	{mso-style-name:Metin;
+	margin:0cm;
+	margin-bottom:.0001pt;
+	text-align:justify;
+	text-indent:28.3pt;
+	font-size:9.5pt;
+	font-family:"Times New Roman",serif;}
+p.Default, li.Default, div.Default
+	{mso-style-name:Default;
+	margin:0cm;
+	margin-bottom:.0001pt;
+	text-autospace:none;
+	font-size:12.0pt;
+	font-family:"Times New Roman",serif;
+	color:black;}
+p.1, li.1, div.1
+	{mso-style-name:1;
+	margin-top:0cm;
+	margin-right:0cm;
+	margin-bottom:8.0pt;
+	margin-left:0cm;
+	line-height:12.0pt;
+	font-size:10.0pt;
+	font-family:"Verdana",sans-serif;}
+p.ksmblmalt, li.ksmblmalt, div.ksmblmalt
+	{mso-style-name:kısımbölümaltı;
+	margin:0cm;
+	margin-bottom:.0001pt;
+	font-size:9.0pt;
+	font-family:"New York",serif;
+	font-style:italic;}
+p.kantab1, li.kantab1, div.kantab1
+	{mso-style-name:kantab;
+	margin:0cm;
+	margin-bottom:.0001pt;
+	text-align:justify;
+	font-size:11.0pt;
+	font-family:"New York",serif;
+	font-weight:bold;}
+p.2-ortabaslk0, li.2-ortabaslk0, div.2-ortabaslk0
+	{mso-style-name:2-ortabaslk;
+	margin:0cm;
+	margin-bottom:.0001pt;
+	text-align:center;
+	font-size:9.5pt;
+	font-family:"Times New Roman",serif;
+	font-weight:bold;}
+span.msoIns
+	{mso-style-name:"";
+	text-decoration:underline;
+	color:teal;}
+span.msoDel
+	{mso-style-name:"";
+	text-decoration:line-through;
+	color:red;}
+ /* Page Definitions */
+ @page WordSection1
+	{size:21.0cm 842.0pt;
+	margin:70.9pt 70.9pt 70.9pt 70.9pt;}
+div.WordSection1
+	{page:WordSection1;}
+ /* List Definitions */
+ ol
+	{margin-bottom:0cm;}
+ul
+	{margin-bottom:0cm;}
+-->
+</style>
+
+<script type="text/javascript">window.av = { database:'1' , rnApp:'False' }</script><script src="https://www.mevzuat.gov.tr/lib/jquery/dist/jquery.js"></script><script src="https://www.mevzuat.gov.tr/js/iframescript.min.js?v=1.05"></script><style><!--* {font-family:inherit!important;}--></style></head>
+
+<body lang=TR link=blue vlink=purple style='text-justify-trim:punctuation'>
+
+<div class=WordSection1>
+
+<p class=MsoNormal align=center style='text-align:center;line-height:127%;
+text-autospace:ideograph-numeric ideograph-other'><b><span style='font-size:
+12.0pt;line-height:127%;color:black'>TERÖRİZMİN FİNANSMANININ ÖNLENMESİ</span></b></p>
+
+<p class=MsoNormal align=center style='text-align:center;line-height:127%;
+text-autospace:ideograph-numeric ideograph-other'><b><span style='font-size:
+12.0pt;line-height:127%;color:black'>HAKKINDA KANUN</span></b></p>
+
+<p class=MsoNormal align=center style='text-align:center;line-height:127%;
+text-autospace:ideograph-numeric ideograph-other'><b><span style='font-size:
+12.0pt;line-height:127%;color:black'>&nbsp;</span></b></p>
+
+<p class=KanTab style='text-indent:35.45pt;line-height:127%'><span style='font-size:12.0pt;line-height:127%;font-family:"Times New Roman",serif'>Kanun
+Numarası                    : 6415</span></p>
+
+<p class=KanTab style='text-indent:35.45pt;line-height:127%'><span style='font-size:12.0pt;line-height:127%;font-family:"Times New Roman",serif'>Kabul
+Tarihi                           : 7/2/2013</span></p>
+
+<p class=KanTab style='text-indent:35.45pt;line-height:127%'><span style='font-size:12.0pt;line-height:127%;font-family:"Times New Roman",serif'>Yayımlandığı
+Resmî Gazete  : Tarih  : 16/2/2013        Sayı  : 28561</span></p>
+
+<p class=KanTab style='text-indent:35.45pt;line-height:127%'><span style='font-size:12.0pt;line-height:127%;font-family:"Times New Roman",serif'>Yayımlandığı
+Düstur              : Tertip : 5                      Cilt   : 53</span></p>
+
+<p class=KanTab align=center style='text-align:center;line-height:127%'><span style='font-size:12.0pt;line-height:127%;font-family:"Times New Roman",serif'>&nbsp;</span></p>
+
+<p class=MsoNormal align=center style='text-align:center;line-height:127%;
+text-autospace:ideograph-numeric ideograph-other'><b><span style='font-size:
+12.0pt;line-height:127%'>BİRİNCİ BÖLÜM</span></b></p>
+
+<p class=MsoNormal align=center style='text-align:center;line-height:127%;
+text-autospace:ideograph-numeric ideograph-other'><b><span style='font-size:
+12.0pt;line-height:127%'>Amaç, Kapsam ve Tanımlar</span></b></p>
+
+<p class=MsoNormal style='text-align:justify;text-indent:35.45pt;line-height:
+127%;text-autospace:ideograph-numeric ideograph-other'><b><span style='font-size:12.0pt;line-height:127%'>Amaç ve kapsam</span></b></p>
+
+<p class=MsoNormal style='text-align:justify;text-indent:35.45pt;line-height:
+127%;text-autospace:ideograph-numeric ideograph-other'><b><span style='font-size:12.0pt;line-height:127%'>MADDE 1 –</span></b><span style='font-size:12.0pt;line-height:127%'> (1) Bu Kanun, terör ve terörizmin finansmanıyla
+etkin mücadele edilmesi kapsamında; 1999 tarihli Terörizmin Finansmanının Önlenmesine
+Dair Uluslararası Sözleşmenin ve Birleşmiş Milletler Güvenlik Konseyinin bu Kanun
+kapsamındaki terör ve terörizmin finansmanıyla mücadeleye ilişkin kararlarının uygulanması
+ile terörizmin finansmanı suçunun düzenlenmesi ve terörizmin finansmanının önlenmesi
+amacıyla malvarlığının dondurulmasına ilişkin usul ve esasların belirlenmesi amacıyla
+hazırlanmıştır.</span></p>
+
+<p class=MsoNormal style='text-align:justify;text-indent:35.45pt;line-height:
+127%;text-autospace:ideograph-numeric ideograph-other'><b><span style='font-size:12.0pt;line-height:127%'>&nbsp;</span></b></p>
+
+<p class=MsoNormal style='text-align:justify;text-indent:35.45pt;line-height:
+127%;text-autospace:ideograph-numeric ideograph-other'><b><span style='font-size:12.0pt;line-height:127%'>Tanımlar</span></b></p>
+
+<p class=MsoNormal style='text-align:justify;text-indent:35.45pt;line-height:
+127%;text-autospace:ideograph-numeric ideograph-other'><b><span style='font-size:12.0pt;line-height:127%'>MADDE 2 –</span></b><span style='font-size:12.0pt;line-height:127%'> (1) Bu Kanunun uygulanmasında;</span></p>
+
+<p class=MsoNormal style='text-align:justify;text-indent:35.45pt;line-height:
+127%;text-autospace:ideograph-numeric ideograph-other'><span style='font-size:
+12.0pt;line-height:127%'>a) Başkanlık: Mali Suçları Araştırma Kurulu Başkanlığını,</span></p>
+
+<p class=MsoNormal style='text-align:justify;text-indent:35.45pt;line-height:
+127%;text-autospace:ideograph-numeric ideograph-other'><span style='font-size:
+12.0pt;line-height:127%'>b) Değerlendirme Komisyonu: Malvarlığının Dondurulmasını
+Değerlendirme Komisyonunu,</span></p>
+
+<p class=MsoNormal style='text-align:justify;text-indent:35.45pt;line-height:
+127%;text-autospace:ideograph-numeric ideograph-other'><span style='font-size:
+12.0pt;line-height:127%'>c) Fon: Para veya değeri para ile temsil edilebilen taşınır
+veya taşınmaz, maddi veya gayri maddi her türlü mal, hak, alacak ile bunları temsil
+eden her türlü belgeyi,</span></p>
+
+<p class=MsoNormal style='text-align:justify;text-indent:35.45pt;line-height:
+127%;text-autospace:ideograph-numeric ideograph-other'><span style='font-size:
+12.0pt;line-height:127%'>ç) <b>(Değişik:27/12/2020-7262/35 md.)</b> Malvarlığı:
+Bir gerçek veya tüzel kişinin;</span></p>
+
+<p class=MsoNormal style='text-align:justify;text-indent:35.45pt;line-height:
+127%;text-autospace:ideograph-numeric ideograph-other'><span style='font-size:
+12.0pt;line-height:127%'>1) Mülkiyetinde veya zilyetliğinde bulunan ya da doğrudan
+veya dolaylı olarak kontrolünde olan fon ve gelir ile bunlardan elde edilen veya
+bunların birbirine dönüştürülmesinden hasıl olan menfaat ve değeri,</span></p>
+
+<p class=MsoNormal style='text-align:justify;text-indent:35.45pt;line-height:
+127%;text-autospace:ideograph-numeric ideograph-other'><span style='font-size:
+12.0pt;line-height:127%'>2) Adına veya hesabına hareket eden gerçek veya tüzel kişinin
+mülkiyetinde ya da zilyetliğinde bulunan fon ve gelir ile bunlardan elde edilen
+veya bunların birbirine dönüştürülmesinden hasıl olan menfaat ve değeri,</span></p>
+
+<p class=MsoNormal style='text-align:justify;text-indent:35.45pt;line-height:
+127%;text-autospace:ideograph-numeric ideograph-other'><span style='font-size:
+12.0pt;line-height:127%'>d) Malvarlığının dondurulması: Malvarlığının ortadan kaldırılmasının,
+tüketilmesinin, dönüştürülmesinin, transferinin, devir ve temlik edilmesinin ve
+sair tasarrufi işlemlerin önlenmesi amacıyla, malvarlığı üzerindeki tasarruf yetkisinin
+kaldırılması veya kısıtlanmasını,</span></p>
+
+<p class=MsoNormal style='text-align:justify;text-indent:35.45pt;line-height:
+127%;text-autospace:ideograph-numeric ideograph-other'><span style='font-size:
+12.0pt;line-height:127%'>ifade eder.</span></p>
+
+<b><span style='font-size:12.0pt;line-height:125%;font-family:"Times New Roman",serif'><br clear=all style='page-break-before:always'>
+</span></b>
+
+<p class=MsoNormal align=center style='text-align:center;line-height:125%;
+text-autospace:ideograph-numeric ideograph-other'><b><span style='font-size:
+12.0pt;line-height:125%'>İKİNCİ BÖLÜM</span></b></p>
+
+<p class=MsoNormal align=center style='text-align:center;line-height:125%;
+text-autospace:ideograph-numeric ideograph-other'><b><span style='font-size:
+12.0pt;line-height:125%'>Terörizmin Finansmanı Suçu</span></b></p>
+
+<p class=MsoNormal style='text-align:justify;text-indent:35.45pt;line-height:
+125%;text-autospace:ideograph-numeric ideograph-other'><b><span style='font-size:12.0pt;line-height:125%'>Fon sağlanması veya toplanması yasak fiiller</span></b></p>
+
+<p class=MsoNormal style='text-align:justify;text-indent:35.45pt;line-height:
+125%;text-autospace:ideograph-numeric ideograph-other'><b><span style='font-size:12.0pt;line-height:125%'>MADDE 3 –</span></b><span style='font-size:12.0pt;line-height:125%'> (1) Aşağıda sayılan fiillerin gerçekleştirilmesi
+amacıyla fon sağlanması veya toplanması yasaktır:</span></p>
+
+<p class=MsoNormal style='text-align:justify;text-indent:35.45pt;line-height:
+125%;text-autospace:ideograph-numeric ideograph-other'><span style='font-size:
+12.0pt;line-height:125%'>a) Bir halkı korkutmak veya sindirmek ya da bir hükûmeti
+veya uluslararası kuruluşu herhangi bir eylemi gerçekleştirmeye veya gerçekleştirmekten
+kaçınmaya zorlamak amacıyla, kasten öldürme veya ağır yaralama fiilleri.</span></p>
+
+<p class=MsoNormal style='text-align:justify;text-indent:35.45pt;line-height:
+125%;text-autospace:ideograph-numeric ideograph-other'><span style='font-size:
+12.0pt;line-height:125%'>b) 12/4/1991 tarihli ve 3713 sayılı Terörle Mücadele Kanunu
+kapsamında terör suçu olarak kabul edilen fiiller.</span></p>
+
+<p class=MsoNormal style='text-align:justify;text-indent:35.45pt;line-height:
+125%;text-autospace:ideograph-numeric ideograph-other'><span style='font-size:
+12.0pt;line-height:125%'>c) Türkiye’nin taraf olduğu;</span></p>
+
+<p class=MsoNormal style='text-align:justify;text-indent:35.45pt;line-height:
+125%;text-autospace:ideograph-numeric ideograph-other'><span style='font-size:
+12.0pt;line-height:125%;letter-spacing:-.1pt'>1) Uçakların Kanun Dışı Yollarla Ele
+Geçirilmesinin Önlenmesi Hakkında Sözleşmede,</span></p>
+
+<p class=MsoNormal style='text-align:justify;text-indent:35.45pt;line-height:
+125%;text-autospace:ideograph-numeric ideograph-other'><span style='font-size:
+12.0pt;line-height:125%'>2) Sivil Havacılığın Güvenliğine Karşı Kanun Dışı Eylemlerin
+Önlenmesine İlişkin Sözleşmede,</span></p>
+
+<p class=MsoNormal style='text-align:justify;text-indent:35.45pt;line-height:
+125%;text-autospace:ideograph-numeric ideograph-other'><span style='font-size:
+12.0pt;line-height:125%'>3) Diplomasi Ajanları da Dahil Olmak Üzere Uluslararası
+Korunmaya Sahip Kişilere Karşı İşlenen Suçların Önlenmesi ve Cezalandırılmasına
+Dair Sözleşmede,</span></p>
+
+<p class=MsoNormal style='text-align:justify;text-indent:35.45pt;line-height:
+125%;text-autospace:ideograph-numeric ideograph-other'><span style='font-size:
+12.0pt;line-height:125%'>4) Rehine Alınmasına Karşı Uluslararası Sözleşmede,</span></p>
+
+<p class=MsoNormal style='text-align:justify;text-indent:35.45pt;line-height:
+125%;text-autospace:ideograph-numeric ideograph-other'><span style='font-size:
+12.0pt;line-height:125%'>5) Nükleer Maddelerin Fiziksel Korunması Hakkında Sözleşmede,</span></p>
+
+<p class=MsoNormal style='text-align:justify;text-indent:35.45pt;line-height:
+125%;text-autospace:ideograph-numeric ideograph-other'><span style='font-size:
+12.0pt;line-height:125%'>6) Sivil Havacılığın Güvenliğine Karşı Kanun Dışı Eylemlerin
+Önlenmesine İlişkin Sözleşmeye Munzam, Uluslararası Sivil Havacılığa Hizmet Veren
+Havaalanlarında Kanun Dışı Şiddet Olaylarının Önlenmesine İlişkin Protokolde,</span></p>
+
+<p class=MsoNormal style='text-align:justify;text-indent:35.45pt;line-height:
+125%;text-autospace:ideograph-numeric ideograph-other'><span style='font-size:
+12.0pt;line-height:125%;letter-spacing:-.2pt'>7) Denizde Seyir Güvenliğine Karşı
+Yasadışı Eylemlerin Önlenmesine Dair Sözleşmede,</span></p>
+
+<p class=MsoNormal style='text-align:justify;text-indent:35.45pt;line-height:
+125%;text-autospace:ideograph-numeric ideograph-other'><span style='font-size:
+12.0pt;line-height:125%'>8) Kıta Sahanlığında Bulunan Sabit Platformların Güvenliğine
+Karşı Yasadışı Eylemlerin Önlenmesine Dair Protokolde,</span></p>
+
+<p class=MsoNormal style='text-align:justify;text-indent:35.45pt;line-height:
+125%;text-autospace:ideograph-numeric ideograph-other'><span style='font-size:
+12.0pt;line-height:125%'>9) Terörist Bombalamalarının Önlenmesine İlişkin Uluslararası
+Sözleşmede,</span></p>
+
+<p class=MsoNormal style='text-align:justify;text-indent:35.45pt;line-height:
+125%;text-autospace:ideograph-numeric ideograph-other'><span style='font-size:
+12.0pt;line-height:125%'>yasaklanan ve suç olarak düzenlenen fiiller.</span></p>
+
+<p class=MsoNormal style='text-align:justify;text-indent:35.45pt;line-height:
+125%;text-autospace:ideograph-numeric ideograph-other'><b><span style='font-size:12.0pt;line-height:125%'>&nbsp;</span></b></p>
+
+<p class=MsoNormal style='text-align:justify;text-indent:35.45pt;line-height:
+125%;text-autospace:ideograph-numeric ideograph-other'><b><span style='font-size:12.0pt;line-height:125%'>Terörizmin finansmanı suçu<a href="#_ftn1" name="_ftnref1" title=""><span class=MsoFootnoteReference><span class=MsoFootnoteReference><b><span style='font-size:12.0pt;font-family:"Times New Roman",serif'>[1]</span></b></span></span></a></span></b></p>
+
+<p class=MsoNormal style='text-align:justify;text-indent:35.45pt;line-height:
+125%;text-autospace:ideograph-numeric ideograph-other'><b><span style='font-size:12.0pt;line-height:125%'>MADDE 4 –</span></b><span style='font-size:12.0pt;line-height:125%'> (1) 3 üncü madde kapsamında suç olarak
+düzenlenen fiillerin gerçekleştirilmesinde tümüyle veya kısmen kullanılması amacıyla
+veya kullanılacağını bilerek ve isteyerek belli bir fiille ilişkilendirilmeden dahi
+bir teröriste veya terör örgütlerine fon sağlayan veya toplayan kişi, fiili daha
+ağır cezayı gerektiren başka bir suç oluşturmadığı takdirde, beş yıldan on yıla
+kadar hapis cezası ile cezalandırılır.</span></p>
+
+<p class=MsoNormal style='text-align:justify;text-indent:35.45pt;line-height:
+125%;text-autospace:ideograph-numeric ideograph-other'><span style='font-size:
+12.0pt;line-height:125%;letter-spacing:-.2pt'>(2) <b>(Ek:27/12/2020-7262/36 md.)
+</b>Birinci fıkrada sayılan fiillerin, örgütü kuran veya yöneten ya da örgüt üyesi
+tarafından gerçekleştirilmesi hâlinde bu kişiler hakkında örgüt kurmak, yönetmek
+veya örgüte üye olmak suçları uyarınca verilecek ceza üçte birine kadar artırılır.</span></p>
+
+<p class=MsoNormal style='text-align:justify;text-indent:35.45pt;line-height:
+125%;text-autospace:ideograph-numeric ideograph-other'><span style='font-size:
+12.0pt;line-height:125%'>(3) Birinci fıkra hükmüne göre ceza verilebilmesi için
+fonun bir suçun işlenmesinde kullanılmış olması şartı aranmaz.</span></p>
+
+<p class=MsoNormal style='text-align:justify;text-indent:35.45pt;line-height:
+120%;text-autospace:ideograph-numeric ideograph-other'><span style='font-size:
+12.0pt;line-height:120%'>(4) Bu madde kapsamına giren suçların kamu görevinin sağladığı
+nüfuz kötüye kullanılmak suretiyle işlenmesi hâlinde, verilecek ceza yarı oranında
+artırılır.</span></p>
+
+<p class=MsoNormal style='text-align:justify;text-indent:35.45pt;line-height:
+120%;text-autospace:ideograph-numeric ideograph-other'><span style='font-size:
+12.0pt;line-height:120%'>(5) Suçun bir tüzel kişinin faaliyeti çerçevesinde işlenmesi
+hâlinde, bunlara özgü güvenlik tedbirlerine hükmolunur.</span></p>
+
+<p class=MsoNormal style='text-align:justify;text-indent:35.45pt;line-height:
+120%;text-autospace:ideograph-numeric ideograph-other'><span style='font-size:
+12.0pt;line-height:120%'>(6) Suçun, yabancı bir devlet veya uluslararası bir kuruluş
+aleyhine işlenmesi hâlinde, soruşturma ve kovuşturma yapılması Adalet Bakanının
+talebine bağlıdır.</span></p>
+
+<p class=MsoNormal style='text-align:justify;text-indent:35.45pt;line-height:
+120%;text-autospace:ideograph-numeric ideograph-other'><span style='font-size:
+12.0pt;line-height:120%'>(7) 3713 sayılı Kanunun soruşturmaya, kovuşturmaya ve infaza
+ilişkin hükümleri, bu suç bakımından da uygulanır. </span></p>
+
+<p class=MsoNormal style='text-align:justify;text-indent:35.45pt;line-height:
+120%;text-autospace:ideograph-numeric ideograph-other'><span style='font-size:
+12.0pt;line-height:120%'>(8)<b> (Ek: 14/4/2016-6704/29 md.) </b>Bu suç bakımından
+5271 sayılı Ceza Muhakemesi Kanununun;</span></p>
+
+<p class=MsoNormal style='text-align:justify;text-indent:35.45pt;line-height:
+120%;text-autospace:ideograph-numeric ideograph-other'><span style='font-size:
+12.0pt;line-height:120%'>a) 133 üncü maddesinde yer alan şirket yönetimi için kayyım
+tayini,</span></p>
+
+<p class=MsoNormal style='text-align:justify;text-indent:35.45pt;line-height:
+120%;text-autospace:ideograph-numeric ideograph-other'><span style='font-size:
+12.0pt;line-height:120%'>b) 135 inci maddesinde yer alan iletişimin tespiti, dinlenmesi
+ve kayda alınması,</span></p>
+
+<p class=MsoNormal style='text-align:justify;text-indent:35.45pt;line-height:
+120%;text-autospace:ideograph-numeric ideograph-other'><span style='font-size:
+12.0pt;line-height:120%'>c) 139 uncu maddesinde yer alan gizli soruşturmacı görevlendirilmesi,</span></p>
+
+<p class=MsoNormal style='text-align:justify;text-indent:35.45pt;line-height:
+120%;text-autospace:ideograph-numeric ideograph-other'><span style='font-size:
+12.0pt;line-height:120%'>ç) 140 ıncı maddesinde yer alan teknik araçlarla izleme,</span></p>
+
+<p class=MsoNormal style='text-align:justify;text-indent:35.45pt;line-height:
+120%;text-autospace:ideograph-numeric ideograph-other'><span style='font-size:
+12.0pt;line-height:120%'>tedbirlerine ilişkin hükümler uygulanabilir. <b>(Ek cümle:27/11/2020-7262/36
+md.) </b>Ayrıca, 13/11/1996 tarihli ve 4208 sayılı Kanunda yer alan hükümlere göre
+kontrollü teslimat tedbirine karar verilebilir.</span></p>
+
+<p class=MsoNormal align=center style='text-align:center;line-height:120%;
+text-autospace:ideograph-numeric ideograph-other'><span style='font-size:12.0pt;
+line-height:120%'>&nbsp;</span></p>
+
+<p class=MsoNormal align=center style='text-align:center;line-height:120%;
+text-autospace:ideograph-numeric ideograph-other'><b><span style='font-size:
+12.0pt;line-height:120%'>ÜÇÜNCÜ BÖLÜM</span></b></p>
+
+<p class=MsoNormal align=center style='text-align:center;line-height:120%;
+text-autospace:ideograph-numeric ideograph-other'><b><span style='font-size:
+12.0pt;line-height:120%'>Malvarlığının Dondurulması</span></b></p>
+
+<p class=MsoNormal style='text-align:justify;text-indent:35.45pt;line-height:
+120%;text-autospace:ideograph-numeric ideograph-other'><b><span style='font-size:12.0pt;line-height:120%'>Birleşmiş Milletler Güvenlik Konseyi kararları</span></b></p>
+
+<p class=MsoNormal style='text-align:justify;text-indent:35.45pt;line-height:
+120%;text-autospace:ideograph-numeric ideograph-other'><b><span style='font-size:12.0pt;line-height:120%'>MADDE 5 –</span></b><span style='font-size:12.0pt;line-height:120%'> (1) (<b>Değişik:27/12/2020-7262/37 md.)</b>
+Birleşmiş Milletler Güvenlik Konseyinin 1267 (1999), 1988 (2011), 1989 (2011) ve
+2253 (2015) sayılı kararlarıyla listelenen kişi, kuruluş veya organizasyonların
+tasarrufunda bulunan malvarlığının dondurulması kararları ve bu listelerden çıkarılanlara
+ilişkin malvarlığının dondurulmasının kaldırılması kararlarının uygulanmasına yönelik
+Cumhurbaşkanı kararı, Resmî Gazete’de yayımlanır ve gecikmeksizin uygulanır.<sup> 
+</sup></span></p>
+
+<p class=MsoNormal style='text-align:justify;text-indent:35.45pt;line-height:
+120%;text-autospace:ideograph-numeric ideograph-other'><span style='font-size:
+12.0pt;line-height:120%'>(2) Alınan kararlar, Dışişleri Bakanlığı tarafından Birleşmiş
+Milletler Güvenlik Konseyine bildirilir.</span></p>
+
+<p class=MsoNormal style='text-align:justify;text-indent:35.45pt;line-height:
+120%;text-autospace:ideograph-numeric ideograph-other'><span style='font-size:
+12.0pt;line-height:120%'>(3) Birleşmiş Milletler Güvenlik Konseyi kararlarına karşı
+yapılacak başvurular Başkanlık tarafından Dışişleri Bakanlığı aracılığıyla Birleşmiş
+Milletler Güvenlik Konseyine iletilir.</span></p>
+
+<p class=MsoNormal style='text-align:justify;text-indent:35.45pt;line-height:
+120%;text-autospace:ideograph-numeric ideograph-other'><span style='font-size:
+12.0pt;line-height:120%'>(4) <b>(Ek:27/12/2020-7262/37 md.)</b> 3 üncü ve 4 üncü
+madde kapsamına giren fiillerin gerçekleştirildiği hususunda makul sebeplerin varlığına
+istinaden Değerlendirme Komisyonunun önerisi üzerine Cumhurbaşkanı tarafından kişi,
+kuruluş veya organizasyonların Birleşmiş Milletler Güvenlik Konseyinin 1267 (1999),
+1988 (2011), 1989 (2011) ve 2253 (2015) sayılı kararları ile bu kararlara dayanılarak
+çıkarılan müteakip kararlar uyarınca malvarlığının dondurulmasına ilişkin oluşturulan
+listelere eklenmesi ve bu makul sebeplerin ortadan kalkması hâlinde listelerden
+çıkarılması Birleşmiş Milletler Güvenlik Konseyine teklif edilebilir. Cumhurbaşkanının
+teklifi Dışişleri Bakanlığı tarafından Birleşmiş Milletler Güvenlik Konseyine bildirilir.</span></p>
+
+<p class=MsoNormal style='text-align:justify;text-indent:35.45pt;line-height:
+120%;text-autospace:ideograph-numeric ideograph-other'><b><span style='font-size:12.0pt;line-height:120%'>&nbsp;</span></b></p>
+
+<p class=MsoNormal style='text-align:justify;text-indent:35.45pt;line-height:
+120%;text-autospace:ideograph-numeric ideograph-other'><b><span style='font-size:12.0pt;line-height:120%'>Yabancı devletlerce yapılan talepler<a href="#_ftn2" name="_ftnref2" title=""><span class=MsoFootnoteReference><span class=MsoFootnoteReference><b><span style='font-size:12.0pt;font-family:"Times New Roman",serif'>[2]</span></b></span></span></a></span></b></p>
+
+<p class=MsoNormal style='text-align:justify;text-indent:35.45pt;line-height:
+120%;text-autospace:ideograph-numeric ideograph-other'><b><span style='font-size:12.0pt;line-height:120%;letter-spacing:-.2pt'>MADDE 6 –</span></b><span style='font-size:12.0pt;line-height:120%;letter-spacing:-.2pt'> (1) Bir yabancı
+devlet hükûmeti tarafından bir kişi, kuruluş veya organizasyonun tasarrufunda bulunan
+malvarlığının dondurulmasına ilişkin olarak Türkiye’den talepte bulunulması hâlinde,
+Değerlendirme Komisyonunca değerlendirilen talep Cumhurbaşkanı tarafından karara
+bağlanır. Bu değerlendirmede karşılıklılık ilkesi gözetilir. Karar verilebilmesi
+için, yabancı devlet tarafından taleple birlikte gerekçelerinin de gönderilmesi
+gerekir.</span></p>
+
+<p class=MsoNormal style='text-align:justify;text-indent:35.45pt;line-height:
+120%;text-autospace:ideograph-numeric ideograph-other'><span style='font-size:
+12.0pt;line-height:120%'>(2) Bu talepler, Başkanlığa veya Başkanlığa iletilmek üzere
+Adalet Bakanlığı veya Dışişleri Bakanlığına yapılır.</span></p>
+
+<p class=MsoNormal style='text-align:justify;text-indent:35.45pt;line-height:
+120%;text-autospace:ideograph-numeric ideograph-other'><span style='font-size:
+12.0pt;line-height:120%'>(3) Yabancı devlet hükûmetinin malvarlığının dondurulmasına
+ilişkin taleplerinin yerine getirilmesi için, ilgili devletten teminat talep edilebilir.</span></p>
+
+<p class=MsoNormal style='text-align:justify;text-indent:35.45pt;line-height:
+120%;text-autospace:ideograph-numeric ideograph-other'><span style='font-size:
+12.0pt;line-height:120%'>(4) Malvarlığının dondurulmasına ilişkin talepler hakkındaki
+Cumhurbaşkanı kararı, Dışişleri Bakanlığı tarafından talepte bulunan devlete bildirilir.</span></p>
+
+<p class=MsoNormal style='text-align:justify;text-indent:35.45pt;line-height:
+120%;text-autospace:ideograph-numeric ideograph-other'><span style='font-size:
+12.0pt;line-height:120%'>(5) Bu madde uyarınca verilen malvarlığının dondurulması
+kararının Resmî Gazete’de yayımlandığı tarihten itibaren bir yıl içinde, talep eden
+devlet tarafından soruşturma başlatılmadığı takdirde ilgili karar kaldırılabilir.</span></p>
+
+<p class=MsoNormal style='text-align:justify;text-indent:35.45pt;line-height:
+120%;text-autospace:ideograph-numeric ideograph-other'><b><span style='font-size:12.0pt;line-height:120%'>&nbsp;</span></b></p>
+
+<p class=MsoNormal style='text-align:justify;text-indent:35.45pt;line-height:
+120%;text-autospace:ideograph-numeric ideograph-other'><b><span style='font-size:12.0pt;line-height:120%'>Yabancı devletlere yapılacak malvarlığının
+dondurulması talepleri ile Türkiye’de bulunan malvarlığı hakkında yapılacak işlem<a href="#_ftn3" name="_ftnref3" title=""><span class=MsoFootnoteReference><span class=MsoFootnoteReference><b><span style='font-size:12.0pt;font-family:"Times New Roman",serif'>[3]</span></b></span></span></a></span></b></p>
+
+<p class=MsoNormal style='text-align:justify;text-indent:35.45pt;line-height:
+120%;text-autospace:ideograph-numeric ideograph-other'><b><span style='font-size:12.0pt;line-height:120%'>MADDE 7 –</span></b><span style='font-size:12.0pt;line-height:120%'> (1) <b>(Değişik:27/12/2020-7262/38 md.)
+</b>5 inci ve 6 ncı maddelerde düzenlenen hususlar dışında, Değerlendirme Komisyonu,
+3 üncü ve 4 üncü madde kapsamına giren fiilleri gerçekleştirdiği hususunda makul
+sebeplerin varlığına istinaden kişi, kuruluş veya organizasyonların yabancı ülkelerde
+bulunan malvarlığının dondurulması talebiyle Cumhurbaşkanına öneride bulunulmasına
+karar verebilir. </span></p>
+
+<p class=MsoNormal style='text-align:justify;text-indent:35.45pt;line-height:
+120%;text-autospace:ideograph-numeric ideograph-other'><span style='font-size:
+12.0pt;line-height:120%'>(2) Yabancı devletlere yapılacak malvarlığının dondurulması
+talepleri hakkındaki Cumhurbaşkanı kararı, Dışişleri Bakanlığı tarafından talepte
+bulunulan devlete bildirilir.</span></p>
+
+<p class=MsoNormal style='text-align:justify;text-indent:35.45pt;line-height:
+120%;text-autospace:ideograph-numeric ideograph-other'><span style='font-size:
+12.0pt;line-height:120%'>(3) <b>(Ek:27/12/2020-7262/38 md.) </b>5 inci ve 6 ncı
+maddelerde düzenlenen hususlar dışında,  mahkemelerce terör örgütü olduğuna kesin
+olarak karar verildikten sonra 3 üncü ve 4 üncü madde kapsamına giren fiilleri gerçekleştirdiği
+hususunda makul sebeplerin varlığına istinaden kişi, kuruluş veya organizasyonların
+Türkiye’de bulunan malvarlığının dondurulmasına ve bu makul sebeplerin ortadan kalkması
+hâlinde malvarlığının dondurulmasının kaldırılmasına Değerlendirme Komisyonunun
+önerisi üzerine Hazine ve Maliye Bakanı ile İçişleri Bakanı tarafından birlikte
+karar verilebilir.</span></p>
+
+<p class=MsoNormal style='text-align:justify;text-indent:35.45pt;line-height:
+120%;text-autospace:ideograph-numeric ideograph-other'><span style='font-size:
+12.0pt;line-height:120%;letter-spacing:-.2pt'>(4) <b>(Ek:27/12/2020-7262/38 md.)
+</b>Üçüncü fıkra kapsamında verilen malvarlığının dondurulmasına ilişkin karar derhâl
+uygulanır ve kırk sekiz saat içinde, Hâkimler ve Savcılar Kurulu tarafından belirlenen
+Ankara ağır ceza mahkemesinin onayına sunulur. Mahkeme, makul sebeplerin varlığı
+yönünden yapacağı inceleme neticesinde malvarlığının dondurulması kararının devamına
+veya kaldırılmasına beş gün içinde karar verir ve sonucu derhâl Başkanlığa bildirir.
+Mahkemenin kararlarına karşı Ceza Muhakemesi Kanunu hükümlerine göre itiraz edilebilir.</span></p>
+
+<p class=MsoNormal style='text-align:justify;text-indent:35.45pt;line-height:
+127%;text-autospace:ideograph-numeric ideograph-other'><span style='font-size:
+12.0pt;line-height:127%'>(5) <b>(Ek:27/12/2020-7262/38 md.) </b>Değerlendirme Komisyonu,
+Türkiye’de bulunan malvarlığının dondurulmasına ilişkin kararın Resmî Gazete’de
+yayımlanmasından itibaren en geç altışar aylık dönemlerle makul sebeplerin varlığının
+devam edip etmediğini değerlendirerek önerisini ilgili bakanlara sunar.</span></p>
+
+<p class=MsoNormal style='text-align:justify;text-indent:35.45pt;line-height:
+127%;text-autospace:ideograph-numeric ideograph-other'><span style='font-size:
+12.0pt;line-height:127%'>(6) <b>(Ek:27/12/2020-7262/38 md.) </b>İlgililer tarafından
+malvarlığının dondurulması kararının kaldırılmasına ilişkin talepler Değerlendirme
+Komisyonuna yapılır. Komisyon, taleplere ilişkin önerisini ilgili bakanlara sunar.
+Yerinde görülmeyen talepler dördüncü fıkra uyarınca karar verilmek üzere ilgili
+mahkemeye gönderilir.</span></p>
+
+<p class=MsoNormal style='text-align:justify;text-indent:35.45pt;line-height:
+127%;text-autospace:ideograph-numeric ideograph-other'><span style='font-size:
+12.0pt;line-height:127%'>(7) <b>(Ek:27/12/2020-7262/38 md.) </b>Üçüncü fıkra uyarınca,
+Türkiye’de bulunan malvarlığının dondurulmasına karar verildiği takdirde ilgililer
+hakkında Ceza Muhakemesi Kanunu uyarınca soruşturma açılması talebiyle suç duyurusunda
+bulunulmasına Başkanlık tarafından karar verilir. Soruşturma ve kovuşturma sonucunda
+verilen kararlar Değerlendirme Komisyonuna sunulmak üzere Başkanlığa gönderilir.</span></p>
+
+<p class=MsoNormal style='text-align:justify;text-indent:35.45pt;line-height:
+127%;text-autospace:ideograph-numeric ideograph-other'><b><span style='font-size:12.0pt;line-height:127%'>&nbsp;</span></b></p>
+
+<p class=MsoNormal style='text-align:justify;text-indent:35.45pt;line-height:
+127%;text-autospace:ideograph-numeric ideograph-other'><b><span style='font-size:12.0pt;line-height:127%'>Araştırma</span></b></p>
+
+<p class=MsoNormal style='text-align:justify;text-indent:35.45pt;line-height:
+127%;text-autospace:ideograph-numeric ideograph-other'><b><span style='font-size:12.0pt;line-height:127%'>MADDE 8 –</span></b><span style='font-size:12.0pt;line-height:127%'> (1) Malvarlığının dondurulması kararları
+hakkında yapılacak mali araştırma Başkanlık tarafından yerine getirilir. Bu görevin
+yerine getirilmesi amacıyla kamu kurum ve kuruluşları ile gerçek ve tüzel kişilerden
+talep edilen bilgiler istenilen usul, şekil ve sürede gecikmeksizin Başkanlığa iletilir.</span></p>
+
+<p class=MsoNormal style='text-align:justify;text-indent:35.45pt;line-height:
+127%;text-autospace:ideograph-numeric ideograph-other'><span style='font-size:
+12.0pt;line-height:127%'>(2) Adalet, İçişleri ve Dışişleri bakanlıklarıyla Millî
+İstihbarat Teşkilâtı Müsteşarlığı, Hazine Müsteşarlığı ve ilgili diğer kamu kurum
+ve kuruluşları,<span style='color:black'> </span>5 inci maddenin dördüncü fıkrası
+ile 6 ncı ve 7 nci maddelerin uygulanması kapsamında malvarlığının dondurulmasına<span style='color:black'> </span>ve malvarlığının dondurulmasının kaldırılmasına ilişkin
+alınacak karar ve yapılacak talepler hakkında bilgi, belge ve bulgular ile değerlendirmelerini
+Başkanlığa bildirir.<a href="#_ftn4" name="_ftnref4" title=""><span class=MsoFootnoteReference><span class=MsoFootnoteReference><span style='font-size:12.0pt;font-family:"Times New Roman",serif'>[4]</span></span></span></a></span></p>
+
+<p class=MsoNormal style='text-align:justify;text-indent:35.45pt;line-height:
+127%;text-autospace:ideograph-numeric ideograph-other'><span style='font-size:
+12.0pt;line-height:127%'>(3) Araştırma sonuçları, Başkanlık tarafından Değerlendirme
+Komisyonuna sunulur.</span></p>
+
+<p class=MsoNormal style='text-align:justify;text-indent:35.45pt;line-height:
+127%;text-autospace:ideograph-numeric ideograph-other'><span style='font-size:
+12.0pt;line-height:127%'>(4) Malvarlığının dondurulmasına ilişkin olarak yapılacak
+araştırma işlemleri gizlilik esaslarına uygun olarak yerine getirilir.</span></p>
+
+<p class=MsoNormal style='text-align:justify;text-indent:35.45pt;line-height:
+127%;text-autospace:ideograph-numeric ideograph-other'><i><span style='font-size:12.0pt;line-height:127%'>&nbsp;</span></i></p>
+
+<p class=MsoNormal style='text-align:justify;text-indent:35.45pt;line-height:
+127%;text-autospace:ideograph-numeric ideograph-other'><b><span style='font-size:12.0pt;line-height:127%'>Değerlendirme Komisyonu</span></b></p>
+
+<p class=MsoNormal style='text-align:justify;text-indent:35.45pt;line-height:
+127%;text-autospace:ideograph-numeric ideograph-other'><b><span style='font-size:12.0pt;line-height:127%'>MADDE 9 –</span></b><span style='font-size:12.0pt;line-height:127%'> (1) 5 inci maddenin dördüncü fıkrası
+ile 6 ncı ve 7 nci maddeler kapsamında malvarlığının dondurulmasıyla ilgili olarak
+Malvarlığının Dondurulmasını Değerlendirme Komisyonu oluşturulmuştur.<a href="#_ftn5" name="_ftnref5" title=""><span class=MsoFootnoteReference><span class=MsoFootnoteReference><span style='font-size:12.0pt;font-family:"Times New Roman",serif'>[5]</span></span></span></a>
+<b>(Mülga ikinci cümle: 2/7/2018-KHK-700/200 md.)</b></span></p>
+
+<p class=MsoNormal style='text-align:justify;text-indent:35.45pt;line-height:
+127%;text-autospace:ideograph-numeric ideograph-other'><span style='font-size:
+12.0pt;line-height:127%'>(2) Görüş ve bilgilerine gerek duyulan kurum ve kuruluşların
+temsilcileri de Değerlendirme Komisyonuna çağrılabilir.</span></p>
+
+<p class=MsoNormal style='text-align:justify;text-indent:35.45pt;line-height:
+127%;text-autospace:ideograph-numeric ideograph-other'><span style='font-size:
+12.0pt;line-height:127%'>(3) Değerlendirme Komisyonu, birinci fıkrada sayılan üyeler
+veya bunların yerlerine usulüne uygun olarak atanan vekilleriyle toplanarak katılanların
+en az beşinin oyu ile karar verir.</span></p>
+
+<p class=MsoNormal style='text-align:justify;text-indent:35.45pt;line-height:
+127%;text-autospace:ideograph-numeric ideograph-other'><span style='font-size:
+12.0pt;line-height:127%'>(4) Değerlendirme Komisyonunun sekretarya hizmetleri Başkanlık
+tarafından yürütülür.</span></p>
+
+<p class=MsoNormal style='text-align:justify;text-indent:35.45pt;line-height:
+127%;text-autospace:ideograph-numeric ideograph-other'><span style='font-size:
+12.0pt;line-height:127%'>(5) Değerlendirme Komisyonunun başkan ve üyelerine her
+toplantı için (4.000) gösterge rakamının memur aylık katsayısıyla çarpımı sonucu
+bulunan tutar üzerinden toplantı ücreti ödenir. Bu ödemeler damga vergisi hariç
+herhangi bir vergi ve kesintiye tabi tutulmaz.</span></p>
+
+<p class=MsoNormal style='text-align:justify;text-indent:35.45pt;line-height:
+127%;text-autospace:ideograph-numeric ideograph-other'><span style='font-size:
+12.0pt;line-height:127%'>(6) Değerlendirme Komisyonunun çalışma usul ve esasları
+yönetmelikle belirlenir.</span></p>
+
+<p class=MsoNormal style='text-align:justify;text-indent:35.45pt;line-height:
+127%;text-autospace:ideograph-numeric ideograph-other'><b><span style='font-size:12.0pt;line-height:127%'>&nbsp;</span></b></p>
+
+<p class=MsoNormal style='text-align:justify;text-indent:35.45pt;line-height:
+127%;text-autospace:ideograph-numeric ideograph-other'><b><span style='font-size:12.0pt;line-height:127%'>Malvarlığının dondurulması kararına aykırılığın
+hukuki sonuçları</span></b></p>
+
+<p class=MsoNormal style='text-align:justify;text-indent:35.45pt;line-height:
+127%;text-autospace:ideograph-numeric ideograph-other'><b><span style='font-size:12.0pt;line-height:127%'>MADDE 10 –</span></b><span style='font-size:12.0pt;line-height:127%'> (1) Malvarlığının dondurulması kararına
+aykırı olarak yapılan her türlü tasarruf ve işlem hükümsüzdür. Bu tasarruf ve işlemlerle
+ilgili olarak 22/11/2001 tarihli ve 4721 sayılı Türk Medeni Kanununun iyiniyetin
+korunmasına ilişkin hükümleri saklıdır.</span></p>
+
+<p class=MsoNormal style='text-align:justify;text-indent:35.45pt;line-height:
+127%;text-autospace:ideograph-numeric ideograph-other'><b><span style='font-size:12.0pt;line-height:127%'>&nbsp;</span></b></p>
+
+<p class=MsoNormal style='text-align:justify;text-indent:35.45pt;line-height:
+127%;text-autospace:ideograph-numeric ideograph-other'><b><span style='font-size:12.0pt;line-height:127%'>Kararın tebliğ ve ilanı</span></b></p>
+
+<p class=MsoNormal style='text-align:justify;text-indent:35.45pt;line-height:
+127%;text-autospace:ideograph-numeric ideograph-other'><b><span style='font-size:12.0pt;line-height:127%'>MADDE 11 –</span></b><span style='font-size:12.0pt;line-height:127%'> (1) Bu Kanun hükümlerine göre alınan
+malvarlığının dondurulması ve bu kararın kaldırılmasına ilişkin kararlar Resmî Gazete’de
+yayımlanır. Bu kararlar yayımı tarihinde, hakkında malvarlığının dondurulması kararı
+verilen ilgili kişi ve kuruluşa tebliğ edilmiş sayılır.</span></p>
+
+<p class=MsoNormal style='text-align:justify;text-indent:35.45pt;line-height:
+127%;text-autospace:ideograph-numeric ideograph-other'><span style='font-size:
+12.0pt;line-height:127%'>(2) Malvarlığının dondurulması kararında; kararın kimin
+hakkında verildiği, sebepleri, kapsamı, süresi ve bu karara karşı başvurulabilecek
+kanun yolları ile başvuru süresi yer alır.</span></p>
+
+<p class=MsoNormal style='text-align:justify;text-indent:35.45pt;line-height:
+127%;text-autospace:ideograph-numeric ideograph-other'><b><span style='font-size:12.0pt;line-height:127%'>&nbsp;</span></b></p>
+
+<p class=MsoNormal style='text-align:justify;text-indent:35.45pt;line-height:
+127%;text-autospace:ideograph-numeric ideograph-other'><b><span style='font-size:12.0pt;line-height:127%'>Malvarlığının dondurulması kararlarının
+icrası</span></b></p>
+
+<p class=MsoNormal style='text-align:justify;text-indent:35.45pt;line-height:
+127%;text-autospace:ideograph-numeric ideograph-other'><b><span style='font-size:12.0pt;line-height:127%'>MADDE 12 –</span></b><span style='font-size:12.0pt;line-height:127%'> (1) Malvarlığının dondurulması kararı
+ve bu kararın kaldırılmasına ilişkin karar Resmî Gazete’de yayımı ile birlikte hukuki
+sonuçlarını doğurur.</span></p>
+
+<p class=MsoNormal style='text-align:justify;text-indent:35.45pt;line-height:
+127%;text-autospace:ideograph-numeric ideograph-other'><span style='font-size:
+12.0pt;line-height:127%'>(2) Bu Kanun hükümlerine göre malvarlığının dondurulması
+kararlarının yerine getirilmesinden Başkanlık sorumludur.</span></p>
+
+<p class=MsoNormal style='text-align:justify;text-indent:35.45pt;line-height:
+127%;text-autospace:ideograph-numeric ideograph-other'><span style='font-size:
+12.0pt;line-height:127%'>(3) Hakkında malvarlığının dondurulması kararı verilmiş
+olanlar, alacak ve borçları ile diğer tüm malvarlığı değerlerini ve bunların dayanağına
+ilişkin bilgileri; bunlardan alacağı veya borcu olan gerçek ve tüzel kişiler ise
+alacak veya borcun miktarı ile dayanağına ilişkin bilgileri, malvarlığının dondurulması
+kararının Resmî Gazete’de yayımlandığı tarihten itibaren en geç otuz gün içinde
+Başkanlığa bildirirler.</span></p>
+
+<p class=MsoNormal style='text-align:justify;text-indent:35.45pt;line-height:
+127%;text-autospace:ideograph-numeric ideograph-other'><span style='font-size:
+12.0pt;line-height:127%;letter-spacing:-.1pt'>(4) Malvarlığının dondurulması kararı,
+Başkanlığın talebi üzerine 5271 sayılı Kanunun 128 inci maddesinin üçüncü ila yedinci
+fıkralarında belirtilen usule uygun olarak gecikmeksizin</span><span style='font-size:12.0pt;line-height:127%'> yerine getirilir.</span></p>
+
+<p class=MsoNormal style='text-align:justify;text-indent:35.45pt;line-height:
+125%;text-autospace:ideograph-numeric ideograph-other'><span style='font-size:
+12.0pt;line-height:125%'>(5) Malvarlığının dondurulması kararının yerine getirilmesi
+talebinde bulunulan <span style='letter-spacing:-.1pt'>gerçek ve tüzel kişiler ile
+kamu kurum ve kuruluşları; nezdinde malvarlığı kaydı (…)</span><a href="#_ftn6" name="_ftnref6" title=""><span class=MsoFootnoteReference><span class=MsoFootnoteReference><span style='font-size:12.0pt;font-family:"Times New Roman",serif'>[6]</span></span></span></a><span style='letter-spacing:-.1pt'> bulunuyor</span> ise dondurulan malvarlığına ilişkin
+bilgileri talep tarihinden itibaren yedi gün içinde Başkanlığa bildirir.</span></p>
+
+<p class=MsoNormal style='text-align:justify;text-indent:35.45pt;line-height:
+125%;text-autospace:ideograph-numeric ideograph-other'><span style='font-size:
+12.0pt;line-height:125%'>(6) Malvarlığında herhangi bir artış meydana gelmesi hâlinde,
+bu artışlar da malvarlığının dondurulması hükümlerine tabidir.</span></p>
+
+<p class=MsoNormal style='text-align:justify;text-indent:35.45pt;line-height:
+125%;text-autospace:ideograph-numeric ideograph-other'><span style='font-size:
+12.0pt;line-height:125%'>(7) Malvarlığının dondurulması kararının kaldırılmasına
+ilişkin kararlar, Başkanlık tarafından dördüncü fıkra uyarınca dondurma kararını
+yerine getiren kişi, kurum veya kuruluşlara bildirilir ve Resmî Gazete’de yayımlanır.</span></p>
+
+<p class=MsoNormal style='text-align:justify;text-indent:35.45pt;line-height:
+125%;text-autospace:ideograph-numeric ideograph-other'><b><span style='font-size:12.0pt;line-height:125%'>&nbsp;</span></b></p>
+
+<p class=MsoNormal style='text-align:justify;text-indent:35.45pt;line-height:
+125%;text-autospace:ideograph-numeric ideograph-other'><b><span style='font-size:12.0pt;line-height:125%'>Dondurulan malvarlığının yönetimi</span></b></p>
+
+<p class=MsoNormal style='text-align:justify;text-indent:35.45pt;line-height:
+125%;text-autospace:ideograph-numeric ideograph-other'><b><span style='font-size:12.0pt;line-height:125%'>MADDE 13 –</span></b><span style='font-size:12.0pt;line-height:125%'> (1) Dondurulmasına karar verilen malvarlığının
+yönetimi, ilgili gerçek veya tüzel kişiye aittir. Ancak bu maddenin ikinci ve üçüncü
+fıkralarındaki işlemler hariç olmak üzere, malvarlığı dondurulan kişiler bu malvarlığının
+ortadan kaldırılmasına, tüketilmesine, dönüştürülmesine, transferine, devir ve temlik
+edilmesine veya sair tasarruflara yönelik işlemlerde bulunamazlar. Malvarlığının
+dondurulması kararının yerine getirilmesi talebinde bulunulan gerçek ve tüzel kişiler
+ile kamu kurum veya kuruluşları da bu tür işlemlerin gerçekleştirilmesini sağlayamaz
+ve kolaylaştıramazlar.</span></p>
+
+<p class=MsoNormal style='text-align:justify;text-indent:35.45pt;line-height:
+125%;text-autospace:ideograph-numeric ideograph-other'><span style='font-size:
+12.0pt;line-height:125%'>(2) Malvarlığı dondurulan gerçek kişinin ve bakmakla yükümlü
+olduğu yakınlarının asgari geçimlerini sağlamak veya ticari işletmeler ve diğer
+tüzel kişilerin faaliyetlerine devam edebilmelerini temin etmek üzere;</span></p>
+
+<p class=MsoNormal style='text-align:justify;text-indent:35.45pt;line-height:
+125%;text-autospace:ideograph-numeric ideograph-other'><span style='font-size:
+12.0pt;line-height:125%'>a) Taşınmazlar ile kara, deniz ve hava ulaşım araçları
+gibi taşınırlar üzerinde sair kişiler lehine ayni veya şahsi hak tesisi,</span></p>
+
+<p class=MsoNormal style='text-align:justify;text-indent:35.45pt;line-height:
+125%;text-autospace:ideograph-numeric ideograph-other'><span style='font-size:
+12.0pt;line-height:125%'>b) Banka veya diğer finans kurumlarındaki hesaplar üzerindeki
+tasarruf yetkisinin kullanılması,</span></p>
+
+<p class=MsoNormal style='text-align:justify;text-indent:35.45pt;line-height:
+125%;text-autospace:ideograph-numeric ideograph-other'><span style='font-size:
+12.0pt;line-height:125%'>c) Gerçek veya tüzel kişiler nezdindeki her türlü hak ve
+alacaklar üzerindeki tasarruf yetkisinin kullanılması,</span></p>
+
+<p class=MsoNormal style='text-align:justify;text-indent:35.45pt;line-height:
+125%;text-autospace:ideograph-numeric ideograph-other'><span style='font-size:
+12.0pt;line-height:125%'>ç) Kıymetli evrak üzerindeki tasarruf yetkisinin kullanılması,</span></p>
+
+<p class=MsoNormal style='text-align:justify;text-indent:35.45pt;line-height:
+125%;text-autospace:ideograph-numeric ideograph-other'><span style='font-size:
+12.0pt;line-height:125%'>d) Şirketlerdeki ortaklık payları üzerindeki tasarruf yetkisinin
+kullanılması,</span></p>
+
+<p class=MsoNormal style='text-align:justify;text-indent:35.45pt;line-height:
+125%;text-autospace:ideograph-numeric ideograph-other'><span style='font-size:
+12.0pt;line-height:125%'>e) Kiralık kasa mevcutları üzerindeki tasarruf yetkisinin
+kullanılması,</span></p>
+
+<p class=MsoNormal style='text-align:justify;text-indent:35.45pt;line-height:
+125%;text-autospace:ideograph-numeric ideograph-other'><span style='font-size:
+12.0pt;line-height:125%'>f) Ticari işletme veya diğer tüzel kişilerin mal ve hizmet
+alım satımı ile bakım, işletim, onarım giderleri, defter ve belgelerinde kayıtlı
+borçlar, kira, kredi, kayyım hizmeti, sigorta primi, avukatlık ücreti, ücret ve
+maaş gibi zorunlu ödemelerin gerçekleştirilmesi,</span></p>
+
+<p class=MsoNormal style='text-align:justify;text-indent:35.45pt;line-height:
+125%;text-autospace:ideograph-numeric ideograph-other'><span style='font-size:
+12.0pt;line-height:125%'>işlemleri Başkanlığın izniyle yapılabilir.</span></p>
+
+<p class=MsoNormal style='text-align:justify;text-indent:35.45pt;line-height:
+125%;text-autospace:ideograph-numeric ideograph-other'><span style='font-size:
+12.0pt;line-height:125%'>(3) Dondurulan malvarlığından ödenmesi gereken vergi, resim,
+harç, kira, sosyal güvenlik primi gibi kamu kurumu veya kamu kurumu niteliğindeki
+kuruluşlara yapılacak her türlü zorunlu ödemeler, izin alınmaksızın gerçekleştirilebilir.
+Ancak Başkanlık gerek görmesi hâlinde bu işlemleri de izne tabi tutabilir.</span></p>
+
+<p class=MsoNormal style='text-align:justify;text-indent:35.45pt;line-height:
+120%;text-autospace:ideograph-numeric ideograph-other'><span style='font-size:
+12.0pt;line-height:120%'>(4) Taşınmazlar ile kara, deniz ve hava ulaşım araçları
+gibi taşınırlar üzerinde sair kişiler lehine ayni veya şahsi hak tesisine izin verilmesi
+hâlinde;</span></p>
+
+<p class=MsoNormal style='text-align:justify;text-indent:35.45pt;line-height:
+120%;text-autospace:ideograph-numeric ideograph-other'><span style='font-size:
+12.0pt;line-height:120%'>a) Sözleşme metninin bir örneği,</span></p>
+
+<p class=MsoNormal style='text-align:justify;text-indent:35.45pt;line-height:
+120%;text-autospace:ideograph-numeric ideograph-other'><span style='font-size:
+12.0pt;line-height:120%'>b) Sözleşme gereğince karşılık olarak ödenmesi gereken
+para ve sair malvarlığı değerinin miktarına, ödeme takvimine, ödemenin yapılacağı
+banka hesabına ilişkin bilgiler,</span></p>
+
+<p class=MsoNormal style='text-align:justify;text-indent:35.45pt;line-height:
+120%;text-autospace:ideograph-numeric ideograph-other'><span style='font-size:
+12.0pt;line-height:120%'>hakkın tesis edildiği tarihten itibaren en geç on beş gün
+içinde Başkanlığa verilir.</span></p>
+
+<p class=MsoNormal style='text-align:justify;text-indent:35.45pt;line-height:
+120%;text-autospace:ideograph-numeric ideograph-other'><span style='font-size:
+12.0pt;line-height:120%'>(5) Hakkında malvarlığının dondurulması kararı verilmiş
+olanlara dondurma kararının Resmî Gazete’de yayımlandığı tarihten itibaren yapılacak
+her türlü ödeme, ancak bu kişilere ait bir banka hesabına yapılabilir. Malvarlığı
+dondurulan kişinin merkezi veya şubesi Türkiye’de bulunan bir bankada hesabı yoksa
+Başkanlık tarafından kişi adına hesap açtırılır.</span></p>
+
+<p class=MsoNormal style='text-align:justify;text-indent:35.45pt;line-height:
+120%;text-autospace:ideograph-numeric ideograph-other'><span style='font-size:
+12.0pt;line-height:120%'>(6) Dondurulan malvarlığının yönetimine ilişkin izin; belirlenen
+kişi veya kişilere, belirli koşullar veya sınırlar dâhilinde bir defaya mahsus ya
+da süreli olarak verilebilir.</span></p>
+
+<p class=MsoNormal style='text-align:justify;text-indent:35.45pt;line-height:
+120%;text-autospace:ideograph-numeric ideograph-other'><span style='font-size:
+12.0pt;line-height:120%;letter-spacing:-.2pt'>(7) Başkanlık, gerek gördüğü hâllerde
+verdiği iznin kapsamını veya süresini değiştirebilir veya iptal edebilir.</span></p>
+
+<p class=MsoNormal style='text-align:justify;text-indent:35.45pt;line-height:
+120%;text-autospace:ideograph-numeric ideograph-other'><b><span style='font-size:12.0pt;line-height:120%'>&nbsp;</span></b></p>
+
+<p class=MsoNormal style='text-align:justify;text-indent:35.45pt;line-height:
+120%;text-autospace:ideograph-numeric ideograph-other'><b><span style='font-size:12.0pt;line-height:120%'>Denetim</span></b></p>
+
+<p class=MsoNormal style='text-align:justify;text-indent:35.45pt;line-height:
+120%;text-autospace:ideograph-numeric ideograph-other'><b><span style='font-size:12.0pt;line-height:120%'>MADDE 14 –</span></b><span style='font-size:12.0pt;line-height:120%'> (1) Başkanlık;</span></p>
+
+<p class=MsoNormal style='text-align:justify;text-indent:35.45pt;line-height:
+120%;text-autospace:ideograph-numeric ideograph-other'><span style='font-size:
+12.0pt;line-height:120%'>a) Nezdinde malvarlığı bulunduran kişi ve kuruluşların
+dondurma kararına uygun hareket edip etmediğini,</span></p>
+
+<p class=MsoNormal style='text-align:justify;text-indent:35.45pt;line-height:
+120%;text-autospace:ideograph-numeric ideograph-other'><span style='font-size:
+12.0pt;line-height:120%'>b) Dondurulan malvarlığının yönetiminin bu Kanun hükümlerine
+uygun olarak yerine getirilip getirilmediğini,</span></p>
+
+<p class=MsoNormal style='text-align:justify;text-indent:35.45pt;line-height:
+120%;text-autospace:ideograph-numeric ideograph-other'><span style='font-size:
+12.0pt;line-height:120%;letter-spacing:-.2pt'>denetlemek, gerektiğinde ilgili defter,
+belge ve kayıtlar üzerinde araştırma ve incelemelerde bulunmak üzere 11/10/2006
+tarihli ve 5549 sayılı Suç Gelirlerinin Aklanmasının Önlenmesi Hakkında Kanunun
+2 nci maddesinin birinci fıkrasının (e) bendinde belirtilen denetim elemanlarını
+veya Başkanlıkta istihdam edilen maliye uzmanlarını görevlendirir.</span></p>
+
+<p class=MsoNormal style='text-align:justify;text-indent:35.45pt;line-height:
+120%;text-autospace:ideograph-numeric ideograph-other'><span style='font-size:
+12.0pt;line-height:120%'>(2) Birinci fıkra uyarınca görevlendirilenlere 10/2/1954
+tarihli ve 6245 sayılı Harcırah Kanunu hükümleri saklı kalmak kaydıyla, (7.000)
+gösterge rakamının memur aylık katsayısıyla çarpımı sonucunda bulunan tutarı geçmemek
+üzere Başkanlık onayı ile aylık ek ücret ödenir. Bu ödemeler damga vergisi hariç
+herhangi bir vergi ve kesintiye tabi tutulmaz.</span></p>
+
+<p class=MsoNormal style='text-align:justify;text-indent:35.45pt;line-height:
+120%;text-autospace:ideograph-numeric ideograph-other'><b><span style='font-size:12.0pt;line-height:120%'>&nbsp;</span></b></p>
+
+<p class=MsoNormal style='text-align:justify;text-indent:35.45pt;line-height:
+120%;text-autospace:ideograph-numeric ideograph-other'><b><span style='font-size:12.0pt;line-height:120%'>Ceza hükümleri</span></b></p>
+
+<p class=MsoNormal style='text-align:justify;text-indent:35.45pt;line-height:
+120%;text-autospace:ideograph-numeric ideograph-other'><b><span style='font-size:12.0pt;line-height:120%'>MADDE 15 –</span></b><span style='font-size:12.0pt;line-height:120%'> (1) Bu Kanun hükümlerine göre malvarlığının
+dondurulmasıyla ilgili alınan kararın gereğini yerine getirmeyen veya yerine getirmekte
+ihmal veya gecikme gösteren kişilere, fiil daha ağır bir cezayı gerektiren başka
+bir suç oluşturmadığı takdirde, altı aydan iki yıla kadar hapis veya adli para cezası
+verilir.</span></p>
+
+<p class=MsoNormal style='text-align:justify;text-indent:35.45pt;line-height:
+120%;text-autospace:ideograph-numeric ideograph-other'><span style='font-size:
+12.0pt;line-height:120%'>(2) <b>(Değişik:27/12/2020-7262/42 md.)</b> Bu Kanunun
+5 ila 7 nci maddeleri uyarınca hakkında malvarlığının dondurulması kararı verilen
+kişi, kuruluş veya organizasyonların yararına veya bunlar tarafından doğrudan veya
+dolaylı olarak kontrol edilen kuruluşlara ya da bunların adına veya hesabına hareket
+eden kişi veya kuruluşlara bu niteliklerini bilerek ve isteyerek fon sağlayan veya
+toplayan ya da finansal hizmet veren kişilere, fiil daha ağır bir cezayı gerektiren
+başka bir suç oluşturmadığı takdirde, bir yıldan üç yıla kadar hapis veya adli para
+cezası verilir.</span></p>
+
+<p class=MsoNormal style='text-align:justify;text-indent:35.45pt;line-height:
+120%;text-autospace:ideograph-numeric ideograph-other'><span style='font-size:
+12.0pt;line-height:120%'>(3) <b>(Ek:27/12/2020-7262/42 md.)</b>) Birinci fıkra kapsamında
+malvarlığının dondurulmasıyla ilgili alınan kararın gereğini yerine getirmeyen ya
+da ikinci fıkra kapsamında fon sağlayan veya toplayan ya da finansal hizmet veren
+kişinin, bir tüzel kişinin organ veya temsilcisi olması veya organ veya temsilcisi
+olmamakla birlikte, tüzel kişinin faaliyeti çerçevesinde görev üstlenmiş bulunması
+hâlinde ayrıca bu tüzel kişiye on bin Türk lirasından iki milyon Türk lirasına kadar
+idari para cezası verilir. Ancak bu fıkra uyarınca verilecek idari para cezası,
+tespit edilmesi hâlinde işleme konu edilen miktardan az olamaz.</span></p>
+
+<p class=MsoNormal align=center style='text-align:center;line-height:120%;
+text-autospace:ideograph-numeric ideograph-other'><span style='font-size:12.0pt;
+line-height:120%;color:black'>&nbsp;</span></p>
+
+<p class=MsoNormal align=center style='text-align:center;line-height:120%;
+text-autospace:ideograph-numeric ideograph-other'><b><span style='font-size:
+12.0pt;line-height:120%'>DÖRDÜNCÜ BÖLÜM</span></b></p>
+
+<p class=MsoNormal align=center style='text-align:center;line-height:120%;
+text-autospace:ideograph-numeric ideograph-other'><b><span style='font-size:
+12.0pt;line-height:120%'>Çeşitli ve Son Hükümler</span></b></p>
+
+<p class=MsoNormal style='text-align:justify;text-indent:35.45pt;line-height:
+120%;text-autospace:ideograph-numeric ideograph-other'><b><span style='font-size:12.0pt;line-height:120%'>Uygulanacak hükümler ve yollamalar</span></b></p>
+
+<p class=MsoNormal style='text-align:justify;text-indent:35.45pt;line-height:
+120%;text-autospace:ideograph-numeric ideograph-other'><b><span style='font-size:12.0pt;line-height:120%'>MADDE 16 – </span></b><span style='font-size:12.0pt;line-height:120%'>(1) Bu Kanunda hüküm bulunmayan hâllerde,
+5549 sayılı Kanunun bu Kanuna aykırı olmayan hükümleri uygulanır.</span></p>
+
+<p class=MsoNormal style='text-align:justify;text-indent:35.45pt;line-height:
+120%;text-autospace:ideograph-numeric ideograph-other'><span style='font-size:
+12.0pt;line-height:120%'>(2) Mevzuatta, bu Kanunla yürürlükten kaldırılan 3713 sayılı
+Kanunun 8 inci maddesine yapılan yollamalar bu Kanunun 4 üncü maddesine yapılmış
+sayılır.</span></p>
+
+<p class=MsoNormal style='text-align:justify;text-indent:35.45pt;line-height:
+120%;text-autospace:ideograph-numeric ideograph-other'><b><span style='font-size:12.0pt;line-height:120%'>&nbsp;</span></b></p>
+
+<p class=MsoNormal style='text-align:justify;text-indent:35.45pt;line-height:
+120%;text-autospace:ideograph-numeric ideograph-other'><b><span style='font-size:12.0pt;line-height:120%'>İhdas edilen kadrolar</span></b><a href="#_ftn7" name="_ftnref7" title=""><span class=MsoFootnoteReference><span style='font-size:12.0pt;line-height:120%'><span class=MsoFootnoteReference><span style='font-size:12.0pt;font-family:"Times New Roman",serif'>[7]</span></span></span></span></a></p>
+
+<p class=MsoNormal style='text-align:justify;text-indent:35.45pt;line-height:
+120%;text-autospace:ideograph-numeric ideograph-other'><b><span style='font-size:12.0pt;line-height:120%'>MADDE 17 –</span></b><span style='font-size:12.0pt;line-height:120%'> (1) Başkanlıkta kullanılmak üzere ekli
+(1) sayılı listede yer alan kadrolar ihdas edilerek 13/12/1983 tarihli ve 190 sayılı
+Genel Kadro ve Usulü Hakkında Kanun Hükmünde Kararnamenin eki (I) sayılı cetvelin
+Maliye Bakanlığına ait bölümüne eklenmiştir.</span></p>
+
+<p class=MsoNormal style='text-align:justify;text-indent:35.45pt;line-height:
+120%;text-autospace:ideograph-numeric ideograph-other'><b><span style='font-size:12.0pt;line-height:120%'>&nbsp;</span></b></p>
+
+<p class=MsoNormal style='text-align:justify;text-indent:35.45pt;line-height:
+120%;text-autospace:ideograph-numeric ideograph-other'><b><span style='font-size:12.0pt;line-height:120%'>Yürürlükten kaldırılan hükümler</span></b></p>
+
+<p class=MsoNormal style='text-align:justify;text-indent:35.45pt;line-height:
+120%;text-autospace:ideograph-numeric ideograph-other'><b><span style='font-size:12.0pt;line-height:120%'>MADDE 18 –</span></b><span style='font-size:12.0pt;line-height:120%'> (1) 3713 sayılı Kanunun 8 inci maddesi
+yürürlükten kaldırılmıştır.</span></p>
+
+<p class=MsoNormal style='text-align:justify;text-indent:35.45pt;line-height:
+120%;text-autospace:ideograph-numeric ideograph-other'><b><span style='font-size:12.0pt;line-height:120%'>&nbsp;</span></b></p>
+
+<p class=MsoNormal style='text-align:justify;text-indent:35.45pt;line-height:
+120%;text-autospace:ideograph-numeric ideograph-other'><b><span style='font-size:12.0pt;line-height:120%'>Yönetmelik</span></b></p>
+
+<p class=MsoNormal style='text-align:justify;text-indent:35.45pt;line-height:
+120%;text-autospace:ideograph-numeric ideograph-other'><b><span style='font-size:12.0pt;line-height:120%'>MADDE 19 –</span></b><span style='font-size:12.0pt;line-height:120%'> (1) Bu Kanunun uygulanmasına ilişkin
+usul ve esaslar Adalet, Dışişleri, İçişleri ve Maliye bakanlıkları tarafından müştereken
+hazırlanan yönetmelikle düzenlenir. Yönetmelik, bu Kanunun yürürlüğe girdiği tarihten
+itibaren altı ay içinde yürürlüğe konulur.</span></p>
+
+<p class=MsoNormal style='text-align:justify;text-indent:35.45pt;line-height:
+120%;text-autospace:ideograph-numeric ideograph-other'><b><span style='font-size:12.0pt;line-height:120%'>&nbsp;</span></b></p>
+
+<p class=MsoNormal style='text-align:justify;text-indent:35.45pt;line-height:
+120%;text-autospace:ideograph-numeric ideograph-other'><b><span style='font-size:12.0pt;line-height:120%'>Mevcut kararların uygulanması</span></b></p>
+
+<p class=MsoNormal style='text-align:justify;text-indent:35.45pt;line-height:
+120%;text-autospace:ideograph-numeric ideograph-other'><b><span style='font-size:12.0pt;line-height:120%'>GEÇİCİ MADDE 1 –</span></b><span style='font-size:12.0pt;line-height:120%'> (1) Bu Kanun hükümleri, bu Kanunun yürürlüğe
+girdiği tarihten önce Bakanlar Kurulu tarafından alınmış olan malvarlığının dondurulmasına
+ilişkin kararların yerine getirilmesinde de uygulanır.</span></p>
+
+<p class=MsoNormal style='text-align:justify;text-indent:35.45pt;line-height:
+120%;text-autospace:ideograph-numeric ideograph-other'><b><span style='font-size:12.0pt;line-height:120%'>&nbsp;</span></b></p>
+
+<p class=MsoNormal style='text-align:justify;text-indent:35.45pt;line-height:
+120%;text-autospace:ideograph-numeric ideograph-other'><b><span style='font-size:12.0pt;line-height:120%'>Yürürlük</span></b></p>
+
+<p class=MsoNormal style='text-align:justify;text-indent:35.45pt;line-height:
+120%;text-autospace:ideograph-numeric ideograph-other'><b><span style='font-size:12.0pt;line-height:120%'>MADDE 20 –</span></b><span style='font-size:12.0pt;line-height:120%'> (1) Bu Kanun yayımı tarihinde yürürlüğe
+girer.</span></p>
+
+<p class=MsoNormal style='text-align:justify;text-indent:35.45pt;line-height:
+120%;text-autospace:ideograph-numeric ideograph-other'><b><span style='font-size:12.0pt;line-height:120%'>&nbsp;</span></b></p>
+
+<p class=MsoNormal style='text-align:justify;text-indent:35.45pt;line-height:
+120%;text-autospace:ideograph-numeric ideograph-other'><b><span style='font-size:12.0pt;line-height:120%'>Yürütme</span></b></p>
+
+<p class=MsoNormal style='text-align:justify;text-indent:35.45pt;line-height:
+120%;text-autospace:ideograph-numeric ideograph-other'><b><span style='font-size:12.0pt;line-height:120%'>MADDE 21 –</span></b><span style='font-size:12.0pt;line-height:120%'> (1) Bu Kanun hükümlerini Bakanlar Kurulu
+yürütür.</span></p>
+
+<span style='font-size:12.0pt;line-height:127%;font-family:"Times New Roman",serif'><br clear=all style='page-break-before:always'>
+</span>
+
+<p class=MsoNormal align=center style='text-align:center;line-height:127%'><b><span style='font-size:12.0pt;line-height:127%'>6415 SAYILI KANUNA EK VE DEĞİŞİKLİK GETİREN
+MEVZUATIN VEYA </span></b></p>
+
+<p class=MsoNormal align=center style='text-align:center;line-height:127%'><b><span style='font-size:12.0pt;line-height:127%'>ANAYASA MAHKEMESİ KARARLARININ YÜRÜRLÜĞE
+GİRİŞ</span></b></p>
+
+<p class=MsoNormal align=center style='text-align:center;line-height:127%'><b><span style='font-size:12.0pt;line-height:127%'>TARİHLERİNİ GÖSTERİR TABLO</span></b></p>
+
+<p class=MsoNormal align=center style='text-align:center;line-height:127%'><span style='font-size:12.0pt;line-height:127%'>&nbsp;</span></p>
+
+<div align=center>
+
+<table class=MsoNormalTable border=1 cellspacing=0 cellpadding=0 width=0 style='width:16.0cm;border-collapse:collapse;border:none'>
+ <tr style='height:1.0pt'>
+  <td width=189 style='width:141.8pt;border:solid windowtext 1.5pt;padding:
+  1.4pt 2.85pt 1.4pt 2.85pt;height:1.0pt'>
+  <p class=MsoNormal align=center style='text-align:center;line-height:127%'><b><span style='font-size:12.0pt;line-height:127%'>Değiştiren Kanunun/</span></b></p>
+  <p class=MsoNormal align=center style='text-align:center;line-height:127%'><b><span style='font-size:12.0pt;line-height:127%'>KHK’nin veya İptal Eden Anayasa Mahkemesi
+  Kararının Numarası</span></b></p>
+  </td>
+  <td width=189 style='width:5.0cm;border:solid windowtext 1.5pt;border-left:
+  none;padding:1.4pt 2.85pt 1.4pt 2.85pt;height:1.0pt'>
+  <p class=MsoNormal align=center style='text-align:center;line-height:127%'><b><span style='font-size:12.0pt;line-height:127%'>6415 Sayılı Kanunun Değişen veya İptal
+  Edilen Maddeleri</span></b></p>
+  </td>
+  <td width=227 style='width:170.05pt;border:solid windowtext 1.5pt;border-left:
+  none;padding:1.4pt 2.85pt 1.4pt 2.85pt;height:1.0pt'>
+  <p class=MsoNormal align=center style='text-align:center;line-height:127%'><b><span style='font-size:12.0pt;line-height:127%'>Yürürlüğe Giriş Tarihi</span></b></p>
+  </td>
+ </tr>
+ <tr style='height:1.85pt'>
+  <td width=189 style='width:141.8pt;border:solid windowtext 1.5pt;border-top:
+  none;padding:1.4pt 2.85pt 1.4pt 2.85pt;height:1.85pt'>
+  <p class=MsoNormal align=center style='text-align:center;line-height:127%'><span style='font-size:12.0pt;line-height:127%'>6407</span></p>
+  </td>
+  <td width=189 style='width:5.0cm;border-top:none;border-left:none;border-bottom:
+  solid windowtext 1.5pt;border-right:solid windowtext 1.5pt;padding:1.4pt 2.85pt 1.4pt 2.85pt;
+  height:1.85pt'>
+  <p class=MsoNormal align=center style='text-align:center;line-height:127%'><span style='font-size:12.0pt;line-height:127%'>4</span></p>
+  </td>
+  <td width=227 style='width:170.05pt;border-top:none;border-left:none;
+  border-bottom:solid windowtext 1.5pt;border-right:solid windowtext 1.5pt;
+  padding:1.4pt 2.85pt 1.4pt 2.85pt;height:1.85pt'>
+  <p class=MsoNormal align=center style='text-align:center;line-height:127%'><span style='font-size:12.0pt;line-height:127%'>26/4/2016</span></p>
+  </td>
+ </tr>
+ <tr style='height:1.85pt'>
+  <td width=189 style='width:141.8pt;border:solid windowtext 1.5pt;border-top:
+  none;padding:1.4pt 2.85pt 1.4pt 2.85pt;height:1.85pt'>
+  <p class=MsoNormal align=center style='text-align:center;line-height:127%'><span style='font-size:12.0pt;line-height:127%'>KHK/700</span></p>
+  </td>
+  <td width=189 style='width:5.0cm;border-top:none;border-left:none;border-bottom:
+  solid windowtext 1.5pt;border-right:solid windowtext 1.5pt;padding:1.4pt 2.85pt 1.4pt 2.85pt;
+  height:1.85pt'>
+  <p class=MsoNormal align=center style='text-align:center;line-height:127%'><span style='font-size:12.0pt;line-height:127%'>5, 6, 7, 9</span></p>
+  </td>
+  <td width=227 style='width:170.05pt;border-top:none;border-left:none;
+  border-bottom:solid windowtext 1.5pt;border-right:solid windowtext 1.5pt;
+  padding:1.4pt 2.85pt 1.4pt 2.85pt;height:1.85pt'>
+  <p class=MsoNormal align=center style='text-align:center;line-height:127%'><span lang=EN-GB style='font-size:12.0pt;line-height:127%'>24/6/2018 tarihinde birlikte
+  yapılan Türkiye Büyük Millet Meclisi ve Cumhurbaşkanlığı seçimleri sonucunda Cumhurbaşkanının
+  andiçerek göreve başladığı tarihte</span></p>
+  <p class=MsoNormal align=center style='text-align:center;line-height:127%'><span lang=EN-GB style='font-size:12.0pt;line-height:127%'>(9/7/2018)</span></p>
+  </td>
+ </tr>
+ <tr style='height:1.85pt'>
+  <td width=189 style='width:141.8pt;border:solid windowtext 1.5pt;border-top:
+  none;padding:1.4pt 2.85pt 1.4pt 2.85pt;height:1.85pt'>
+  <p class=MsoNormal align=center style='text-align:center;line-height:127%'><span style='font-size:12.0pt;line-height:127%'>7262</span></p>
+  </td>
+  <td width=189 style='width:5.0cm;border-top:none;border-left:none;border-bottom:
+  solid windowtext 1.5pt;border-right:solid windowtext 1.5pt;padding:1.4pt 2.85pt 1.4pt 2.85pt;
+  height:1.85pt'>
+  <p class=MsoNormal align=center style='text-align:center;line-height:127%'><span style='font-size:12.0pt;line-height:127%'>2, 4, 5, 7, 8,9,12,15</span></p>
+  </td>
+  <td width=227 style='width:170.05pt;border-top:none;border-left:none;
+  border-bottom:solid windowtext 1.5pt;border-right:solid windowtext 1.5pt;
+  padding:1.4pt 2.85pt 1.4pt 2.85pt;height:1.85pt'>
+  <p class=MsoNormal align=center style='text-align:center;line-height:127%'><span lang=EN-GB style='font-size:12.0pt;line-height:127%'>31/12/2020</span></p>
+  </td>
+ </tr>
+</table>
+
+</div>
+
+<p class=MsoNormal align=center style='text-align:center;line-height:127%;
+text-autospace:ideograph-numeric ideograph-other'><i><span style='font-size:
+12.0pt;line-height:127%'>&nbsp;</span></i></p>
+
+</div>
+
+<div><br clear=all>
+
+<hr align=left size=1 width="33%">
+
+<div id=ftn1>
+
+<p class=MsoFootnoteText style='text-align:justify'><a href="#_ftnref1" name="_ftn1" title=""><span class=MsoFootnoteReference><i><span lang=tr style='font-size:11.0pt'><span class=MsoFootnoteReference><b><span lang=tr style='font-size:11.0pt;font-family:"Times New Roman",serif'>[1]</span></b></span></span></i></span></a><i><span lang=tr style='font-size:11.0pt'> 27/12/2020 tarihli ve 7262 sayılı Kanunun 36
+ncı maddesiyle bu maddeye birinci fıkrasından sonra gelmek üzere fıkra eklenmiş
+ve diğer fıkralar buna göre teselsül ettirilmiştir.</span></i></p>
+
+</div>
+
+<div id=ftn2>
+
+<p class=MsoFootnoteText style='text-align:justify;line-height:92%'><a href="#_ftnref2" name="_ftn2" title=""><span class=MsoFootnoteReference><i><span lang=tr style='font-size:11.0pt;line-height:92%'><span class=MsoFootnoteReference><b><span lang=tr style='font-size:11.0pt;font-family:
+"Times New Roman",serif'>[2]</span></b></span></span></i></span></a><i><span lang=tr style='font-size:11.0pt;line-height:92%'> 2/7/2018 tarihli ve 700
+sayılı Kanun Hükmünde Kararnamenin 200 üncü maddesiyle bu maddenin birinci ve
+dördüncü fıkralarında yer alan “Bakanlar Kurulu” ibareleri “Cumhurbaşkanı”
+şeklinde değiştirilmiştir.</span></i></p>
+
+</div>
+
+<div id=ftn3>
+
+<p class=MsoFootnoteText style='text-align:justify;line-height:92%'><a href="#_ftnref3" name="_ftn3" title=""><span class=MsoFootnoteReference><i><span lang=tr style='font-size:11.0pt;line-height:92%'><span class=MsoFootnoteReference><b><span lang=tr style='font-size:11.0pt;font-family:
+"Times New Roman",serif'>[3]</span></b></span></span></i></span></a><i><span lang=tr style='font-size:11.0pt;line-height:92%'> 2/7/2018 tarihli ve 700
+sayılı Kanun Hükmünde Kararnamenin 200 üncü maddesiyle bu maddenin ikinci
+fıkrasında yer alan “Bakanlar Kurulu” ibaresi “Cumhurbaşkanı” şeklinde
+değiştirilmiştir.</span></i></p>
+
+</div>
+
+<div id=ftn4>
+
+<p class=MsoFootnoteText style='text-align:justify'><a href="#_ftnref4" name="_ftn4" title=""><span class=MsoFootnoteReference><i><span lang=tr style='font-size:11.0pt'><span class=MsoFootnoteReference><b><span lang=tr style='font-size:11.0pt;font-family:"Times New Roman",serif'>[4]</span></b></span></span></i></span></a><i><span lang=tr style='font-size:11.0pt'> 27/12/2020 tarihli ve 7262 sayılıu Kanunun 39
+uncu maddesiyle bu fıkraya “kuruluşları,” ibaresinden sonra gelmek üzere “5
+inci maddenin dördüncü fıkrası ile” ibaresi ve “malvarlığının dondurulmasına”
+ibaresinden sonra gelmek üzere “ve malvarlığının dondurulmasının
+kaldırılmasına” ibaresi eklenmiştir.</span></i></p>
+
+</div>
+
+<div id=ftn5>
+
+<p class=MsoFootnoteText style='text-align:justify'><a href="#_ftnref5" name="_ftn5" title=""><span class=MsoFootnoteReference><i><span lang=tr style='font-size:11.0pt'><span class=MsoFootnoteReference><b><span lang=tr style='font-size:11.0pt;font-family:"Times New Roman",serif'>[5]</span></b></span></span></i></span></a><i><span lang=tr style='font-size:11.0pt'> 27/12/2020 tarihli ve 7262 sayılı Kanunun 40
+ıncı maddesiyle bu fıkranın başına “5 inci maddenin dördüncü fıkrası ile”
+ibaresi eklenmiştir.</span></i></p>
+
+</div>
+
+<div id=ftn6>
+
+<p class=MsoFootnoteText style='text-align:justify'><a href="#_ftnref6" name="_ftn6" title=""><span class=MsoFootnoteReference><i><span lang=tr style='font-size:11.0pt'><span class=MsoFootnoteReference><b><span lang=tr style='font-size:11.0pt;font-family:"Times New Roman",serif'>[6]</span></b></span></span></i></span></a><i><span lang=tr style='font-size:11.0pt'> 27/12/2020 tarihli ve 7262 sayılı Kanunun 41
+inci maddesiyle bu fıkrada yer alan “bulunup bulunmadığını,”  ibaresi madde
+metninden çıkarılmıştır.</span></i></p>
+
+</div>
+
+<div id=ftn7>
+
+<p class=MsoFootnoteText style='text-align:justify'><a href="#_ftnref7" name="_ftn7" title=""><span class=MsoFootnoteReference><i><span lang=tr style='font-size:11.0pt;letter-spacing:-.2pt'><span class=MsoFootnoteReference><b><span lang=tr style='font-size:11.0pt;font-family:"Times New Roman",serif;letter-spacing:
+-.2pt'>[7]</span></b></span></span></i></span></a><i><span lang=tr style='font-size:11.0pt;letter-spacing:-.2pt'> Bu maddede yer alan kadrolarla
+ilgili olarak 16/2/2013 tarihli ve 28561 sayılı Resmi Gazete’ye bakınız.</span></i></p>
+
+</div>
+
+</div>
+
+</body>
+
+</html>
+    <p id="page-end"></p>
+    <script src="/lib/tooltip/tooltip.js"></script>
+    <script>
+        $(document).ready(function () {
+            jQuery('table').each(function (cmp) {
+                var parent = this.parentNode;
+                var wrapper = document.createElement('div');
+
+                parent.replaceChild(wrapper, this);
+                wrapper.appendChild(this);
+                this.parentElement.style.overflowX = 'auto';
+            });
+            if (window.location.search.indexOf("2709") != -1 || window.location.search.indexOf("MevzuatTur=19") != -1) {
+                var tableCss = document.styleSheets[0].cssRules[2].style;
+                tableCss.cssText = tableCss.cssText.replace("100%", "initial");
+            }
+            //$('.tooltip').tooltipster();
+            //replaceTable();
+            //$(window).on('resize', function () {
+            //    replaceTable();
+            //});
+            //replaceTable();
+        });
+            //function replaceTable() {
+            //    //if (window.location.search.indexOf("MevzuatTur=19") == -1) {
+            //    //    var iframe = document.getElementsByTagName("td");
+            //    //    var value = $('body').width() - 10;
+            //    //    for (var i = 0; i < iframe.length; i++) {
+            //    //        iframe[i].style.width = "initial !important";
+            //    //    }
+            //    //}
+
+
+            //    //var iframe = document.getElementsByClassName("MsoNormalTable");
+            //    //var value = $('body').width() - 10;
+            //
+            //    //for (var i = 0; i < iframe.length; i++) {
+            //    //    iframe[i].style.width = value;
+            //    //}
+
+            //    //var iframe2 = document.getElementsByClassName("MsoNormal");
+            //    ////for (var j = 0; j < iframe2.length; j++) {
+            //    ////    iframe2[j].style.width = value;
+            //    ////}
+            //}
+    </script>
+
+
+

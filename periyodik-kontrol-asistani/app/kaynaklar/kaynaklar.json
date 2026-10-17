@@ -1,0 +1,403 @@
+{
+ "_aciklama": "Uygulamayla gelen açık kaynaklar. Metinler scripts/kaynaklari_indir.py ile indirilir. dagitim=repo: kamuya açık (mevzuat, ABD kamu malı), metni repoya girer. dagitim=yerel: telif hakkı sahibine ait; metin yalnız bu kurulumda tutulur, repoya girmez.",
+ "alanlar": [
+  "Kurumsal Yönetim ve İç Sistemler",
+  "Kredi",
+  "Ödeme Sistemleri",
+  "Bilgi Sistemleri ve Veri Güvenliği",
+  "AML / Uyum",
+  "Kişisel Verilerin Korunması",
+  "Muhasebe ve Finansal Raporlama",
+  "Dış Hizmet Alımı",
+  "Operasyonel Risk ve İş Sürekliliği"
+ ],
+ "kaynaklar": [
+  {
+   "id": "5411-bankacilik-kanunu",
+   "ad": "5411 sayılı Bankacılık Kanunu",
+   "tur": "resmi",
+   "kurum": "TBMM",
+   "alanlar": [
+    "Kurumsal Yönetim ve İç Sistemler",
+    "Kredi",
+    "Muhasebe ve Finansal Raporlama"
+   ],
+   "kaynak": {
+    "tip": "mevzuat",
+    "tur": 1,
+    "no": "5411"
+   },
+   "dagitim": "repo"
+  },
+  {
+   "id": "5549-aklama-kanunu",
+   "ad": "5549 sayılı Suç Gelirlerinin Aklanmasının Önlenmesi Hakkında Kanun",
+   "tur": "resmi",
+   "kurum": "TBMM",
+   "alanlar": [
+    "AML / Uyum"
+   ],
+   "kaynak": {
+    "tip": "mevzuat",
+    "tur": 1,
+    "no": "5549"
+   },
+   "dagitim": "repo"
+  },
+  {
+   "id": "6415-terorun-finansmani-kanunu",
+   "ad": "6415 sayılı Terörün Finansmanının Önlenmesi Hakkında Kanun",
+   "tur": "resmi",
+   "kurum": "TBMM",
+   "alanlar": [
+    "AML / Uyum"
+   ],
+   "kaynak": {
+    "tip": "mevzuat",
+    "tur": 1,
+    "no": "6415"
+   },
+   "dagitim": "repo"
+  },
+  {
+   "id": "6698-kvkk",
+   "ad": "6698 sayılı Kişisel Verilerin Korunması Kanunu",
+   "tur": "resmi",
+   "kurum": "TBMM",
+   "alanlar": [
+    "Kişisel Verilerin Korunması",
+    "Bilgi Sistemleri ve Veri Güvenliği"
+   ],
+   "kaynak": {
+    "tip": "mevzuat",
+    "tur": 1,
+    "no": "6698"
+   },
+   "dagitim": "repo"
+  },
+  {
+   "id": "6493-odeme-hizmetleri-kanunu",
+   "ad": "6493 sayılı Ödeme ve Menkul Kıymet Mutabakat Sistemleri, Ödeme Hizmetleri ve Elektronik Para Kuruluşları Hakkında Kanun",
+   "tur": "resmi",
+   "kurum": "TBMM",
+   "alanlar": [
+    "Ödeme Sistemleri"
+   ],
+   "kaynak": {
+    "tip": "mevzuat",
+    "tur": 1,
+    "no": "6493"
+   },
+   "dagitim": "repo"
+  },
+  {
+   "id": "bddk-ic-sistemler-yonetmeligi",
+   "ad": "Bankaların İç Sistemleri ve İçsel Sermaye Yeterliliği Değerlendirme Süreci Hakkında Yönetmelik",
+   "tur": "resmi",
+   "kurum": "BDDK",
+   "alanlar": [
+    "Kurumsal Yönetim ve İç Sistemler",
+    "Operasyonel Risk ve İş Sürekliliği",
+    "Bilgi Sistemleri ve Veri Güvenliği"
+   ],
+   "kaynak": {
+    "tip": "mevzuat",
+    "tur": 7,
+    "no": "19864"
+   },
+   "dagitim": "repo"
+  },
+  {
+   "id": "bddk-bilgi-sistemleri-yonetmeligi",
+   "ad": "Bankaların Bilgi Sistemleri ve Elektronik Bankacılık Hizmetleri Hakkında Yönetmelik",
+   "tur": "resmi",
+   "kurum": "BDDK",
+   "alanlar": [
+    "Bilgi Sistemleri ve Veri Güvenliği",
+    "Ödeme Sistemleri",
+    "Operasyonel Risk ve İş Sürekliliği",
+    "Dış Hizmet Alımı"
+   ],
+   "kaynak": {
+    "tip": "mevzuat",
+    "tur": 7,
+    "no": "34360"
+   },
+   "dagitim": "repo"
+  },
+  {
+   "id": "bddk-destek-hizmeti-yonetmeligi",
+   "ad": "Bankaların Destek Hizmeti Almalarına İlişkin Yönetmelik",
+   "tur": "resmi",
+   "kurum": "BDDK",
+   "alanlar": [
+    "Dış Hizmet Alımı",
+    "Bilgi Sistemleri ve Veri Güvenliği"
+   ],
+   "kaynak": {
+    "tip": "mevzuat",
+    "tur": 7,
+    "no": "15481"
+   },
+   "dagitim": "repo"
+  },
+  {
+   "id": "bddk-kredi-islemleri-yonetmeligi",
+   "ad": "Bankaların Kredi İşlemlerine İlişkin Yönetmelik",
+   "tur": "resmi",
+   "kurum": "BDDK",
+   "alanlar": [
+    "Kredi"
+   ],
+   "kaynak": {
+    "tip": "mevzuat",
+    "tur": 7,
+    "no": "40520"
+   },
+   "dagitim": "repo"
+  },
+  {
+   "id": "bddk-kurumsal-yonetim-yonetmeligi",
+   "ad": "Bankaların Kurumsal Yönetim İlkelerine İlişkin Yönetmelik",
+   "tur": "resmi",
+   "kurum": "BDDK",
+   "alanlar": [
+    "Kurumsal Yönetim ve İç Sistemler"
+   ],
+   "kaynak": {
+    "tip": "mevzuat",
+    "tur": 7,
+    "no": "10750"
+   },
+   "dagitim": "repo"
+  },
+  {
+   "id": "bddk-muhasebe-belge-saklama-yonetmeligi",
+   "ad": "Bankaların Muhasebe Uygulamalarına ve Belgelerin Saklanmasına İlişkin Usul ve Esaslar Hakkında Yönetmelik",
+   "tur": "resmi",
+   "kurum": "BDDK",
+   "alanlar": [
+    "Muhasebe ve Finansal Raporlama"
+   ],
+   "kaynak": {
+    "tip": "mevzuat",
+    "tur": 7,
+    "no": "10747"
+   },
+   "dagitim": "repo"
+  },
+  {
+   "id": "bddk-bs-bagimsiz-denetim-yonetmeligi",
+   "ad": "Bilgi Sistemleri ve İş Süreçleri Bağımsız Denetimi Hakkında Yönetmelik",
+   "tur": "resmi",
+   "kurum": "BDDK",
+   "alanlar": [
+    "Bilgi Sistemleri ve Veri Güvenliği"
+   ],
+   "kaynak": {
+    "tip": "mevzuat",
+    "tur": 7,
+    "no": "39257"
+   },
+   "dagitim": "repo"
+  },
+  {
+   "id": "masak-tedbirler-yonetmeligi",
+   "ad": "Suç Gelirlerinin Aklanmasının ve Terörün Finansmanının Önlenmesine Dair Tedbirler Hakkında Yönetmelik",
+   "tur": "resmi",
+   "kurum": "MASAK",
+   "alanlar": [
+    "AML / Uyum"
+   ],
+   "kaynak": {
+    "tip": "mevzuat",
+    "tur": 21,
+    "no": "200713012"
+   },
+   "dagitim": "repo"
+  },
+  {
+   "id": "masak-uyum-programi-yonetmeligi",
+   "ad": "Suç Gelirlerinin Aklanmasının ve Terörün Finansmanının Önlenmesine İlişkin Yükümlülüklere Uyum Programı Hakkında Yönetmelik",
+   "tur": "resmi",
+   "kurum": "MASAK",
+   "alanlar": [
+    "AML / Uyum"
+   ],
+   "kaynak": {
+    "tip": "mevzuat",
+    "tur": 7,
+    "no": "12426"
+   },
+   "dagitim": "repo"
+  },
+  {
+   "id": "kvkk-silme-yonetmeligi",
+   "ad": "Kişisel Verilerin Silinmesi, Yok Edilmesi veya Anonim Hale Getirilmesi Hakkında Yönetmelik",
+   "tur": "resmi",
+   "kurum": "KVKK",
+   "alanlar": [
+    "Kişisel Verilerin Korunması",
+    "Bilgi Sistemleri ve Veri Güvenliği"
+   ],
+   "kaynak": {
+    "tip": "mevzuat",
+    "tur": 7,
+    "no": "24038"
+   },
+   "dagitim": "repo"
+  },
+  {
+   "id": "bcbs-ic-kontrol-cercevesi-1998",
+   "ad": "BCBS — Framework for Internal Control Systems in Banking Organisations (1998)",
+   "tur": "global",
+   "kurum": "Basel Komitesi (BIS)",
+   "alanlar": [
+    "Kurumsal Yönetim ve İç Sistemler",
+    "Operasyonel Risk ve İş Sürekliliği"
+   ],
+   "kaynak": {
+    "tip": "pdf",
+    "url": "https://www.bis.org/publ/bcbs40.pdf"
+   },
+   "dagitim": "yerel",
+   "lisans": "© BIS. İç kullanım için yerel kopya; yeniden dağıtılmaz."
+  },
+  {
+   "id": "bcbs-kurumsal-yonetim-2015",
+   "ad": "BCBS — Corporate governance principles for banks (2015)",
+   "tur": "global",
+   "kurum": "Basel Komitesi (BIS)",
+   "alanlar": [
+    "Kurumsal Yönetim ve İç Sistemler"
+   ],
+   "kaynak": {
+    "tip": "pdf",
+    "url": "https://www.bis.org/bcbs/publ/d328.pdf"
+   },
+   "dagitim": "yerel",
+   "lisans": "© BIS. İç kullanım için yerel kopya; yeniden dağıtılmaz."
+  },
+  {
+   "id": "bcbs-operasyonel-risk-2021",
+   "ad": "BCBS — Revisions to the Principles for the Sound Management of Operational Risk (2021)",
+   "tur": "global",
+   "kurum": "Basel Komitesi (BIS)",
+   "alanlar": [
+    "Operasyonel Risk ve İş Sürekliliği"
+   ],
+   "kaynak": {
+    "tip": "pdf",
+    "url": "https://www.bis.org/bcbs/publ/d515.pdf"
+   },
+   "dagitim": "yerel",
+   "lisans": "© BIS. İç kullanım için yerel kopya; yeniden dağıtılmaz."
+  },
+  {
+   "id": "bcbs-operasyonel-dayaniklilik-2021",
+   "ad": "BCBS — Principles for Operational Resilience (2021)",
+   "tur": "global",
+   "kurum": "Basel Komitesi (BIS)",
+   "alanlar": [
+    "Operasyonel Risk ve İş Sürekliliği",
+    "Bilgi Sistemleri ve Veri Güvenliği",
+    "Dış Hizmet Alımı"
+   ],
+   "kaynak": {
+    "tip": "pdf",
+    "url": "https://www.bis.org/bcbs/publ/d516.pdf"
+   },
+   "dagitim": "yerel",
+   "lisans": "© BIS. İç kullanım için yerel kopya; yeniden dağıtılmaz."
+  },
+  {
+   "id": "bcbs-239-risk-verisi",
+   "ad": "BCBS 239 — Principles for effective risk data aggregation and risk reporting (2013)",
+   "tur": "global",
+   "kurum": "Basel Komitesi (BIS)",
+   "alanlar": [
+    "Muhasebe ve Finansal Raporlama",
+    "Bilgi Sistemleri ve Veri Güvenliği"
+   ],
+   "kaynak": {
+    "tip": "pdf",
+    "url": "https://www.bis.org/publ/bcbs239.pdf"
+   },
+   "dagitim": "yerel",
+   "lisans": "© BIS. İç kullanım için yerel kopya; yeniden dağıtılmaz."
+  },
+  {
+   "id": "bcbs-ic-denetim-2012",
+   "ad": "BCBS — The internal audit function in banks (2012)",
+   "tur": "global",
+   "kurum": "Basel Komitesi (BIS)",
+   "alanlar": [
+    "Kurumsal Yönetim ve İç Sistemler"
+   ],
+   "kaynak": {
+    "tip": "pdf",
+    "url": "https://www.bis.org/publ/bcbs223.pdf"
+   },
+   "dagitim": "yerel",
+   "lisans": "© BIS. İç kullanım için yerel kopya; yeniden dağıtılmaz."
+  },
+  {
+   "id": "bcbs-uyum-fonksiyonu-2005",
+   "ad": "BCBS — Compliance and the compliance function in banks (2005)",
+   "tur": "global",
+   "kurum": "Basel Komitesi (BIS)",
+   "alanlar": [
+    "Kurumsal Yönetim ve İç Sistemler",
+    "AML / Uyum"
+   ],
+   "kaynak": {
+    "tip": "pdf",
+    "url": "https://www.bis.org/publ/bcbs113.pdf"
+   },
+   "dagitim": "yerel",
+   "lisans": "© BIS. İç kullanım için yerel kopya; yeniden dağıtılmaz."
+  },
+  {
+   "id": "nist-csf-2",
+   "ad": "NIST Cybersecurity Framework 2.0 (2024)",
+   "tur": "global",
+   "kurum": "NIST",
+   "alanlar": [
+    "Bilgi Sistemleri ve Veri Güvenliği",
+    "Operasyonel Risk ve İş Sürekliliği"
+   ],
+   "kaynak": {
+    "tip": "pdf",
+    "url": "https://nvlpubs.nist.gov/nistpubs/CSWP/NIST.CSWP.29.pdf"
+   },
+   "dagitim": "repo",
+   "lisans": "ABD federal hükümet yayını; kamu malı."
+  }
+ ],
+ "lisansli_eklenemeyenler": [
+  {
+   "ad": "FATF Tavsiyeleri (Ekim 2025 güncel)",
+   "neden": "Telifli (izinsiz çoğaltılamaz) ve site otomatik indirmeyi engelliyor; kurum kendi kopyasını yükleyebilir. Türkiye'deki uygulaması MASAK mevzuatıyla zaten kapsanıyor."
+  },
+  {
+   "ad": "COSO İç Kontrol — Bütünleşik Çerçeve (2013)",
+   "neden": "Telifli; kurumun lisanslı kopyası Belgeler'den yüklenebilir."
+  },
+  {
+   "ad": "IIA Küresel İç Denetim Standartları (2024)",
+   "neden": "Telifli; kurumun lisanslı kopyası Belgeler'den yüklenebilir."
+  },
+  {
+   "ad": "ISO/IEC 27001:2022 ve 27002:2022",
+   "neden": "Telifli (ISO); kurumun lisanslı kopyası Belgeler'den yüklenebilir."
+  },
+  {
+   "ad": "COBIT 2019 (ISACA)",
+   "neden": "Telifli; kurumun lisanslı kopyası Belgeler'den yüklenebilir."
+  },
+  {
+   "ad": "PCI DSS v4",
+   "neden": "Lisans sözleşmesiyle indirilebilir, yeniden dağıtılamaz; kurum kendi kopyasını yükleyebilir."
+  }
+ ]
+}

@@ -1,0 +1,163 @@
+{
+ "5411-bankacilik-kanunu": {
+  "url": "https://www.mevzuat.gov.tr/mevzuat?MevzuatNo=5411&MevzuatTur=1&MevzuatTertip=5",
+  "erisim_tarihi": "2026-10-17",
+  "karakter": 321357,
+  "sha256": "449db9cb2f94d88d9e6702555b0a00661bf1381f75e9551d38f35c6766a20047",
+  "orijinal": "5411-bankacilik-kanunu.html"
+ },
+ "5549-aklama-kanunu": {
+  "url": "https://www.mevzuat.gov.tr/mevzuat?MevzuatNo=5549&MevzuatTur=1&MevzuatTertip=5",
+  "erisim_tarihi": "2026-10-17",
+  "karakter": 30102,
+  "sha256": "212cae9f8b2a1fb6b0db9d26900bd2d9efee73c470df10fb78249eb7ed6e3a83",
+  "orijinal": "5549-aklama-kanunu.html"
+ },
+ "6415-terorun-finansmani-kanunu": {
+  "url": "https://www.mevzuat.gov.tr/mevzuat?MevzuatNo=6415&MevzuatTur=1&MevzuatTertip=5",
+  "erisim_tarihi": "2026-10-17",
+  "karakter": 24058,
+  "sha256": "9422fbd68d5027fe6654f80007b1c06086947876cf86386a481b297991dbb254",
+  "orijinal": "6415-terorun-finansmani-kanunu.html"
+ },
+ "6698-kvkk": {
+  "url": "https://www.mevzuat.gov.tr/mevzuat?MevzuatNo=6698&MevzuatTur=1&MevzuatTertip=5",
+  "erisim_tarihi": "2026-10-17",
+  "karakter": 48670,
+  "sha256": "83115349f89e9f99529fcbf7390f30ffbd6161d34ffbddfb4168935ad5c23ba6",
+  "orijinal": "6698-kvkk.html"
+ },
+ "6493-odeme-hizmetleri-kanunu": {
+  "url": "https://www.mevzuat.gov.tr/mevzuat?MevzuatNo=6493&MevzuatTur=1&MevzuatTertip=5",
+  "erisim_tarihi": "2026-10-17",
+  "karakter": 65797,
+  "sha256": "b25983c8859d2843834cbad6de32e31c711560767f940cbaf0f123e2cbe534ee",
+  "orijinal": "6493-odeme-hizmetleri-kanunu.html"
+ },
+ "bddk-ic-sistemler-yonetmeligi": {
+  "url": "https://www.mevzuat.gov.tr/mevzuat?MevzuatNo=19864&MevzuatTur=7&MevzuatTertip=5",
+  "erisim_tarihi": "2026-10-17",
+  "karakter": 118960,
+  "sha256": "13f3452239a06582d5e5d56c160afff28851b4af360397d982f3e4b66589b2fb",
+  "orijinal": "bddk-ic-sistemler-yonetmeligi.html"
+ },
+ "bddk-bilgi-sistemleri-yonetmeligi": {
+  "url": "https://www.mevzuat.gov.tr/mevzuat?MevzuatNo=34360&MevzuatTur=7&MevzuatTertip=5",
+  "erisim_tarihi": "2026-10-17",
+  "karakter": 125981,
+  "sha256": "3a26c590241921345963ae2fdd4a81d53aceb6c340a158e1ed6988c8ebc79a81",
+  "orijinal": "bddk-bilgi-sistemleri-yonetmeligi.html"
+ },
+ "bddk-destek-hizmeti-yonetmeligi": {
+  "url": "https://www.mevzuat.gov.tr/mevzuat?MevzuatNo=15481&MevzuatTur=7&MevzuatTertip=5",
+  "erisim_tarihi": "2026-10-17",
+  "karakter": 21225,
+  "sha256": "0d28b6a2f3f34c21fb8d19fecac669f59ee3c4019011cc4c318cce97c8c7126c",
+  "orijinal": "bddk-destek-hizmeti-yonetmeligi.html"
+ },
+ "bddk-kredi-islemleri-yonetmeligi": {
+  "url": "https://www.mevzuat.gov.tr/mevzuat?MevzuatNo=40520&MevzuatTur=7&MevzuatTertip=5",
+  "erisim_tarihi": "2026-10-17",
+  "karakter": 26299,
+  "sha256": "fb6a68c8d117fc70b8aa8a3abe7e497e6067b8590abd08852224a7b5ec1696d4",
+  "orijinal": "bddk-kredi-islemleri-yonetmeligi.html"
+ },
+ "bddk-kurumsal-yonetim-yonetmeligi": {
+  "url": "https://www.mevzuat.gov.tr/mevzuat?MevzuatNo=10750&MevzuatTur=7&MevzuatTertip=5",
+  "erisim_tarihi": "2026-10-17",
+  "karakter": 15781,
+  "sha256": "0d554481fd808d528bd3e3bd6ba2c07699203a01e3cbc36a9387088fda53493e",
+  "orijinal": "bddk-kurumsal-yonetim-yonetmeligi.html"
+ },
+ "bddk-muhasebe-belge-saklama-yonetmeligi": {
+  "url": "https://www.mevzuat.gov.tr/mevzuat?MevzuatNo=10747&MevzuatTur=7&MevzuatTertip=5",
+  "erisim_tarihi": "2026-10-17",
+  "karakter": 17862,
+  "sha256": "a92a94241f84a44f9d53b6e74c3c79e55c237ed51efd083aefbafe6e97c7e480",
+  "orijinal": "bddk-muhasebe-belge-saklama-yonetmeligi.html"
+ },
+ "bddk-bs-bagimsiz-denetim-yonetmeligi": {
+  "url": "https://www.mevzuat.gov.tr/mevzuat?MevzuatNo=39257&MevzuatTur=7&MevzuatTertip=5",
+  "erisim_tarihi": "2026-10-17",
+  "karakter": 81146,
+  "sha256": "a9ed027ac33a698a20dc3dca600f4371ced7fe74cdd8a1a0c30ef6495925c117",
+  "orijinal": "bddk-bs-bagimsiz-denetim-yonetmeligi.html"
+ },
+ "masak-tedbirler-yonetmeligi": {
+  "url": "https://www.mevzuat.gov.tr/mevzuat?MevzuatNo=200713012&MevzuatTur=21&MevzuatTertip=5",
+  "erisim_tarihi": "2026-10-17",
+  "karakter": 94538,
+  "sha256": "b161c64b06cf838b5ae0bb735948ac763b3a787a67f62d81839cc87174bc27b1",
+  "orijinal": "masak-tedbirler-yonetmeligi.html"
+ },
+ "masak-uyum-programi-yonetmeligi": {
+  "url": "https://www.mevzuat.gov.tr/mevzuat?MevzuatNo=12426&MevzuatTur=7&MevzuatTertip=5",
+  "erisim_tarihi": "2026-10-17",
+  "karakter": 57027,
+  "sha256": "5b8948acc4168f746d60718a3d6f39a347a8d9f7c8f607b3b1c031ec5f95d606",
+  "orijinal": "masak-uyum-programi-yonetmeligi.html"
+ },
+ "kvkk-silme-yonetmeligi": {
+  "url": "https://www.mevzuat.gov.tr/mevzuat?MevzuatNo=24038&MevzuatTur=7&MevzuatTertip=5",
+  "erisim_tarihi": "2026-10-17",
+  "karakter": 10706,
+  "sha256": "75f888949932e9b50d7250a34f77b3be1362d46483d6e2ed85b716632cdb77be",
+  "orijinal": "kvkk-silme-yonetmeligi.html"
+ },
+ "nist-csf-2": {
+  "url": "https://nvlpubs.nist.gov/nistpubs/CSWP/NIST.CSWP.29.pdf",
+  "erisim_tarihi": "2026-10-17",
+  "karakter": 69974,
+  "sha256": "3c31f46fee98cac0c4323453e5109291a213b4de7fef8c058af9bf67f717433c",
+  "orijinal": "nist-csf-2.pdf"
+ },
+ "bcbs-ic-kontrol-cercevesi-1998": {
+  "url": "https://www.bis.org/publ/bcbs40.pdf",
+  "erisim_tarihi": "2026-10-17",
+  "karakter": 75364,
+  "sha256": "4624ec01f5d89f193f22eb923eae89e7824b622e8029e1ff0e4a453621b7ccf0",
+  "orijinal": "bcbs-ic-kontrol-cercevesi-1998.pdf"
+ },
+ "bcbs-kurumsal-yonetim-2015": {
+  "url": "https://www.bis.org/bcbs/publ/d328.pdf",
+  "erisim_tarihi": "2026-10-17",
+  "karakter": 120844,
+  "sha256": "436ea488fcf9de2b44488d7eed49782d239226cb7c59c251497eb5a9f12b8652",
+  "orijinal": "bcbs-kurumsal-yonetim-2015.pdf"
+ },
+ "bcbs-operasyonel-risk-2021": {
+  "url": "https://www.bis.org/bcbs/publ/d515.pdf",
+  "erisim_tarihi": "2026-10-17",
+  "karakter": 71560,
+  "sha256": "72ca731a997a3b942e7b8f2a911b141ec6c234736ecaab1bab455b681723a4f9",
+  "orijinal": "bcbs-operasyonel-risk-2021.pdf"
+ },
+ "bcbs-operasyonel-dayaniklilik-2021": {
+  "url": "https://www.bis.org/bcbs/publ/d516.pdf",
+  "erisim_tarihi": "2026-10-17",
+  "karakter": 31882,
+  "sha256": "5c51372ce172c435836d0f8e2b3a7d74314dc161966549fdae65d2c19733dd38",
+  "orijinal": "bcbs-operasyonel-dayaniklilik-2021.pdf"
+ },
+ "bcbs-239-risk-verisi": {
+  "url": "https://www.bis.org/publ/bcbs239.pdf",
+  "erisim_tarihi": "2026-10-17",
+  "karakter": 58552,
+  "sha256": "eca689016cde471d8718a6897b08368fbae300ce5f5e6d70fb6838fb64380172",
+  "orijinal": "bcbs-239-risk-verisi.pdf"
+ },
+ "bcbs-ic-denetim-2012": {
+  "url": "https://www.bis.org/publ/bcbs223.pdf",
+  "erisim_tarihi": "2026-10-17",
+  "karakter": 69134,
+  "sha256": "82aa5f4b8732620dbbdb8d94328054fdf01986ff2f147a9f4d72d5eb53b4eb1e",
+  "orijinal": "bcbs-ic-denetim-2012.pdf"
+ },
+ "bcbs-uyum-fonksiyonu-2005": {
+  "url": "https://www.bis.org/publ/bcbs113.pdf",
+  "erisim_tarihi": "2026-10-17",
+  "karakter": 35209,
+  "sha256": "2cb7643f8a35e753d9704daae3a71ef4a553f4e3de3fe65c7e57e5fd95b48976",
+  "orijinal": "bcbs-uyum-fonksiyonu-2005.pdf"
+ }
+}

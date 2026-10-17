@@ -1,0 +1,530 @@
+5337 SUÇ GELİRLERİNİN AKLANMASININ VE TERÖRÜN FİNANSMANININ ÖNLENMESİNE DAİR TEDBİRLER HAKKINDA YÖNETMELİK 24/2/2021 tarihli ve 31405 2. Mükerrer sayılı Resmî Gazete’de yayımlanan 24/2/2021 tarihli ve 3580 sayılı Cumhurbaşkanı Kararı uyarınca bu Yönetmelik Cumhurbaşkanlığı Yönetmeliği bölümüne eklenmiştir.
+Bakanlar Kurulu Kararının Tarihi :
+10/12/2007 No : 2007/13012 Dayandığı Kanunun Tarihi : 11/10/2006 No : 5549 Yayımlandığı Resmî Gazetenin Tarihi : 9/1/2008 No : 26751 Yayımlandığı Düsturun Tertibi :
+5 Cilt : 47 BİRİNCİ BÖLÜM Amaç, Kapsam, Dayanak ve Tanımlar Amaç ve kapsam
+
+MADDE 1- (1) Bu Yönetmeliğin amacı, 11/10/2006 tarihli ve 5549 sayılı Suç Gelirlerinin Aklanmasının Önlenmesi Hakkında Kanunun uygulanmasına yönelik olarak; suç gelirlerinin aklanmasının ve terörün finansmanının önlenmesi amacıyla yükümlüler, yükümlülükler, yükümlülüklere uyumun denetimi, gümrük idaresine açıklama yapılması ve diğer tedbirlere ilişkin usul ve esasları düzenlemektir.
+Hukuki dayanak
+
+MADDE 2- (1) Bu Yönetmelik, 5549 sayılı Kanunun 27 nci maddesine dayanılarak hazırlanmıştır.
+Tanımlar
+
+MADDE 3- (1) Bu Yönetmelikte geçen; (1)
+a) Aktarmalı muhabir hesap: Muhabirlik ilişkisi kapsamında yabancı ülkede yerleşik bir finansal kuruluş tarafından Türkiye’de yerleşik bir finansal kuruluşta açılan ve yabancı finansal kuruluşun müşterilerine çek yazma imkânı da tanıyan hesap türünü,
+b) Bakanlık: Hazine ve Maliye Bakanlığını,
+c) Başkanlık: Mali Suçları Araştırma Kurulu Başkanlığını,
+ç) Başkan: Mali Suçları Araştırma Kurulu Başkanını,
+d) (Değişik:
+9/5/2014-2014/6381 K.) Denetim elemanı: Vergi Müfettişleri, Başkanlıkta istihdam edilen Hazine ve Maliye Uzmanları, Gümrük ve Ticaret Müfettişleri, Bankalar Yeminli Murakıpları, Hazine Kontrolörleri, Sigorta Denetleme Uzman ve Aktüerleri, Bankacılık Düzenleme ve Denetleme Kurumu ve Sermaye Piyasası Kurulu Uzmanları ile Türkiye Cumhuriyet Merkez Bankası Denetçileri ve Uzmanlarını,
+e) Elektronik transfer: Gönderen adına bir finansal kuruluştan başka bir finansal kuruluştaki alıcıya elektronik araçlar kullanılmak suretiyle belli tutardaki para ve menkul kıymetin gönderilmesi amacıyla yapılan işlemi, ___________________________
+(1) 24/2/2021 tarihli ve 31405 2. Mükerrer sayılı Resmî Gazete’de yayımlanan 3580 sayılı Cumhurbaşkanı Kararının 1 inci maddesiyle bu maddenin birinci fıkrasının (b) bendinde yer alan “Maliye Bakanlığını” ibaresi “Hazine ve Maliye Bakanlığını” şeklinde değiştirilmiş, (d) bendine “Vergi Müfettişleri,” ibaresinden sonra gelmek üzere “Başkanlıkta istihdam edilen Hazine ve Maliye Uzmanları,” ibaresi, “Sermaye Piyasası Kurulu” ibaresinden sonra gelmek üzere “Uzmanları ile Türkiye Cumhuriyet Merkez Bankası Denetçileri ve” ibaresi eklenmiştir.
+5338
+f) Finansal kuruluş: Bu Yönetmeliğin 4 üncü maddesinin birinci fıkrasının (a) ila (h), (m) ve (ü) bentlerinde sayılan yükümlüler ile bankacılık faaliyetleriyle sınırlı olarak Posta ve Telgraf Teşkilatı Anonim Şirketini, (2)(3)
+g) Kanun:
+11/10/2006 tarihli ve 5549 sayılı Suç Gelirlerinin Aklanmasının Önlenmesi Hakkında Kanunu,
+ğ) Malvarlığı:
+Para, değeri para ile temsil edilebilen taşınır veya taşınmaz, maddi veya gayri maddi her türlü mal ve haklar ile bunlar üzerindeki hakları tevsik eden her türlü yasal belge veya araçları,
+h) (Değişik: 9/5/2014-2014/6381 K.) Gerçek faydalanıcı: Yükümlü nezdinde işlem gerçekleştiren gerçek kişileri, adına işlem yapılan gerçek kişi, tüzel kişi veya tüzel kişiliği olmayan teşekkülleri nihai olarak kontrolünde bulunduran ya da bunlar üzerinde nihai nüfuz sahibi olan gerçek kişi veya kişileri,
+ı) Riskli ülkeler:
+Aklama ve terörün finansmanının önlenmesi konusunda yeterli düzenlemelere sahip olmayan, bu suçlarla mücadele konusunda işbirliği yapmayan veya yetkili uluslararası kuruluşlarca riskli kabul edilen ülkelerden Bakanlıkça duyurulanları,
+i) (Değişik:
+28/12/2009-2009/15720 K.) Sürekli iş ilişkisi: Yükümlü ile müşteri arasında hesap açılması, kredi veya kredi kartı verilmesi, kiralık kasa, finansman, faktoring, finansal kiralama, hayat sigortası veya bireysel emeklilik gibi hizmetler nedeniyle kurulan, niteliği itibarıyla devamlılık unsuru taşıyan iş ilişkisini,
+j) Tabela banka: Herhangi bir ülkede fiziki bir hizmet ofisi bulunmayan, tam gün çalışan personel istihdam etmeyen ve bankacılık işlemleri ile kayıtları açısından resmi bir otoritenin denetimine ve iznine tabi olmayan bankayı,
+k) Uyum görevlisi: Kanun ve Kanuna dayanılarak yürürlüğe konulan mevzuatla getirilen yükümlülüklere uyumu sağlamak amacıyla, yükümlülerce tayin edilen gerekli yetkiyle donatılmış görevliyi,
+l) Yolcu: Geçerli pasaport veya pasaport yerini tutan belgeler taşıyan ve Türkiye’ye girmek veya Türkiye’den çıkmak üzere giriş ve çıkış kapılarına gelen kişileri,
+m) (Ek:RG-24/2/2021-31405 2.
+Mükerrer-C.K-3580/1 md.) Finansal olmayan belirli iş ve meslekler: Bu Yönetmeliğin 4 üncü maddesinin birinci fıkrasının (k), (n), (s), (ş), (t) ve (u) bentlerinde sayılan yükümlüleri, ifade eder.
+İKİNCİ BÖLÜM Yükümlüler Yükümlü
+
+MADDE 4- (1) Kanunun uygulanmasında yükümlü, aşağıda sayılanlar ile bunların şube, acente, temsilci ve ticari vekilleri ile benzeri bağlı birimleridir:
+a) Bankalar.
+––––––––––––––––
+(1) 29/2/2016 tarihli ve 2016/8566 sayılı Bakanlar Kurulu Kararı Eki Yönetmeliğin 1 inci maddesiyle, bu bentte yer alan “Genel Müdürlüğünü” ibaresi “Anonim Şirketini” şeklinde değiştirilmiştir.
+(2) 24/2/2021 tarihli ve 31405 2. Mükerrer sayılı Resmî Gazete’de yayımlanan 3580 sayılı Cumhurbaşkanı Kararının 1 inci maddesiyle bu bende “(a) ila (h)” ibaresinden sonra gelmek üzere “ve (m)” ibaresi eklenmiştir.
+(3) 25/12/2024 tarihli ve 32763 sayılı Resmî Gazete’de yayımlanan 9305 sayılı Cumhurbaşkanı Kararının 1 inci maddesi ile bu bentte yer alan “ve (m)” ibaresi “, (m) ve (ü) ” şeklinde değiştirilmiştir.
+5339
+b) Bankalar dışında banka kartı veya kredi kartı düzenleme yetkisini haiz kuruluşlar.
+c) Kambiyo mevzuatında belirtilen yetkili müesseseler.
+ç) (Değişik:
+29/2/2016-2016/8566 K.) Finansman ve faktoring şirketleri.
+d) (Değişik: 29/2/2016-2016/8566 K.) Sermaye piyasası aracı kurumları ve portföy yönetim şirketleri.
+e) (Değişik: 29/2/2016-2016/8566 K.) Ödeme kuruluşları ile elektronik para kuruluşları.
+f) Yatırım ortaklıkları.
+g) (Değişik:
+28/12/2009-2009/15720 K.) Sigorta, reasürans ve emeklilik şirketleri ile sigorta ve reasürans brokerleri.
+ğ) Finansal kiralama şirketleri.
+h) Sermaye piyasası mevzuatı çerçevesinde takas ve saklama hizmeti veren kuruluşlar.
+ı) (Değişik: 29/2/2016-2016/8566 K.) Kıymetli Madenler ve Kıymetli Taşlar Piyasasına ilişkin saklama hizmeti ile sınırlı olmak üzere Borsa İstanbul Anonim Şirketi.
+i) (Değişik: 29/2/2016-2016/8566 K.) Posta ve Telgraf Teşkilatı Anonim Şirketi ile kargo şirketleri.
+j) Varlık yönetim şirketleri.
+k) Kıymetli maden, taş veya mücevher alım satımı yapanlar ile bu işlemlere aracılık edenler. (1)
+l) Cumhuriyet altın sikkeleri ile Cumhuriyet ziynet altınlarını basma faaliyeti ile sınırlı olmak üzere Darphane ve Damga Matbaası Genel Müdürlüğü.
+m) (Değişik: 29/2/2016-2016/8566 K.) Kıymetli madenler aracı kuruluşları.
+n) Ticaret amacıyla taşınmaz alım satımıyla uğraşanlar ile bu işlemlere aracılık edenler.
+o) İş makineleri dâhil her türlü deniz, hava ve kara nakil vasıtalarının alım satımı ile uğraşanlar ile bu işlemlere aracılık edenler.
+(2)
+ö) Tarihi eser, antika ve sanat eseri alım satımı ile uğraşanlar veya bunların müzayedeciliğini yapanlar.
+p) Milli Piyango İdaresi Genel Müdürlüğü, Türkiye Jokey Kulübü ve Spor Toto Teşkilat Başkanlığı dâhil talih ve bahis oyunları alanında faaliyet gösterenler.
+r) Spor kulüpleri.
+s) Noterler.
+ş) (Değişik:RG-25/12/2024-32763-C.K.-9305/2 md.) 19/3/1969 tarihli ve 1136 sayılı Avukatlık Kanununun 35 inci maddesinin birinci ve üçüncü fıkrası ile alternatif uyuşmazlık çözüm yolları kapsamında yürütülen mesleki faaliyetler sırasında edinilen bilgiler hariç olmak, savunma hakkı ile hukuki dinlenilme hakkı bakımından diğer kanun hükümlerine aykırı olmamak ve yalnızca avukatların yapabileceği işlerle ilgili olarak 1136 sayılı Kanunun 36 ncı maddesi hükümleri saklı kalmak kaydıyla, taşınmaz alım satımı, sınırlı ayni hak kurulması ve kaldırılması, şirket, vakıf ve dernek kurulması, birleştirilmesi ile bunların idaresi, devredilmesi ve tasfiyesi işlerine ilişkin finansal işlemlerin gerçekleştirilmesi, banka, menkul kıymet ve her türlü hesaplar ile bu hesaplarda yer alan varlıkların idaresi işleriyle sınırlı olmak üzere serbest avukatlar.
+––––––––––––––––
+(1) 24/2/2021 tarihli ve 31405 2. Mükerrer sayılı Resmî Gazete’de yayımlanan 3580 sayılı Cumhurbaşkanı Kararının 2 nci maddesiyle bu bende “yapanlar” ibaresinden sonra gelmek üzere “ile bu işlemlere aracılık edenler” ibaresi eklenmiştir.
+(2) 24/2/2021 tarihli ve 31405 2. Mükerrer sayılı Resmî Gazete’de yayımlanan 3580 sayılı Cumhurbaşkanı Kararının 2 nci maddesiyle bu bende “uğraşanlar” ibaresinden sonra gelmek üzere “ile bu işlemlere aracılık edenler” ibaresi eklenmiştir.
+5340 t) (Değişik:
+28/12/2009-2009/15720 K.) Bir işverene bağlı olmaksızın çalışan serbest muhasebeci, serbest muhasebeci mali müşavir ve yeminli mali müşavirler.
+u) (Ek: 28/12/2009-2009/15720 K.) Finansal piyasalarda denetim yapmakla yetkili bağımsız denetim kuruluşları.
+(ü) (Ek:RG-1/5/2021-31471-C.K-3941/1 md.) Kripto varlık hizmet sağlayıcılar.
+(v) (Ek:RG-1/5/2021-31471-C.K-3941/1 md.) Tasarruf finansman şirketleri.
+y) (Ek:RG-25/12/2024-32763-C.K-9305/2 md.) Elektronik ticaret hizmet sağlayıcılar ile gerçekleştirilen işlemlerle sınırlı olarak orta, büyük veya çok büyük ölçekli elektronik ticaret aracı hizmet sağlayıcılar.
+z) (Ek:RG-13/2/2026-33167-C.K-10945/1 md.) 10/6/2004 tarihli ve 5188 sayılı Özel Güvenlik Hizmetlerine Dair Kanun kapsamında para veya değerli eşya nakli hizmeti verenler.
+(2) (Ek: 28/12/2009-2009/15720 K.) Merkezi yurt dışında bulunan yükümlünün Türkiye’deki şube, acente, temsilci ve ticari vekilleri ile benzeri bağlı birimleri birinci fıkra kapsamında yükümlü sayılır. (1)
+(3) Merkezi Türkiye’de bulunan yükümlünün yurt dışındaki şube, acente, temsilci ve ticari veki lleri ile benzeri bağlı birimleri, faaliyet gösterdikleri ülkenin mevzuatı ve yetkili otoritelerinin izin verdiği ölçüde asgari olarak bu Yönetmelikte yer alan tedbirleri uygulamak zorundadır. (Ek cümle:RG-24/2/2021-31405 2. Mükerrer-C.K-3580/2 md.) İlgili ülke mevzuatının bu tedbirlerin uygulanmasına izin vermemesi halinde durum Başkanlığa bildirilir. (1)(3) ÜÇÜNCÜ BÖLÜM Müşterinin Tanınmasına İlişkin Esaslar Kimlik tespiti
+
+MADDE 5- (1) Yükümlüler ; (4)
+a) Sürekli iş ilişkisi tesisinde tutar gözetmeksizin,
+b) İşlem tutarı ya da birbiriyle bağlantılı birden fazla işlemin toplam tutarı üçyüzyetmişbin TL (kripto varlık hizmet sağlayıcılar için otuzbin TL) veya üzerinde olduğunda, (2)(5)(6)(8)(9)
+c) Elektronik transferler ile kripto varlık hizmet sağlayıcılar tarafından gerçekleştirilen kripto varlık transferlerinde işlem tutarı ya da birbiriyle bağlantılı birden fazla işlemin toplam tutarı otuzbin TL veya üzerinde olduğunda, (2)(7)(8)(9)
+ç) (Mülga: 28/12/2009-2009/15720 K.)
+d) Şüpheli işlem bildirimini gerektiren durumlarda tutar gözetmeksizin,
+e) Daha önce elde edilen müşteri kimlik bilgilerinin yeterliliği ve doğruluğu konusunda şüphe olduğunda tutar gözetmeksizin, kimliğe ilişkin bilgileri almak ve bu bilgilerin doğruluğunu teyit etmek suretiyle müşterilerinin ve müşterileri adına veya hesabına hareket edenlerin kimliğini tespit etmek ve işlemin gerçek faydalanıcısının ortaya çıkarılması için gerekli tedbirleri almak zorundadır.
+(2) Kimlik tespiti, iş ilişkisi tesisinden veya işlem yapılmadan önce tamamlanır.
+(3) (Değişik: 28/12/2009-2009/15720 K.) Sürekli iş ilişkisi tesisinde, iş ilişkisinin amacı ve mahiyeti hakkında bilgi alınır.
+––––––––––––––––
+(1) 28/12/2009 tarihli ve 2009/15720 sayılı Bakanlar Kurulu Kararı Eki Yönetmeliğin 2 nci maddesiyle bu maddeye ikinci fıkra eklenmiş ve mevcut ikinci fıkra üçüncü fıkra olarak teselsül ettirilmiştir.
+(2) 28/12/2009 tarihli ve 2009/15720 sayılı Bakanlar Kurulu Eki Yönetmeliğin 18 inci maddesiyle bu bentlerde yer alan “YTL” ibareleri “TL” olarak değiştirilmiş ve metne işlenmiştir.
+(3) 24/2/2021 tarihli ve 31405 2. Mükerrer sayılı Resmî Gazete’de yayımlanan 3580 sayılı Cumhurbaşkanı Kararının 2 nci maddesiyle bu fıkrada yer alan “bu Yönetmelik hükümlerini” ibaresi “asgari olarak bu Yönetmelikte yer alan tedbirleri” şeklinde değiştirilmiştir.
+(4) 24/2/2021 tarihli ve 31405 2.
+Mükerrer sayılı Resmî Gazete’de yayımlanan 3580 sayılı Cumhurbaşkanı Kararının 3 üncü maddesiyle bu fıkranın (b) bendinde yer alan “yirmibin” ibaresi “yetmişbeşbin” şeklinde ve (c) bendinde yer alan “ikibin” ibaresi “yedibinbeşyüz” şeklinde değiştirilmiş, aynı fıkraya “kimliğini tespit etmek” ibaresinden sonra gelmek üzere “ve işlemin gerçek faydalanıcısının ortaya çıkarılması için gerekli tedbirleri almak” ibaresi eklenmiştir.
+(5) 16/6/2022 tarihli ve 31868 sayılı Resmî Gazete’de yayımlanan 5739 sayılı Cumhurbaşkanı Kararının 1 inci maddesiyle bu bentte yer alan “yetmişbeşbin” ibaresi “seksenbeşbin” şeklinde değiştirilmiştir.
+(6) 14/1/2023 tarihli ve 32073 sayılı Resmî Gazete’de yayımlanan 6702 sayılı Cumhurbaşkanı Kararının 1 inci maddesiyle bu bentte yer alan “seksenbeşbin” ibaresi “yüzseksenbeşbin” şeklinde değiştirilmiştir.
+(7) 14/1/2023 tarihli ve 32073 sayılı Resmî Gazete’de yayımlanan 6702 sayılı Cumhurbaşkanı Kararının 1 inci maddesiyle bu bentte yer alan “yedibinbeşyüz” ibaresi “onbeşbin” şeklinde değiştirilmiştir.
+(8) 25/12/2024 tarihli ve 32763 sayılı Resmî Gazete’de yayımlanan 9305 sayılı Cumhurbaşkanı Kararının 3 üncü maddesi ile bu fıkranın (b) bendine “yüzseksenbeşbin TL” ibaresinden sonra gelmek üzere “(kripto varlık hizmet sağlayıcılar için onbeşbin TL)” ibaresi eklenmiş, (c) bendinde yer alan “transferlerde” ibaresi “transferler ile kripto varlık hizmet sağlayıcılar tarafından gerçekleştirilen kripto varlık transferlerinde” şeklinde değiştirilmiştir.
+(9) 7/10/2026 tarihli ve 33393 sayılı Resmî Gazete’de yayımlanan 11845 sayılı Cumhurbaşkanı Kararının 1 inci maddesiyle bu fıkranın (b) bendinde yer alan “yüzseksenbeşbin TL” ibaresi “üçyüzyetmişbin TL” şeklinde, “onbeşbin TL” ibaresi “otuzbin TL” şeklinde ve aynı fıkranın (c) bendinde yer alan “onbeşbin TL” ibaresi “otuzbin TL” şeklinde değiştirilmiştir.
+5340-1 Gerçek kişilerde kimlik tespiti
+
+MADDE 6- (1) (Değişik: 28/12/2009-2009/15720 K.) Gerçek kişilerin kimlik tespitinde; ilgilinin adı, soyadı, doğum tarihi, uyruğu, kimlik belgesinin türü ve numarası, adresi ve imza örneği, iş ve mesleğine ilişkin bilgiler, varsa telefon numarası, faks numarası, elektronik posta adresi ile Türk vatandaşları için bu bilgilere ilave olarak T.C. kimlik numarası, Türk uyruklu olmayanlar için doğum yeri bilgisi alınır. (3)(5)
+(2) İlgilinin adı, soyadı, doğum (…) (1) tarihi, T.C. kimlik numarası ve kimlik belgesinin türü ve numarasına ilişkin bilgilerin doğruluğu; (1)
+a) Türk uyruklular için T.C. nüfus cüzdanı, T.C. sürücü belgesi veya pasaport ile üzerinde T.C kimlik numarası bulunan ve özel kanunlarında resmi kimlik hükmünde olduğu açıkça belirtilen kimlik belgeleri, (2)
+b) Türk uyruklu olmayanlar için pasaport, ikamet belgesi veya Bakanlıkça uygun görülen kimlik belgesi, üzerinden teyit edilir. Yetkililerce istenildiğinde sunulmak üzere teyide esas kimlik belgelerinin asıllarının veya noterce onaylanmış suretlerinin ibrazı sonrası okunabilir fotokopisi veya elektronik görüntüsü alınır yahut kimliğe ilişkin bilgiler kaydedilir.
+(3) Sürekli iş ilişkisi tesisinde beyan edilen adresin doğruluğu; yerleşim yeri belgesi, ilgili adına düzenlenmiş elektrik, su, doğalgaz, telefon gibi abonelik gerektiren bir hizmete ilişkin olan ve işlem tarihinden önceki üç ay içinde düzenlenmiş fatura, herhangi bir kamu kurumu tarafından verilen belge veya Başkanlıkça uygun görülen diğer belge ve yöntemlerle teyit edilir. Teyide esas belgelerin okunabilir fotokopisi veya elektronik görüntüsü alınır yahut belgeye ait ayırt edici bilgiler kaydedilir.
+(4) (Mülga: 28/12/2009-2009/15720 K.;
+Yeniden düzenleme: 25/4/2016-20168793 K.) 1/1/2016 tarihinden önce düzenlenmiş olan T.C. sürücü belgeleri üzerinden yapılacak kimlik tespitinde T.C. kimlik numarasının doğruluğunun teyidi zorunlu değildir.
+Gerçek kişiler ile ticaret siciline kayıtlı tüzel kişilerde uzaktan kimlik tespiti (Değişik başlık:RG-5/4/2023-32154-CK-7037/1 md.)
+
+MADDE 6/A - (Ek:RG-24/2/2021-31405 2. Mükerrer-C.K-3580/5 md.) Yükümlünün asli faaliyet alanı ile ilgili mevzuatta müşteri ile yüz yüze gelinmeksizin kimliğinin doğrulanmasına imkân verecek yöntemlerle sözleşme kurulmasına cevaz verilmiş olması halinde, gerçek kişi veya ticaret siciline kayıtlı tüzel kişilerle sürekli iş ilişkisi tesisinde müşteri kimliğinin doğrulanması amacıyla uzaktan kimlik tespiti yöntemleri kullanılabilir. Bakanlık, uzaktan kimlik tespitinde müşteriye ilişkin esaslar, uygulanacak yöntemler ve müşterinin tanınması kapsamındaki diğer tedbirler ile uzaktan kimlik tespiti yapılabilecek diğer işlem türlerini yükümlüler itibarıyla belirlemeye yetkilidir. (4) ––––––––––––––––
+(1) 25/4/2016 tarihli ve 2016/8793 sayılı Bakanlar Kurulu Kararı Eki Yönetmeliğin 1 inci maddesiyle, bu fıkrada yer alan “yeri ve” ibaresi yürürlükten kaldırılmış, “anne ve baba adı, uyruğu” ibaresi “T.C. kimlik numarası” şeklinde değiştirilmiştir.
+(2) 30/10/2017 tarihli ve 2017/10938 sayılı Bakanlar Kurulu Kararı Eki Yönetmeliğin 1 inci maddesiyle, bu bende “pasaport” ibaresinden sonra gelmek üzere “ile üzerinde T.C kimlik numarası bulunan ve özel kanunlarında resmi kimlik hükmünde olduğu açıkça belirtilen kimlik belgeleri” ibaresi eklenmiştir.
+(3) 24/2/2021 tarihli ve 31405 2.
+Mükerrer sayılı Resmî Gazete’de yayımlanan 3580 sayılı Cumhurbaşkanı Kararının 4 üncü maddesiyle bu fıkrada yer alan “varsa telefon numarası, faks numarası, elektronik posta adresi, iş ve mesleğine ilişkin bilgiler” ibaresi “iş ve mesleğine ilişkin bilgiler, varsa telefon numarası, faks numarası, elektronik posta adresi” şeklinde değiştirilmiştir.
+(4) 5/4/2023 tarihli ve 32154 sayılı Resmî Gazete’de yayımlanan 7037 sayılı Cumhurbaşkanı Kararının 1 inci maddesiyle bu fıkrada yer alan “gerçek” ibaresinden sonra gelmek üzere “kişi veya ticaret siciline kayıtlı tüzel” ibaresi ile “kimlik tespitinde” ibaresinden sonra gelmek üzere “müşteriye ilişkin esaslar,” ibaresi eklenmiştir.
+(5) 25/12/2024 tarihli ve 32763 sayılı Resmî Gazete’de yayımlanan 9305 sayılı Cumhurbaşkanı Kararının 4 üncü maddesi ile bu fıkrada yer alan “doğum yeri ve tarihi” ibaresi “doğum tarihi” şeklinde ve “anne, baba adı ve T.C. kimlik numarası” ibaresi “T.C. kimlik numarası, Türk uyruklu olmayanlar için doğum yeri bilgisi” şeklinde değiştirilmiştir.
+5340-2 Ticaret siciline kayıtlı tüzel kişilerde kimlik tespiti
+
+MADDE 7- (1) (Değişik: 28/12/2009-2009/15720 K.) Ticaret siciline kayıtlı tüzel kişilerin kimlik tespitinde; tüzel kişinin unvanı, ticaret sicil numarası, vergi kimlik numarası, faaliyet konusu, açık adresi, telefon numarası, varsa faks numarası ve elektronik posta adresi ile tüzel kişiliği temsile yetkili kişinin adı, soyadı, doğum tarihi, uyruğu, kimlik belgesinin türü ve numarasına ilişkin bilgiler ve imza örneği ile Türk vatandaşları için bu bilgilere ilave olarak T.C. kimlik numarası, Türk uyruklu olmayanlar için doğum yeri bilgisi alınır. (2)
+(2) Tüzel kişiliğin unvanı, ticaret sicil numarası, faaliyet konusu ve adresinin teyidi ticaret siciline tescile dair belgeler; vergi kimlik numarasının teyidi ise Gelir İdaresi Başkanlığının ilgili birimi tarafından düzenlenen belgeler üzerinden yapılır.
+(3) Tüzel kişiyi temsile yetkili kişilerin kimlik bilgilerinin doğruluğu, 6 ncı maddede belirtilen kimlik belgeleri;
+temsil yetkileri ise tescile dair belgeler üzerinden teyit edilir.
+(4) Yetkililerce istenildiğinde sunulmak üzere, teyide esas belgelerin asıllarının veya noterce onaylanmış suretlerinin ibrazı sonrası okunabilir fotokopisi veya elektronik görüntüsü alınır yahut kimliğe ilişkin bilgiler kaydedilir.
+(5) Finansal kuruluşlar sürekli iş ilişkisi tesisinde, ilgili ticaret sicil memurluğu kayıtlarına başvurmak veya Türkiye Odalar ve Borsalar Birliğinin veri tabanından sorgulama yapmak suretiyle kendilerine sunulan tescil belgelerinde yer alan bilgilerin güncelliğini ve doğruluğunu teyit eder.
+(6) (Mülga: 28/12/2009-2009/15720 K.)
+(7) Mevcut bir sürekli iş ilişkisi kapsamında, tüzel kişiyi temsile yetkili kişinin yazılı talimatıyla tüzel kişi adına işlem talep edilmesi durumunda, talimatın şirket yetkilisine ait olduğundan emin olmak kaydıyla, şirketi temsile yetkili kişinin kimlik bilgilerinin doğruluğu, kimlik belgelerinde yer alan bilgileri içeren noter onaylı imza sirküleri üzerinden teyit edilebilir.
+Dernek ve vakıflarda kimlik tespiti (1)
+
+MADDE 8- (1) (Değişik birinci cümle: 28/12/2009-2009/15720 K.) Derneklerin kimlik tespitinde; derneğin adı, amacı, kütük numarası, vergi kimlik numarası, açık adresi, telefon numarası, varsa faks numarası ve elektronik posta adresine ilişkin bilgiler ile derneği temsile yetkili kişinin adı, soyadı, doğum tarihi, uyruğu, kimlik belgesinin türü ve numarasına ilişkin bilgiler ve imza örneği ile Türk vatandaşları için bu bilgilere ilave olarak T.C. kimlik numarası, Türk uyruklu olmayanlar için doğum yeri bilgisi alınır. Derneğin adı, amacı, kütük numarası ve adres bilgileri, dernek tüzüğü ile dernek kütüğündeki kayda ilişkin belgeler, vergi kimlik numarası Gelir İdaresi Başkanlığının ilgili birimi tarafından düzenlenen belgeler; derneği temsile yetkili kişilerin kimlik bilgilerinin doğruluğu, 6 ncı maddede belirtilen kimlik belgeleri; temsil yetkisi ise temsile yetkili olunduğuna dair belgeler üzerinden teyit edilir. (3)
+(2) (Değişik birinci cümle: 28/12/2009-2009/15720 K.) Vakıfların kimlik tespitinde; vakfın adı, amacı, merkezi sicil kayıt numarası, vergi kimlik numarası, açık adresi, telefon numarası, varsa faks numarası ve elektronik posta adresine ilişkin bilgiler ile temsile yetkili kişinin adı, soyadı, doğum tarihi, uyruğu, kimlik belgesinin türü ve numarasına ilişkin bilgiler ve imza örneği ile Türk vatandaşları için bu bilgilere ilave olarak T.C. kimlik numarası, Türk uyruklu olmayanlar için doğum yeri bilgisi alınır. Vakfın adı, amacı, merkezi sicil kayıt numarası ve adres bilgileri, vakıf senedi ile Vakıflar Genel Müdürlüğünde tutulan sicile ilişkin belgeler, vergi kimlik numarası Gelir İdaresi Başkanlığının ilgili birimi tarafından düzenlenen belgeler; vakfı temsile yetkili kişilerin kimlik bilgilerinin doğruluğu, 6 ncı maddede belirtilen kimlik belgeleri; temsil yetkisi ise temsile yetkili olunduğuna dair belgeler üzerinden teyit edilir. (3)
+(3) Yetkililerce istenildiğinde sunulmak üzere teyide esas belgelerin asıllarının veya noterce onaylanmış suretlerinin ibrazı sonrası okunabilir fotokopisi veya elektronik görüntüsü alınır yahut kimliğe ilişkin bilgiler kaydedilir.
+_________________
+(1) 24/2/2021 tarihli ve 31405 2. Mükerrer sayılı Resmî Gazete’de yayımlanan 3580 sayılı Cumhurbaşkanı Kararının 6 ncı maddesiyle bu maddenin birinci fıkrasının birinci cümlesine “kütük numarası,” ibaresinden sonra gelmek üzere “vergi kimlik numarası,” ibaresi, aynı fıkranın ikinci cümlesine “ilişkin belgeler” ibaresinden sonra gelmek üzere “, vergi kimlik numarası Gelir İdaresi Başkanlığının ilgili birimi tarafından düzenlenen belgeler” ibaresi, aynı maddenin ikinci fıkrasının birinci cümlesine “merkezi sicil kayıt numarası,” ibaresinden sonra gelmek üzere “vergi kimlik numarası,” ibaresi ve aynı fıkranın ikinci cümlesine “tutulan sicile ilişkin belgeler” ibaresinden sonra gelmek üzere “, vergi kimlik numarası Gelir İdaresi Başkanlığının ilgili birimi tarafından düzenlenen belgeler” ibaresi eklenmiştir.
+(2) 25/12/2024 tarihli ve 32763 sayılı Resmî Gazete’de yayımlanan 9305 sayılı Cumhurbaşkanı Kararının 5 inci maddesi ile bu fıkrada yer alan alan “doğum yeri ve tarihi” ibaresi “doğum tarihi” şeklinde ve “anne, baba adı ve T.C. kimlik numarası” ibaresi “T.C. kimlik numarası, Türk uyruklu olmayanlar için doğum yeri bilgisi” şeklinde değiştirilmiştir.
+(3) 25/12/2024 tarihli ve 32763 sayılı Resmî Gazete’de yayımlanan 9305 sayılı Cumhurbaşkanı Kararının 6 ncı maddesi ile bu fıkralarda yer alan “doğum yeri ve tarihi” ibareleri “doğum tarihi” şeklinde ve “anne, baba adı ve T.C. kimlik numarası” ibareleri “T.C.
+kimlik numarası, Türk uyruklu olmayanlar için doğum yeri bilgisi” şeklinde değiştirilmiştir.
+5341
+(4) (Mülga: 28/12/2009-2009/15720 K.)
+(5) Yabancı dernek ve vakıfların Türkiye’deki şube ve temsilciliklerinin kimlik tespiti, İçişleri Bakanlığındaki kayda ilişkin belgeler esas alınmak suretiyle yapılır.
+Sendika ve konfederasyonlarda kimlik tespiti
+
+MADDE 9- (1) (Değişik birinci cümle: 28/12/2009-2009/15720 K.) Sendika ve konfederasyonların kimlik tespitinde; bu kuruluşların adı, amacı, sicil numarası, vergi kimlik numarası, açık adresi, telefon numarası, varsa faks numarası ve elektronik posta adresi ile sendika veya konfederasyonu temsile yetkili kişilerin adı, soyadı, doğum tarihi, uyruğu, kimlik belgesinin türü ve numarasına ilişkin bilgiler ve imza örneği ile Türk vatandaşları için bu bilgilere ilave olarak T.C. kimlik numarası, Türk uyruklu olmayanlar için doğum yeri bilgisi alınır. Alınan bilgiler, bu kuruluşların tüzükleri ile Aile, Çalışma ve Sosyal Hizmetler Bakanlığı bölge çalışma müdürlüklerinde tutulan sicile esas diğer belgeler, vergi kimlik numarası Gelir İdaresi Başkanlığının ilgili birimi tarafından düzenlenen belgeler; bu kuruluşları temsile yetkili kişilerin kimlikleri, 6 ncı maddede belirtilen kimlik belgeleri; temsil yetkisi ise tescile dair belgeler veya temsile yetkili olunduğuna dair belgeler üzerinden teyit edilir. (1)(2)
+(2) Yetkililerce istenildiğinde sunulmak üzere teyide esas belgelerin asıllarının veya noterce onaylanmış suretlerinin ibrazı sonrası okunabilir fotokopisi veya elektronik görüntüsü alınır yahut kimliğe ilişkin bilgiler kaydedilir.
+(3) (Mülga: 28/12/2009-2009/15720 K.) Siyasi partilerde kimlik tespiti
+
+MADDE 10- (1) (Değişik birinci cümle: 28/12/2009-2009/15720 K.) Siyasi parti teşkilatının kimlik tespitinde; siyasi partinin ilgili biriminin adı, açık adresi, telefon numarası, varsa faks numarası ve elektronik posta adresi ile temsile yetkili kişinin adı, soyadı, doğum tarihi, uyruğu, kimlik belgesinin türü ve numarasına ilişkin bilgiler ve imza örneği ile Türk vatandaşları için bu bilgilere ilave olarak T.C. kimlik numarası, Türk uyruklu olmayanlar için doğum yeri bilgisi alınır. Siyasi partilerin ilgili biriminin adı ve adresi, tüzükleri; temsile yetkili kişinin kimliği, 6 ncı maddede belirtilen kimlik belgeleri; yetki durumları ise temsile yetkili olunduğuna dair belgeler üzerinden teyit edilir. (3)
+(2) Yetkililerce istenildiğinde sunulmak üzere teyide esas belgelerin asıllarının veya noterce onaylanmış suretlerinin ibrazı sonrası okunabilir fotokopisi veya elektronik görüntüsü alınır yahut kimliğe ilişkin bilgiler kaydedilir.
+(3) (Mülga: 28/12/2009-2009/15720 K.) Yurt dışında yerleşik tüzel kişilerde ve yurt dışında kurulmuş güven sözleşmelerinde kimlik tespiti (Değişik başlık:RG-24/2/2021-31405 2. Mükerrer-C.K-3580/8 md.)
+
+MADDE 11- (Değişik: 9/5/2014-2014/6381 K.)
+(1) Yurt dışında yerleşik tüzel kişilerin kimlik tespiti; Türkiye’de yerleşik tüzel kişiler için aranan belgelere ilgili ülkede tekabül eden belgelerin Türkiye Cumhuriyeti konsoloslukları tarafından onaylanan veya Yabancı Resmi Belgelerin Tasdiki Mecburiyetinin Kaldırılması Sözleşmesi çerçevesinde bu Sözleşmeye taraf ülke makamı tarafından tasdik şerhi düşülen örnekleri üzerinden yapılır. Ayrıca risk temelli yaklaşım çerçevesinde, kimlik bilgileri gerektiğinde bu belgelerin noter onaylı Türkçe tercümeleri üzerinden teyit edilir.
+______________________
+(1) 24/2/2021 tarihli ve 31405 2. Mükerrer sayılı Resmî Gazete’de yayımlanan 3580 sayılı Cumhurbaşkanı Kararının 7 nci maddesiyle bu fıkraya “sicil numarası,” ibaresinden sonra gelmek üzere “vergi kimlik numarası,” ibaresi, “sicile esas diğer belgeler” ibaresinden sonra gelmek üzere “, vergi kimlik numarası Gelir İdaresi Başkanlığının ilgili birimi tarafından düzenlenen belgeler” ibaresi eklenmiş ve aynı fıkrada yer alan “Çalışma ve Sosyal Güvenlik Bakanlığı” ibaresi “Aile, Çalışma ve Sosyal Hizmetler Bakanlığı” şeklinde değiştirilmiştir.
+(2) 25/12/2024 tarihli ve 32763 sayılı Resmî Gazete’de yayımlanan 9305 sayılı Cumhurbaşkanı Kararının 7 nci maddesi ile bu fıkrada yer alan “doğum yeri ve tarihi” ibaresi “doğum tarihi” şeklinde ve “anne, baba adı ve T.C. kimlik numarası” ibaresi “T.C. kimlik numarası, Türk uyruklu olmayanlar için doğum yeri bilgisi” şeklinde değiştirilmiştir.
+(3) 25/12/2024 tarihli ve 32763 sayılı Resmî Gazete’de yayımlanan 9305 sayılı Cumhurbaşkanı Kararının 8 inci maddesi ile bu fıkrada yer alan “doğum yeri ve tarihi” ibaresi “doğum tarihi” şeklinde ve “anne, baba adı ve T.C. kimlik numarası” ibaresi “T.C. kimlik numarası, Türk uyruklu olmayanlar için doğum yeri bilgisi” şeklinde değiştirilmiştir.
+5342
+(2) (Ek:RG-24/2/2021-31405 2.
+Mükerrer-C.K-3580/8 md.) Yurt dışında kurulmuş bir güven sözleşmesinin konusunu teşkil eden malvarlığı hesabına, sözleşmede belirlenen gerçek veya tüzel kişi mütevelli tarafından, yükümlülerden kimlik tespitini gerektiren bir işlemin gerçekleştirilmesinin talep edilmesi halinde, bu işlemler yapılmadan önce, Kanunun 15 inci maddesi gereğince işlemin güven sözleşmesi kapsamında oluşturulan malvarlığı hesabına talep edildiğinin yükümlülere yazılı olarak beyan edilmesi gerekir. Yurt dışında kurulmuş güven sözleşmesi kapsamında kimlik tespiti; güven sözleşmesinin Türkiye Cumhuriyeti konsoloslukları tarafından onaylanan veya “Yabancı Resmi Belgelerin Tasdiki Mecburiyetinin Kaldırılması Sözleşmesi” çerçevesinde bu Sözleşmeye taraf ülke makamı tarafından tasdik şerhi düşülen yazılı örnekleri üzerinden yapılır. Risk temelli yaklaşım çerçevesinde, kimlik bilgileri gerektiğinde bu belgelerin noter onaylı Türkçe tercümeleri üzerinden teyit edilir. Ayrıca mütevellinin kimlik tespiti kapsamında alınan kimlik bilgileri 6 ncı veya 7 nci madde gereğince teyit edilir. Gerçek faydalanıcının belirlenmesi kapsamında, sözleşme kurucusu, lehtar ya da lehtar grupları ile varsa sözleşme kapsamında denetçi olarak belirlenen kişilerin kimlik bilgileri alınır ve bu bilgilerin teyidi için makul tedbirler uygulanır. Söz konusu malvarlığını nihai olarak kontrolünde bulunduran gerçek kişi ya da kişilerin ortaya çıkarılması için de gerekli tedbirler alınır.
+(3) (Ek:RG-24/2/2021-31405 2.
+Mükerrer-C.K-3580/8 md.) İkinci fıkranın uygulanmasında güven sözleşmesinden; bir malvarlığının belirli bir lehtar ya da lehtar grubunun yararlanması için, malvarlığının maliki olan sözleşme kurucusu tarafından, söz konusu malvarlığının yönetimi, kullanımı ya da sözleşmede belirtilen diğer tasarruflarda bulunulması amacıyla sözleşmeyi icra eden bir mütevellinin kontrolüne bırakılmasını hüküm altına alan hukuki ilişki anlaşılır.
+Tüzel kişiliği olmayan teşekküllerde kimlik tespiti
+
+MADDE 12- (1) (Değişik birinci cümle: 28/12/2009-2009/15720 K.) Apartman, site veya iş hanı yönetimi gibi tüzel kişiliği olmayan teşekküller adına yapılan işlemlerde; teşekkülün adı, açık adresi ile varsa telefon numarası, faks numarası ve elektronik posta adresi ile teşekkülü temsile yetkili kişinin adı, soyadı, doğum tarihi, uyruğu, kimlik belgesinin türü ve numarasına ilişkin bilgiler ve imza örneği ile Türk vatandaşları için bu bilgilere ilave olarak T.C.
+kimlik numarası, Türk uyruklu olmayanlar için doğum yeri bilgisi alınır.
+Teşekkül adına hareket eden kişinin kimlik bilgilerinin doğruluğu, 6 ncı maddede belirtilen kimlik belgeleri; teşekküle ait bilgiler ile teşekkül adına hareket eden kişinin yetki durumu ise noter onaylı karar defteri üzerinden teyit edilir. (1)
+(2) (Değişik birinci cümle:
+28/12/2009-2009/15720 K.) Tüzel kişiliği olmayan iş ortaklıkları gibi teşekküllerin kimlik tespitinde; ortaklığın adı, amacı, faaliyet konusu, vergi kimlik numarası, açık adresi, telefon numarası, varsa faks numarası ve elektronik posta adresine ilişkin bilgiler ile ortaklığı temsile yetkili kişinin adı, soyadı, doğum tarihi, uyruğu, kimlik belgesinin türü ve numarasına ilişkin bilgiler ve imza örneği ile Türk vatandaşları için bu bilgilere ilave olarak T.C. kimlik numarası, Türk uyruklu olmayanlar için doğum yeri bilgisi alınır. Ortaklığın adı, amacı, faaliyet konusu ve adresine ilişkin bilgilerin doğruluğu, noter onaylı ortaklık sözleşmesi; vergi kimlik numarası, Gelir İdaresi Başkanlığının ilgili birimi tarafından düzenlenen belgeler; ortaklık adına işlem talep eden kişilerin kimliği, 6 ncı maddede belirtilen kimlik belgeleri; yetki durumları ise temsile yetkili olunduğuna dair belgeler üzerinden teyit edilir. (1)
+(3) Yetkililerce istenildiğinde sunulmak üzere teyide esas belgelerin asıllarının veya noterce onaylanmış suretlerinin ibrazı sonrası okunabilir fotokopisi veya elektronik görüntüsü alınır yahut kimliğe ilişkin bilgiler kaydedilir.
+(4) (Mülga: 28/12/2009-2009/15720 K.) Kamu kurumlarında kimlik tespiti
+
+MADDE 13- (1) 5018 sayılı Kamu Mali Yönetimi ve Kontrol Kanununa göre genel yönetim kapsamındaki kamu idareleri ile kamu kurumu niteliğindeki meslek kuruluşlarının müşteri olduğu işlemlerde, bunlar adına işlem yapan kişinin kimliği 6 ncı maddeye göre tespit edilir. Yetki durumu ise mevzuata uygun olarak düzenlenmiş yetki belgesi üzerinden teyit edilir.
+Başkası adına hareket edenlerde kimlik tespiti
+
+MADDE 14- (1) Tüzel kişiler veya tüzel kişiliği olmayan teşekküller adına bunları temsile yetkili kimselerin yetkilendirdiği kişilerce işlem talep edilmesi durumunda;
+a) Tüzel kişiler veya tüzel kişiliği olmayan teşekküllerin kimlik tespiti, 7 ila 12 nci maddelere göre yapılır.
+b) Tüzel kişi veya tüzel kişiliği olmayan teşekkülü temsile yetkili kimseler ile bunların yetkilendirdiği kişinin kimlik tespiti, 6 ncı maddedeki usule göre yapılır. Temsile yetkili kişinin kimlik tespitinin 6 ncı maddedeki kimlik belgeleri üzerinden yapılamaması halinde tespit, kimlik belgelerinde yer alan bilgileri içermek ve noter onaylı olmak kaydıyla vekâletname veya imza sirküleri üzerinden yapılabilir.
+_____________________
+(1) 25/12/2024 tarihli ve 32763 sayılı Resmî Gazete’de yayımlanan 9305 sayılı Cumhurbaşkanı Kararının 9 uncu maddesi ile bu fıkralarda yer alan “doğum yeri ve tarihi” ibareleri “doğum tarihi” şeklinde ve “anne, baba adı ve T.C. kimlik numarası” ibareleri “T.C. kimlik numarası, Türk uyruklu olmayanlar için doğum yeri bilgisi” şeklinde değiştirilmiştir.
+5343
+c) Temsile yetkili olanlarca yetkilendirilen kişilerin yetki durumu noter onaylı vekâletname veya temsile yetkili olanlar tarafından verilmiş yazılı talimat üzerinden yapılır. Temsile yetkili kimselerin yazılı talimat üzerindeki imzaları bunlara ait noter onaylı imza sirküleri üzerindeki imzalar ile teyit edilir.
+(2) İşlemlerin gerçek kişi müşteri adına başka bir kişi tarafından yapılması durumunda müşteri adına hareket eden kişinin kimlik tespiti 6 ncı maddeye göre yapılır. Ayrıca müşteri adına hareket eden kimsenin yetki durumu noter onaylı vekâletname üzerinden teyit edilir. Adına hareket edilen müşterinin kimlik tespiti 6 ncı maddeye göre yapılamadığı durumda noter onaylı vekâletname üzerinden yapılır.
+Adına hareket edilen müşterinin daha önce yapılan işlemler nedeniyle kimlik tespitinin yapılmış olması durumunda talep edilen işlem, yazılı talimat üzerinde yer alan müşteri imzasının yükümlü nezdindeki imza ile teyit edilmesi kaydıyla, adına hareket edilen müşterinin yazılı talimatı ile yapılabilir.
+(3) Küçükler ve kısıtlılar adına bunların kanuni temsilcileri tarafından yapılan işlemlerde mahkeme kararıyla veli tayin edilenler ile vasi ve kayyımların yetkisi, ilgili mahkeme kararının aslı veya noter tasdikli sureti üzerinden teyit edilir. Anne ve babaların reşit olmayan çocukları adına işlem talep etmeleri durumunda adına işlem talep edilen çocuk ve işlemi talep eden velinin 6 ncı maddeye göre kimliğinin tespiti yeterlidir.
+(4) Yetkililerce istenildiğinde sunulmak üzere teyide esas belgelerin asıllarının veya noterce onaylanmış suretlerinin ibrazı sonrası okunabilir fotokopisi veya elektronik görüntüsü alınır yahut kimliğe ilişkin bilgiler kaydedilir.
+Teyide esas belgelerin gerçekliğinin kontrol edilmesi
+
+MADDE 15- (1) Yükümlüler 6 ila 14 üncü maddeler kapsamında alınan bilgilerin teyidi amacıyla kullanılan belgelerin gerçekliğinden şüphe duydukları durumda imkânların elverdiği ölçüde, belgeyi düzenleyen kişi ya da kuruma veya diğer yetkili mercilere başvurmak suretiyle belgenin gerçekliğini doğrular.
+Müteakip işlemlerde kimlik tespiti
+
+MADDE 16- (Değişik: 9/5/2014-2014/6381 K.)
+(1) Daha önce usulüne uygun olarak kimliği tespit edilenlerin sürekli iş ilişkisi kapsamındaki yüz yüze yapılan ve kimlik tespitini gerektiren müteakip işlemlerinde, kimliğe ilişkin bilgiler alınarak bu bilgiler yükümlüde bulunan bilgilerle karşılaştırılır. Karşılaştırma sonrasında ilgili evraka işlemi yaptıran gerçek kişinin ad ve soyadı yazılır ve imza örneği alınır. (Ek cümleler:RG-7/10/2026-33393-C.K-11845/2 md.) Finansal kuruluşlarca; internet veya mobil hizmet kanalları üzerinden ya da müşterinin yükümlü nezdinde kayıtlı ve daha önce doğrulanmış cep telefonu numarasına kısa mesaj servisi ile gönderilen tek kullanımlık doğrulama kodu (SMS OTP) yoluyla doğrulama yapılması durumunda imza örneği alınmayabilir.
+Yapılacak doğrulamanın, işlemin niteliği ve risk düzeyine uygun olması, işlem yaptıranın daha önce kimliği tespit edilen müşteri olduğuna yeterli güvence sağlaması ve yetkisiz kişilerin müşteri adına işlem yapması riskine karşı uygun güvenlik tedbirlerini içermesi gerekir. Alınan bilgilerin doğruluğundan şüpheye düşülmesi halinde bu bilgiler, teyide esas kimlik belgelerinin veya bunların noterce onaylanmış suretlerinin ibrazı sonrası bu belgelerde yer alan bilgilerin yükümlüde bulunan bilgilerle karşılaştırılması suretiyle doğrulanır. Yüz yüze olmayan işlemler yapılmasını mümkün kılan sistemleri kullanarak gerçekleştirilen ve kimlik tespitini gerektiren müteakip işlemlerde ise müşteri kimliğinin doğrulanmasına ve kimlik tespiti kapsamındaki bilgilerin güncel tutulmasına yönelik gerekli tedbirler alınır. (1) _________________________
+(1) 24/2/2021 tarihli ve 31405 2. Mükerrer sayılı Resmî Gazete’de yayımlanan 3580 sayılı Cumhurbaşkanı Kararının 9 uncu maddesiyle bu fıkraya “sürekli iş ilişkisi kapsamındaki yüz yüze yapılan” ibaresinden sonra gelmek üzere “ve kimlik tespitini gerektiren” ibaresi ve “sistemleri kullanarak gerçekleştirilen” ibaresinden sonra gelmek üzere “ve kimlik tespitini gerektiren” ibaresi eklenmiştir.
+5344 Başkası hesabına hareket edenlerde kimlik tespiti (1)
+
+MADDE 17- (1) Yükümlüler bir başkası hesabına hareket edilip edilmediğini (…) (1) tespit etmek için gerekli tedbirleri alır. Bu kapsamda kendi adına ve fakat başkası hesabına hareket eden kimselere sorumluluklarını hatırlatmak amacıyla yükümlüler, gerekli duyuruları hizmet verdikleri tüm işyerlerine müşterilerin rahatça görebileceği şekilde asarlar. (Ek cümle:RG-25/12/2024-32763-C.K.-9305/10 md.) Başkanlık, duyuruların taşıması gereken asgari nitelikler ile risk temelli yaklaşım çerçevesinde uygulama kapsamı dışında tutulacak yükümlüleri belirlemeye yetkilidir. Finansal kuruluşlar ayrıca sürekli iş ilişkisi tesisinde başkası hesabına hareket edilip edilmediğine ilişkin müşterinin yazılı beyanını alır. Bu beyan müşteri sözleşmesinde belirtilebilir veya uygun formlar kullanılarak alınabilir.
+(2) İşlemi talep eden kimse, bir başkası hesabına hareket ettiğini beyan ettiğinde, 6 ila 14 üncü maddelere göre işlemi talep edenin kimliği ve yetki durumu ile hesabına hareket edilenin kimliği tespit edilir.
+(3) (Mülga: 9/5/2014-2014/6381 K.)
+(4) (Mülga: 9/5/2014-2014/6381 K.)
+(5) (Değişik: 9/5/2014-2014/6381 K.) Kişinin başkası hesabına hareket etmediğini beyan etmesine rağmen kendi adına ve fakat başkası hesabına hareket ettiğinden şüphelenilmesi halinde gerçek faydalanıcının tanınmasına yönelik tedbirler uygulanır.
+Gerçek faydalanıcının tanınması
+
+MADDE 17/A- (Ek: 9/5/2014-2014/6381 K.)
+(1) Yükümlüler tarafından işlemin gerçek faydalanıcısının ortaya çıkarılması için gerekli tedbirler alınır.
+(2) Yükümlüler, ticaret siciline kayıtlı tüzel kişilerle sürekli iş ilişkisi tesisinde, gerçek faydalanıcının tespitine yönelik olarak tüzel kişiliğin yüzde yirmibeşi aşan hisseye sahip gerçek kişi ortaklarının kimliğini 6 ncı maddeye göre tespit eder.
+(3) Tüzel kişiliğin yüzde yirmibeşi aşan hisseye sahip gerçek kişi ortağının gerçek faydalanıcı olmadığından şüphelenilmesi veya bu oranda hisseye sahip gerçek kişi ortak bulunmaması durumunda, tüzel kişiliği nihai olarak kontrolünde bulunduran gerçek kişi ya da kişilerin ortaya çıkarılması için gerekli tedbirler alınır.
+Tespit edilen gerçek kişi ya da kişiler gerçek faydalanıcı kabul edilir.
+(4) İkinci ve üçüncü fıkralar kapsamında gerçek faydalanıcının tespit edilemediği durumlarda, ticaret sicilinde kayıtlı en üst düzey icra yetkisine sahip gerçek kişi ya da kişiler üst düzey yönetici sıfatıyla gerçek faydalanıcı kabul edilir.
+(5) Sürekli iş ilişkisi kapsamında, diğer tüzel kişiler ile tüzel kişiliği olmayan teşekkülleri nihai olarak kontrolünde bulunduran gerçek kişi ya da kişilerin ortaya çıkarılması için gerekli tedbirler alınır. Gerçek faydalanıcının tespit edilememesi halinde bunlar nezdinde en üst düzeyde icra yetkisine sahip gerçek kişi ya da kişiler üst düzey yönetici sıfatıyla gerçek faydalanıcı kabul edilir.
+––––––––––––––––
+(1) 9/5/2014 tarihli ve 2014/6381 sayılı Bakanlar Kurulu Kararı Eki Yönetmeliğin 11 inci maddesiyle bu maddenin başlığı “Gerçek faydalanıcının tanınması ve tüzel kişilere özel dikkat gösterilmesi” iken metne işlendiği şekilde değiştirilimiş ve yine bu maddenin birinci fıkrasında yer alan “ve işlemin gerçek faydalanıcısının kimliğini” ibaresi yürürlükten kaldırılmıştır.
+5344-1
+(6) Bir ila beşinci fıkralar kapsamında tespit edilen gerçek faydalanıcının kimlik bilgileri alınır ve bu bilgilerin teyidi için gerekli tedbirler uygulanır. Bu kapsamda, kimlik bilgilerini içeren noter onaylı imza sirküleri kullanılabilir.
+(7) Yükümlüler, ticaret siciline kayıtlı tüzel kişilerle sürekli iş ilişkisi tesisinde ayrıca tüzel kişiliğin yüzde yirmibeşi aşan hisseye sahip tüzel kişi ortaklarının kimliğini 7 nci maddeye göre tespit eder. (Ek cümle:RG-24/2/2021-31405 2. Mükerrer-C.K-3580/10 md.) Yurt dışında mukim tüzel kişi ortakların bu kapsamda alınması gereken kimlik bilgilerinin teyidi, ilgili ülkede Türkiye Odalar ve Borsalar Birliği muadili kuruluşların ya da verilerin resmi olarak tutulduğu diğer kuruluşların açık kaynakları üzerinden yapılabilir.
+Özel dikkat gerektiren işlemler
+
+MADDE 18- (1) Yükümlüler karmaşık ve olağandışı büyüklükteki işlemler ile görünürde makul hukuki ve ekonomik amacı bulunmayan işlemlere özel dikkat göstermek, talep edilen işlemin amacı hakkında yeterli bilgi edinmek için gerekli tedbirleri almak ve bu kapsamda elde edilen bilgi, belge ve kayıtları istenildiğinde yetkililere sunmak üzere muhafaza etmek zorundadır.
+Müşteri durumunun ve işlemlerin izlenmesi
+
+MADDE 19- (Değişik: 28/12/2009-2009/15720 K.)
+(1) Yükümlüler, müşterileri tarafından gerçekleştirilen işlemlerin; müşterilerinin mesleği, ticari faaliyetleri, iş geçmişi, mali durumu, risk profili ve fon kaynaklarına dair bilgiler ile uyumlu olup olmadığını sürekli iş ilişkisi kapsamında devamlı olarak izlemek ve müşterileri hakkındaki bilgi, belge ve kayıtları güncel tutmak zorundadır.
+Ayrıca bu müşterilerin kimlik tespitine ilişkin alınan telefon ve faks numarası ile elektronik posta adresine ilişkin bilgilerinin doğruluğu, risk temelli yaklaşım çerçevesinde gerektiğinde bu araçları kullanarak ilgiliyle irtibat kurulmak suretiyle teyit edilir. Finansal kuruluşlar sürekli iş ilişkisi dışında gerçekleştirilen işlemleri de risk temelli yaklaşımla izlemek amacıyla gerekli tedbirleri alır. Finansal kuruluşlar bu amaçlarla uygun risk yönetim sistemi oluşturur.
+Teknolojik risklere karşı tedbir alınması (1)
+
+MADDE 20- (1) Finansal kuruluşlar ile finansal olmayan belirli iş ve meslekler, yeni ve gelişen teknolojilerin kullanımının, yeni dağıtım kanalları dâhil olmak üzere mevcut ve yeni ürün ile yeni iş uygulamalarının getirdiği imkânların aklama ve terörün finansmanı amacıyla kullanıl ması riskine karşı özel dikkat göstermek ve bunu önlemeye yönelik uygun tedbirleri almak zorundadır .
+(2) Finansal kuruluşlar ile finansal olmayan belirli iş ve meslekler yüz yüze olmayan işlemler yapılmasını mümkün kılan yöntem veya sistemleri kullanarak gerçekleştirilen sürekli iş ilişkisi tesisi, hesaba para yatırma, hesaptan para çekme ve elektronik transfer gibi işlemlere özel dikkat göstermek, müşterinin mali profiline ve faaliyetlerine uygun olmayan veya faaliyetleriyle ilgisi bulunmayan işlemleri yakından izlemek, tutar ve işlem sayısı limiti belirlemek de dâhil uygun ve etkili tedbirleri almak zorundadır.
+Üçüncü tarafa güven
+
+MADDE 21- (1) Finansal kuruluşlar; müşterinin, müşteri adına hareket eden kişinin ve gerçek faydalanıcının kimliğinin tespiti ve iş ilişkisinin veya işlemin amacı hakkında bilgi elde etme konularında, müşteriyle ilgili olarak başka bir finansal kuruluşun aldığı tedbirlere güvenerek iş ilişkisi tesis edebilir veya işlem yapabilir. Bu durumda Kanun ve Kanuna ilişkin düzenlemeler kapsamında nihai sorumluluk üçüncü tarafa güvenerek işlem gerçekleştiren finansal kuruluşa aittir.
+___________________
+(2) 24/2/2021 tarihli ve 31405 2. Mükerrer sayılı Resmî Gazete’de yayımlanan 3580 sayılı Cumhurbaşkanı Kararının 11 inci maddesiyle bu maddenin birinci fıkrasında yer alan “Finansal kuruluşlar, yeni ve gelişen teknolojilerin” ibaresi “Finansal kuruluşlar ile finansal olmayan belirli iş ve meslekler, yeni ve gelişen teknolojilerin kullanımının, yeni dağıtım kanalları dâhil olmak üzere mevcut ve yeni ürün ile yeni iş uygulamalarının” şeklinde, ikinci fıkrasında yer alan “Finansal kuruluşlar yüz yüze olmayan işlemler yapılmasını mümkün kılan sistemleri kullanarak gerçekleştirilen” ibaresi “Finansal kuruluşlar ile finansal olmayan belirli iş ve meslekler yüz yüze olmayan işlemler yapılmasını mümkün kılan yöntem veya sistemleri kullanarak gerçekleştirilen sürekli iş ilişkisi tesisi,” şeklinde değiştirilmiştir.
+5344-2
+(2) Üçüncü tarafa güvenilebilmesi;
+a) (Değişik: 28/12/2009-2009/15720 K.) Üçüncü tarafın, kimlik tespiti, kayıtların saklanması ve müşterinin tanınması kuralının gereklerini sağlayacak diğer tedbirleri aldığından, yurt dışında yerleşik olması durumunda ise ayrıca aklama ve terörün finansmanıyla mücadele alanındaki uluslararası standartlara uygun düzenleme ve denetlemelere tabi olduğundan,
+b) Kimlik tespitine ilişkin belgelerin onaylı örneklerinin (güvenilen kuruluş tarafından uzaktan kimlik tespiti yoluyla sürekli iş ilişkisi tesis edilmesi halinde, alınan dijital ortamdaki görüntülerinin), talep edildiğinde üçüncü taraftan derhal temin edileceğinden, (2)
+c) (Ek:RG-25/12/2024-32763-C.K.-9305/11 md.) Üçüncü tarafça, bilgileri paylaşılan müşterinin kimlik tespitinin basitleştirilmiş tedbirler kapsamında yapılmadığından, emin olunması şartıyla mümkündür.
+(3) Üçüncü tarafa güvenerek iş ilişkisi tesis eden veya işlem yapan finansal kuruluş müşterinin kimlik bilgilerini üçüncü taraftan derhal alır.
+(4) (Değişik: 28/12/2009-2009/15720 K.) Finansal kuruluşların kendi aralarında müşterileri adına yaptıkları işlemler ile finansal kuruluşların acente ve benzeri birimleriyle ana hizmet birimlerinin uzantısı veya tamamlayıcısı niteliğindeki hizmetleri yaptırdıkları kişilerle olan ilişkileri, üçüncü tarafa güven ilkesi kapsamında değildir.
+(5) (Ek: 28/12/2009-2009/15720 K.) Üçüncü tarafa güven ilkesi, üçüncü tarafın riskli ülkelerde yerleşik olması durumunda uygulanmaz.
+İşlemin reddi ve iş ilişkisinin sona erdirilmesi
+
+MADDE 22- (1) Yükümlüler, kimlik tespiti yapamadıkları veya iş ilişkisinin amacı hakkında yeterli bilgi edinemedikleri durumlarda; iş ilişkisi tesis etmez ve kendilerinden talep edilen işlemi gerçekleştirmezler. Bu kapsamda isimsiz veya hayali isimlere hesap açamazlar.
+(2) Daha önce elde edilen müşteri kimlik bilgilerinin yeterliliği ve doğruluğu konusunda şüphe duyulması nedeniyle yapılması gereken kimlik tespit ve teyidinin yapılamadığı durumda iş ilişkisi sona erdirilir.
+(3) Yükümlüler bu maddenin birinci ve ikinci fıkralarında belirtilen hallerin şüpheli işlem olup olmadığını da ayrıca değerlendirirler.
+Muhabirlik ilişkisi
+
+MADDE 23- (1) Finansal kuruluşlar yurt dışı muhabirlik ilişkilerinde; (1)
+a) Muhatap finansal kuruluşun aklama veya terörün finansmanı yönünden soruşturma geçirip geçirmediği ve ceza ya da uyarı alıp almadığı, işin mahiyeti ve konusu, itibarı ve üzerindeki denetim yeterliliği hususlarında kamuya açık kaynaklardan yararlanarak sıhhatli bilgi edinmek,
+b) Muhatap finansal kuruluşun aklama ve terörizmin finansmanıyla mücadele sistemini değerlendirmek, sistemin uygun ve etkin olduğundan emin olmak,
+c) Yeni muhabir ilişkiler kurmadan önce üst düzey yöneticinin onayının alınmasını sağlamak,
+ç) Kendilerinin ve muhatap finansal kuruluşun sorumluluklarını bu Yönetmeliğin Üçüncü Bölümündeki yükümlülükleri karşılayacak şekilde bir sözleşmeyle açıkça belirlemek,
+d) Muhabirlik ilişkisinin aktarmalı muhabir hesapların kullanılmasını kapsadığı durumlarda muhatap finansal kuruluşun bu Yönetmeliğin Üçüncü Bölümündeki esaslar çerçevesinde yeterli önlemleri aldığından ve talep edildiğinde ilgili müşterilerin kimlik bilgilerini sağlayabileceğinden emin olmak, için gerekli tedbirleri alır.
+______________________
+(1) 24/2/2021 tarihli ve 31405 2. Mükerrer sayılı Resmî Gazete’de yayımlanan 3580 sayılı Cumhurbaşkanı Kararının 12 nci maddesiyle bu fıkranın (a) bendine “ceza” ibaresinden sonra gelmek üzere “ya da uyarı ” ibaresi eklenmiş ve aynı bentte yer alan “iş” ibaresi “işin mahiyeti ve” şeklinde değiştirilmiştir.
+(2) 25/12/2024 tarihli ve 32763 sayılı Resmî Gazete’de yayımlanan 9305 sayılı Cumhurbaşkanı Kararının 11 inci maddesi ile bu bende “onaylı örneklerinin” ibaresinden sonra gelmek üzere “(güvenilen kuruluş tarafından uzaktan kimlik tespiti yoluyla sürekli iş ilişkisi tesis edilmesi halinde, alınan dijital ortamdaki görüntülerinin) ” ibaresi eklenmiştir.
+5345
+(2) Finansal kuruluşlar, tabela bankalarla ve hesaplarını tabela bankalara kullandırmadığından emin olamadıkları finansal kuruluşlarla muhabirlik ilişkisine giremezler.
+Elektronik transferler (1)(2)
+
+MADDE 24- (Değişik:
+28/12/2009-2009/15720 K.)
+(1) Otuzbin TL veya üzeri yurt içi ve yurt dışı elektronik transfer mesajlarında, gönderenin;
+(1)(3)
+a) Adı ve soyadına, ticaret siciline kayıtlı tüzel kişinin unvanına, diğer tüzel kişiler ve tüzel kişiliği olmayan teşekküllerin tam adına,
+b) Hesap numarasına, hesap numarasının bulunmadığı durumda işlemle ilgili referans numarasına,
+c) Adresi veya doğum yeri ve tarihi veya müşteri numarası, vatandaşlık numarası, pasaport numarası, vergi kimlik numarası gibi göndereni belirlemeye yarayan bilgilerden en az birine, yer verilmesi zorunlu olup bu bilgilerin doğruluğu ayrıca teyit edilir. (Ek cümle:RG-24/2/2021-31405 2. Mükerrer-C.K-3580/13 md.) Elektronik transfer mesajlarında alıcıya ilişkin olarak da bu fıkranın (a) ve (b) bentlerinde belirtilen bilgilere yer verilir, bu bilgilerin teyidi zorunlu değildir.
+(2) (Ek:RG-24/2/2021-31405 2. Mükerrer-C.K-3580/13 md.) Otuzbin TL’nin altındaki yurt içi ve yurt dışı elektronik transfer mesajlarında gönderene ve alıcıya ilişkin olarak birinci fıkranın (a) ve (b) bentlerinde belirtilen bilgilere yer verilir. Bu bilgilerin teyidi zorunlu değildir. (1)(3)
+(3) Bankaların kendi nam ve hesaplarına aralarında gerçekleştirdikleri transferler ile kart numaralarının mesajlarda kullanılması kaydıyla, kredi ve banka kartları kullanılarak gerçekleştirilen transferler birinci fıkra kapsamı dışındadır.
+(4) Birinci fıkrada belirtilen bilgileri içermeyen elektronik transfer mesajı alan finansal kuruluş, söz konusu elektronik transferi iade eder veya bu mesajı gönderen finansal kuruluştan eksik olan bilgilerin tamamlanmasını sağlar.
+(5) Gönderilen mesajların sürekli olarak eksik bilgiler içermesi ve bu bilgilerin talep edildiği halde tamamlanmaması halinde, alıcı finansal kuruluş tarafından; gönderici finansal kuruluştan gelen elektronik transferlerin reddedilmesi veya söz konusu finansal kuruluşla yapılan işlemlerin sınırlandırılması ya da iş ilişkisine son verilmesi hususları göz önünde bulundurulur.
+(6) (Ek:RG-24/2/2021-31405 2. Mükerrer-C.K-3580/13 md.) Transfer emrinin verildiği finansal kuruluştan ödemeyi gerçekleştirecek finansal kuruluşa kadar oluşan mesaj zincirinde göndericiye ilişkin olarak elektronik transfer mesajlarında bulunması gereken bilgilere transfere aracılık eden tüm finansal kuruluşlarca yer verilir ve bu bilgilerin transferin her aşamasında aktarılmasına özel dikkat gösterilir .
+Kripto varlık transferleri
+
+MADDE 24/A- (Ek:RG-25/12/2024-32763-C.K-9305/12 md.)
+(1) Kripto varlık hizmet sağlayıcılar tarafından aracılık edilen Otuzbin TL veya üzeri kripto varlık transfer işlemine ilişkin mesajlarda, gönderenin; (4)
+a) Adı ve soyadına, ticaret siciline kayıtlı tüzel kişinin unvanına, diğer tüzel kişiler ve tüzel kişiliği olmayan teşekküllerin tam adına,
+b) Cüzdan adresine, cüzdan adresinin bulunmadığı durumda işlemle ilgili referans numarasına,
+c) Adresi veya doğum yeri ve tarihi veya müşteri numarası, vatandaşlık numarası, pasaport numarası, vergi kimlik numarası gibi göndereni belirlemeye yarayan bilgilerden en az birine, yer verilmesi zorunlu olup bu bilgilerin doğruluğu ayrıca teyit edilir. Kripto varlık transfer mesajlarında alıcıya ilişkin olarak da bu fıkranın (a) ve (b) bentlerinde belirtilen bilgilere yer verilir, bu bilgilerin teyidi zorunlu değildir.
+(2) Kripto varlık hizmet sağlayıcılar tarafından Otuzbin TL’nin altındaki kripto varlık transfer mesajlarında gönderene ve alıcıya ilişkin olarak birinci fıkranın (a) ve (b) bentlerinde belirtilen bilgilere yer verilir. Bu bilgilerin teyidi zorunlu değildir. (4)
+(3) Birinci ve ikinci fıkrada belirtilen bilgileri içermeyen kripto varlık transfer mesajı alan kripto varlık hizmet sağlayıcı, bu mesajı gönderen kripto varlık hizmet sağlayıcıdan eksik olan bilgilerin tamamlanmasını talep eder. Bilgilerin tamamlanmaması halinde söz konusu kripto varlık transferini iade eder. Gönderilen mesajların sürekli olarak eksik bilgiler içermesi ve bu bilgilerin talep edildiği halde tamamlanmaması halinde, alıcı kripto varlık hizmet sağlayıcı tarafından;
+gönderici kripto varlık hizmet sağlayıcıdan gelen transferlerin reddedilmesi veya söz konusu kripto varlık hizmet sağlayıcıyla yapılan işlemlerin sınırlandırılması ya da iş ilişkisine son verilmesi hususları göz önünde bulundurulur.
+_________________________
+(1) 24/2/2021 tarihli ve 31405 2. Mükerrer sayılı Resmî Gazete’de yayımlanan 3580 sayılı Cumhurbaşkanı Kararının 13 üncü maddesiyle bu maddenin birinci fıkrasında yer alan “İkibin” ibaresi “Yedibinbeşyüz” şeklinde, “zorunludur” ibaresi “zorunlu olup bu bilgilerin doğruluğu ayrıca teyit edilir” şeklinde değişti rilmiş ve birinci fıkrasından sonra gelmek üzere ikinci fıkra eklenmiş, diğer fıkralar buna göre teselsül ettirilmiştir.
+(2) 14/1/2023 tarihli ve 32073 sayılı Resmî Gazete’de yayımlanan 6702 sayılı Cumhurbaşkanı Kararının 1 inci maddesiyle bu maddenin birinci ve ikinci fıkralarında yer alan “Yedibinbeşyüz” ibareleri “Onbeşbin” şeklinde değiştirilmiştir.
+(3) 7/10/2026 tarihli ve 33393 sayılı Resmî Gazete’de yayımlanan 11845 sayılı Cumhurbaşkanı Kararının 3 üncü maddesiyle bu fıkralarda yer alan “Onbeşbin TL” ibareleri “Otuzbin TL” şeklinde değiştirilmiştir.
+(4) 7/10/2026 tarihli ve 33393 sayılı Resmî Gazete’de yayımlanan 11845 sayılı Cumhurbaşkanı Kararının 4 üncü maddesiyle bu fıkralarda yer alan “Onbeşbin TL” ibareleri “Otuzbin TL” şeklinde değiştirilmiştir.
+(4) Transfer emrinin verildiği kripto varlık hizmet sağlayıcıdan nihai transferin muhatabı olan kripto varlık hizmet sağlayıcıya kadar oluşan mesaj zincirinde göndericiye ilişkin olarak kripto varlık transfer mesajlarında bulunması gereken bilgilere transfere aracılık eden tüm kripto varlık hizmet sağlayıcılarca yer verilir ve bu bilgilerin transferin her aşamasında aktarılmasına özel dikkat gösterilir.
+(5) Gönderici ve alıcıya ilişkin bilgiler transferle eş zamanlı olarak güvenli bir şekilde gönderilir. Transfer mesajlarında yer alan verilerin gönderilmesinde dağıtık defter teknolojisi, başkaca bağımsız bir mesajlaşma platformu veya uygulama arayüzü gibi mesajlaşmaya imkân veren yazılım uygulamaları ve teknolojik araçlar kullanılabilir.
+(6) Herhangi bir kripto varlık hizmet sağlayıcı nezdinde kayıtlı olmayan bir cüzdan adresine gönderilen veya böyle bir cüzdan adresinden alınan kripto varlık transferlerinde kripto varlık hizmet sağlayıcı nezdinde söz konusu transferin tarafı olan müşteriden; kayıtlı olmayan cüzdan adresi sahibi gönderici ya da alıcının gerçek kişilerde adı ve soyadı, tüzel kişilerde ise unvan bilgisi ile adresi veya doğum yeri ve tarihi veya müşteri numarası, vatandaşlık numarası, pasaport numarası, vergi kimlik numarası gibi kişiyi belirlemeye yarayan bilgilerden en az birine ilişkin beyan alınır.
+(7) Yurt dışında yerleşik ve kendi mevzuatına göre gönderene ve alıcıya ilişkin bilgileri paylaşma yükümlülüğü bulunmayan kripto varlık hizmet sağlayıcı veya kripto varlık transfer yetkisini haiz bir finansal kuruluştan alınan veya bunlara gönderilen kripto varlık transferinde, kripto varlık hizmet sağlayıcı nezdinde söz konusu transferin tarafı olan müşteriden; göndericinin ya da alıcının gerçek kişilerde adı ve soyadı, tüzel kişilerde ise unvan bilgisi ile adresi veya doğum yeri ve tarihi veya müşteri numarası, vatandaşlık numarası, pasaport numarası, vergi kimlik numarası gibi kişiyi belirlemeye yarayan bilgilerden en az birine ilişkin beyan alınır. Yurt dışında yerleşik söz konusu hizmet sağlayıcı veya finansal kuruluşun beşinci fıkrada öngörülen bir mesajlaşma sistemini kullanması halinde ise birinci fıkrada yer alan bilgilere kullanılan sistem vasıtasıyla mesajlarda yer verilebilir.
+(8) Altıncı ve yedinci fıkraların uygulanmasında, risk temelli yaklaşım çerçevesinde müşteriden transferin tarafları hakkında ilave bilgi ve belge talep edilir. İşlemin tarafları hakkında yeterli bilgi elde edilememesi durumunda transferin gerçekleştirilmemesi veya söz konusu finansal kuruluşla yapılan işlemlerin sınırlandırılması ya da iş ilişkisine son verilmesi hususları göz önünde bulundurulur.
+Riskli ülkelerle ilişkiler
+
+MADDE 25- (1) Finansal kuruluşlar ile finansal olmayan belirli iş ve meslekler, riskli ülkelerde yerleşik gerçek ve tüzel kişiler, tüzel kişiliği olmayan teşekküller ve bu ülkelerin vatandaşları ile girecekleri iş ilişkilerine ve işlemlere özel dikkat göstermek, görünürde makul hukuki ve ekonomik amacı bulunmayan işlemlerin amacı ve mahiyeti hakkında mümkün olduğu ölçüde bilgi toplamak ve bunları kayda geçirmek zorundadır. (1)
+(2) (Ek:RG-24/2/2021-31405 2.
+Mükerrer-C.K-3580/14 md.) Riskli ülkeler hakkında Türkiye’nin üyesi olduğu uluslararası kuruluşlarca kabul edilenler de dâhil olmak üzere alınması gereken tedbirleri belirlemeye Bakanlık yetkilidir.
+Basitleştirilmiş tedbirler
+
+MADDE 26- (1) Bakanlıkça,
+a) (Değişik:
+28/12/2009-2009/15720 K.) Finansal kuruluşların kendi aralarında gerçekleştirdikleri işlemlerde,
+b) Müşterinin 5018 sayılı Kanuna göre genel yönetim kapsamında olan kamu idaresi veya kamu kurumu niteliğindeki meslek kuruluşu olduğu işlemlerde,
+c) Maaş ödemesi anlaşması kapsamında toplu müşteri kabulü yoluyla iş ilişkisi tesisinde,
+ç) (Değişik:
+28/12/2009-2009/15720 K.) Çalışanlara ücretlerinden kesinti yapılmak suretiyle emeklilik hakları sağlayan emeklilik planları ile emeklilik sözleşmelerine ilişkin işlemlerde,
+d) Müşterinin halka açık ve hisseleri borsaya kote edilmiş şirket olduğu işlemlerde, müşterinin tanınmasına yönelik tedbirler bakımından yükümlülerin daha basit tedbirler almalarına izin verilebilir. Bakanlık bu madde kapsamında uygulanabilecek tedbirler ile risk temelli yaklaşımla aklama ve terörizmin finansmanı riskinin düşük olarak değerlendirildiği durumlarda yukarıda sayılanlar dışında işlem türleri belirlemeye yetkilidir. (2)
+(2) Yükümlüler işlem nedeniyle aklama veya terörün finansmanı riskinin oluşabileceği durumlarda, basitleştirilmiş tedbirleri uygulayamazlar ve işlemin 27 nci maddeye göre şüpheli işlem olabileceğini göz önünde bulundururlar.
+_______________
+(1) 24/2/2021 tarihli ve 31405 2.
+Mükerrer sayılı Resmî Gazete’de yayımlanan 3580 sayılı Cumhurbaşkanı Kararının 14 üncü maddesiyle bu fıkraya “Finansal kuruluşlar” ibaresinden sonra gelmek üzere “ile finansal olmayan belirli iş ve meslekler” ibaresi eklenmiştir.
+(2) 25/12/2024 tarihli ve 32763 sayılı Resmî Gazete’de yayımlanan 9305 sayılı Cumhurbaşkanı Kararının 13 üncü maddesi ile bu fıkraya “uygulanabilecek tedbirler ile” ibaresinden sonra gelmek üzere “risk temelli yaklaşımla aklama ve terörizmin finansmanı riskinin düşük olarak değerlendirildiği durumlarda” ibaresi eklenmiştir.
+Sıkılaştırılmış tedbirler
+
+MADDE 26/A-(Ek: 9/5/2014-2014/6381 K.)
+(1) Finansal kuruluşlar ile finansal olmayan belirli iş ve meslekler, 18 inci, 20 nci ve 25 inci maddeler kapsamındaki işlemler ile risk temelli yaklaşım çerçevesinde tespit edecekleri yüksek riskli durumlarda, tespit edilen riskle orantılı olarak aşağıda belirtilen tedbirlerin bir veya birden fazlasını ya da tamamını uygular. (1) a) Müşteri hakkında ilave bilgi edinmek ve müşteri ile gerçek faydalanıcının kimlik bilgilerini daha sık güncellemek.
+b) İş ilişkisinin mahiyeti hakkında ilave bilgi edinmek.
+c) İşleme konu malvarlığının ve müşteriye ait fonların kaynağı hakkında mümkün olduğu ölçüde bilgi edinmek.
+ç) İşlemin amacı hakkında bilgi edinmek.
+d) İş ilişkisine girilmesini, mevcut iş ilişkisinin sürdürülmesini ya da işlemin gerçekleştirilmesini üst seviyedeki görevlinin onayına bağlamak.
+e) Uygulanan kontrollerin sayı ve sıklığını artırmak ve ilave kontrol gerektiren işlem türlerini belirlemek suretiyle iş ilişkisini sıkı gözetim altında tutmak.
+f) Sürekli iş ilişkisi tesisinde ilk finansal hareketin, müşterinin tanınmasına ilişkin esasların uygulandığı bir başka finansal kuruluştan yapılmasını zorunlu tutmak.
+(2) Bakanlık, bu madde kapsamında dikkate alınacak yüksek riskli durumlar ile yukarıda sayılanlar dışında ayrıca sıkılaştırılmış tedbirler belirlemeye yetkilidir.
+DÖRDÜNCÜ BÖLÜM Şüpheli İşlem Bildirimine İlişkin Esaslar Şüpheli işlem bildirimi
+
+MADDE 27- (1) Şüpheli işlem, yükümlüler nezdinde veya bunlar aracılığıyla yapılan veya yapılmaya teşebbüs edilen işleme konu malvarlığının; yasa dışı yollardan elde edildiğine veya yasa dışı amaçlarla kullanıldığına , bu kapsamda terörist eylemler için ya da terör örgütleri, teröristler veya terörü finanse edenler tarafından kullanıldığına veya bunlarla ilgili ya da bağlantılı olduğuna dair herhangi bir bilgi, şüphe veya şüpheyi gerektirecek bir hususun bulunması halidir.
+(2) Şüpheli işlemler yükümlüler tarafından tutar gözetilmeksizin Başkanlığa bildirilir.
+Şüpheli işlem bildirimi; gerçek kişi yükümlünün bizzat kendisi, tüzel kişi yükümlünün kanuni temsilcileri, tüzel kişiliği bulunmayanların yöneticileri veya bunlar tarafından yetkili kılınanlar, uyum görevlisi atanan yükümlülerde ise bu görevliler tarafından yerine getirilir.
+(3) Şüphe veya şüpheyi gerektiren makul bir sebebin olup olmadığı hususu gerektiğinde birden çok işlem bir arada ele alınarak değerlendirilir.
+(4) Şüpheli işlemlerin devamlı bilgi verme kapsamında bildirilmiş olması şüpheli işlem bildirim yükümlülüğünü ortadan kaldırmaz.
+(5) Başkanlık şüpheli işlem tipleri belirlemeye yetkilidir.
+_________________
+(1) 24/2/2021 tarihli ve 31405 2. Mükerrer sayılı Resmî Gazete’de yayımlanan 3580 sayılı Cumhurbaşkanı Kararının 15 inci maddesiyle bu fıkraya “Finansal kuruluşlar” ibaresinden sonra gelmek üzere “ile finansal olmayan belirli iş ve meslekler” ibaresi eklenmiştir.
+5346-1 Şüpheli işlem bildirim formunun düzenlenmesi ve bildirimde süre
+
+MADDE 28- (1) Yükümlüler şüpheli bir işlemle karşılaştıklarında işlem hakkında gerekiyorsa yetki ve imkânları ölçüsünde araştırma yaparak edinilen bilgi ve bulguları göz önüne alıp Şüpheli İşlem Bildirim Formu doldurmak suretiyle Başkanlığa şüpheli işlem bildiriminde bulunurlar.
+(2) Şüpheli işlemler, işleme ilişkin şüphenin oluştuğu tarihten itibaren en geç on iş günü içinde Başkanlığa bildirilir.
+(3) Bildirimde bulunulan işlemle ilgili olarak daha sonra yeni bilgi ve bulgular elde edildiği takdirde, tekrar Şüpheli İşlem Bildirim Formu doldurulur ve daha önce yapılan bildirime ek olduğu belirtilerek gecikmeksizin Başkanlığa gönderilir.
+(4) Bakanlık, Şüpheli İşlem Bildirim Formlarının düzenlenmesine, bildirimlerin elektronik ortam ve bilgi iletişim araçları kullanılarak yapılması zorunluluğu getirilmesine ve şüpheli işlem bildirimlerinde elektronik imza kullanılmasına ilişkin usul ve esasları yükümlüler bazında ayrı ayrı belirlemeye yetkilidir.
+(5) Başkanlıkça, bildirimlere yönelik rehberler çıkarılabilir ve bu rehberler elektronik ortamda yayımlanabilir. Bildirimler bu rehberlere uygun şekilde yapılır. (1) Şüpheli işlem bildirimlerinin gizliliği ve bildirimde bulunanların korunması
+
+MADDE 29- (1) Yükümlüler, Başkanlığa şüpheli işlem bildiriminde bulunulduğuna veya bulunulacağına dair, yükümlülük denetimi ile görevlendirilen denetim elemanlarına ve yargılama sırasında mahkemelere verilen bilgiler dışında, işleme taraf olanlar dâhil olmak üzere hiç kimseye bilgi veremezler.
+(2) Bu yükümlülük şüpheli işlemi Başkanlığa bildiren kişi, kurum ve kuruluşlar veya bu kimselerin işlemi fiilen yapan ve yöneten mensupları veya bunların kanuni temsilcileri ve vekillerinin yanı sıra şüpheli işlem bildiriminde bulunulduğuna herhangi bir şekilde vakıf olan diğer personeli de kapsar. Uyum görevlisi tayin edilen yükümlülerde, uyum görevlisine yapılan dâhili bildirimler de gizlilik kapsamındadır. Şüpheli işlem bildirimlerini elektronik ortamda gerçekleştiren uyum görevlileri, sisteme erişimi sağlayan her türlü ortamdaki kart, şifre ve sair bilgi ve araçları hiç kimseye veremez.
+(3) Yükümlüler yurt dışındaki merkezlerine veya şube, acente, temsilci ve ticari vekilleri ile benzeri bağlı birimlerine, müşterisi hakkında şüpheli işlem bildiriminde bulunduğuna dair hiçbir şekilde bilgi veremez.
+(4) Şüpheli işlem bildirimi yükümlülüğünü yerine getiren gerçek ve tüzel kişiler, bunların uyum görevlileri, yükümlülerin kanuni temsilcisi, yöneticisi ve çalışanları hiçbir şekilde hukukî ve cezaî bakımdan sorumlu tutulamaz.
+––––––––––––––––
+(1) 9/5/2014 tarihli ve 2014/6381 sayılı Bakanlar Kurulu Kararı Eki Yönetmeliğin 14 üncü maddesiyle bu fıkrada yer alan “bildirimlerin elektronik ortamda gönderilmesine” ibaresi “bildirimlere” şeklinde değiştirilmiştir.
+5346-2 Geri bildirim
+
+MADDE 30- (1) Şüpheli işlem bildiriminde bulunan yükümlülere Başkanlıkça, bildirimin kayda alındığına dair bilgi verilir.
+(2) (Değişik: 28/12/2009-2009/15720 K.) Başkanlık, alınan şüpheli işlem bildirimlerinin etkinliğine ilişkin olarak belli periyotlarla genel değerlendirme yapar. Ayrıca Başkanlık, şüpheli işlem bildirimlerine ilişkin istatistikî verileri, aklama ve terörün finansmanında kullanılan yöntemleri, oluşan eğilimleri, şüpheli işlem bildirimleri sonrası süreçler ve varılan sonuçlardan faydalanılarak hazırlanan örnek olayları, yıllık faaliyet raporları, rehberler ya da periyodik yayınlar yoluyla yayımlayabilir, eğitim amacıyla kullanabilir.
+BEŞİNCİ BÖLÜM Bilgi ve Belge Vermeye İlişkin Esaslar Bilgi ve belge verme MADDE 31- (1) Kamu kurum ve kuruluşları, gerçek ve tüzel kişiler ile tüzel kişiliği olmayan kuruluşlar; Başkanlık ve denetim elemanları tarafından istenilecek her türlü bilgi, belge ve bunlara ilişkin mikrofiş , mikrofilm, manyetik teyp, disket ve benzeri ortamlar da dâhil olmak üzere her türlü ortamdaki kayıtlarını , bu kayıtlara erişimi sağlamak veya okunabilir hale getirmek için gerekli tüm bilgi ve şifreleri tam ve doğru olarak, istenilen usul, şekil ve sürede gecikmeksizin vermek ve gerekli kolaylığı sağlamak zorundadır. (1)
+(2) Kendisinden talepte bulunulanlar, savunma hakkına ilişkin hükümler saklı kalmak kaydıyla, özel kanunlarda yazılı hükümleri ileri sürerek bilgi ve belge vermekten kaçınamazlar.
+(3) Yükümlüler yerinde yapılacak denetimler kapsamında defter ve belgeleri denetime hazır bulundurmak; tüm bilgi işlem sistemini, denetimin amaçlarına uygun olarak denetim elemanlarına açmak ve verilerin güvenliğini sağlamak zorundadır.
+(4) Bilgi ve belgeler acil haller dışında yazılı olarak istenir. Yazıyla istenilen bilgi ve belgeler için yedi günden az olmamak üzere uygun bir süre verilir.
+Sözlü olarak bilgi ve belge talep edilmesi halinde bu talep yazı ile teyit edilir.
+Yükümlüler tarafından devamlı bilgi verme MADDE 32- (1) Yükümlüler taraf oldukları veya aracılık ettikleri işlemlerden, Bakanlıkça belirlenecek tutarı aşanları Başkanlığa bildirmek zorundadır.
+(2) Mahiyeti itibarıyla birbiriyle bağlantılı işlemler tek bir işlem olarak değerlendirilir.
+(3) Hafta sonu ve tatil günleri ile gece boyunca yapılan işlemler, bu işlemlerin yapıldığı zamanı takip eden ilk iş gününün işlemi olarak kabul edilir.
+––––––––––––––––
+(1) 9/5/2014 tarihli ve 2014/6381 sayılı Bakanlar Kurulu Kararı Eki Yönetmeliğin 15 inci maddesiyle bu fıkrada yer alan “olarak” ibaresinden sonra gelmek üzere “, istenilen usul, şekil ve sürede gecikmeksizin” ibaresi eklenmiştir.
+5347
+(4) Devamlı bilgi verme kapsamındaki işlem türleri, bilgilerin ne şekilde ve hangi sürelerde verileceği, kapsam dışında tutulacak yükümlüler ile uygulamaya ilişkin diğer usul ve esaslar Bakanlıkça belirlenir.
+(5) Bakanlık, devamlı bildirime ilişkin formların düzenlenmesine, her türlü elektronik bilgi iletişim araç ve ortamı yoluyla Başkanlığa bildirilmesine ve bildirimlerde elektronik imza kullanımına ilişkin usul ve esasları, yükümlüler bazında ayrı ayrı belirlemeye yetkilidir. Bildirimlerin elektronik ortamda yapılmasına yönelik uygulama tarihleri Başkanlıkça belirlenir.
+(6) Başkanlıkça, bildirimlerin elektronik ortamda gönderilmesine yönelik rehberler çıkarılabilir ve bu rehberler elektronik ortamda yayımlanabilir. Bildirimler bu rehberlere uygun şekilde yapılır.
+Devamlı bilgi vermede istisna ve muafiyetler
+
+MADDE 33- (1) Yükümlülerce Başkanlığa devamlı bilgi verilmesinde, bankaların kendi aralarında kendi ad ve hesaplarına gerçekleştirdikleri işlemler ile finansal kuruluşların 5018 sayılı Kanuna göre genel yönetim kapsamındaki idareler, kamu iktisadi teşebbüsleri ve kamu kurumu niteliğindeki meslek kuruluşları ile yaptıkları işlemler devamlı bilgi verme yükümlülüğü kapsamında değildir.
+Kamu kurumları tarafından devamlı bilgi verme
+
+MADDE 34- (1) Kanunları gereğince yükümlülere kuruluş ve faaliyet izni veren veya bunlara ilişkin kayıt tutmak zorunda olan kamu kurum ve kuruluşları ile kamu kurumu niteliğindeki kurum ve kuruluşlar; yükümlülerin adı, soyadı veya unvanı, yüzde ondan fazla hisseye sahip ortakları, yönetim kurulu başkan ve üyeleri ile genel müdür veya yöneticilerine ilişkin bilgiler ile iletişim bilgilerini Başkanlığa bildirirler.
+(2) Birinci fıkrada belirtilen bilgilerde meydana gelen değişiklikler, ilgili kurum veya kuruluş tarafından değişikliği takip eden ayın onbeşinci gününe kadar Başkanlığa bildirilir.
+(3) Birinci ve ikinci fıkralarda belirtilen hususların Kanunun 9 uncu maddesine istinaden kurulan erişim sistemi ile sağlanması halinde birinci fıkra hükmü uygulanmaz.
+(4) Bildirime ilişkin diğer usul ve esasları belirlemeye Bakanlık yetkilidir.
+ALTINCI BÖLÜM Yükümlülük Denetimi Denetimin kapsamı (1)
+
+MADDE 35 - (1) Yükümlülük denetimi, yükümlülerin yükümlülüklere uyum durumunu tespit amacıyla risk temelli bir yaklaşımla yapılan yükümlülüklere uyum denetimi ile yükümlülük ihlallerini tespite yönelik yükümlülük ihlal incelemesini kapsar. (Ek cümle:RG-24/2/2021-31405 2.
+Mükerrer-C.K-3580/16 md.) Yükümlülük denetiminde yerinde veya uzaktan denetim yöntemleri kullanılabilir.
+(2) Başkanlık, yükümlülük denetiminin münferiden veya bir denetim programı kapsamında yapılmasını isteyebilir. Başkanlık, (…) ilgili denetim biriminin görüşünü alarak denetim programı hazırlayabileceği gibi bu birimin denetim programına yükümlülük denetiminin de dâhil edilmesini talep edebilir.
+_____________________
+(1) 24/2/2021 tarihli ve 31405 2. Mükerrer sayılı Resmî Gazete’de yayımlanan 3580 sayılı Cumhurbaşkanı Kararının 16 ncı maddesiyle bu maddenin birinci fıkrasına “tespit amacıyla” ibaresinden sonra gelmek üzere “risk temelli bir yaklaşımla” ibaresi eklenmiş ve ikinci fıkrada yer alan “uygulama zamanı konusunda” ibaresi yürürlükten kaldırılmıştır.
+5348
+(3) Başkanlık yükümlülüklere uyum denetimlerinin ve yükümlülük ihlal incelemelerinin kapsam ve süresini belirlemeye yetkilidir.
+(4) Kendisinden yükümlülük denetimi yapılması talebinde bulunulan birim bu talebin gereğini yerine getirmek zorundadır.
+(5) Başkanlık yükümlülük denetimi konusunda diğer usul ve esasları belirlemeye, bu kapsamda denetim rehberleri hazırlamaya yetkilidir.
+Denetime yetkililer ve yetkileri
+
+MADDE 36- (1) Yükümlülük denetimleri denetim elemanları vasıtasıyla yerine getirilir.
+(2) Yükümlülük denetimiyle görevlendirilen denetim elemanları, kamu kurum ve kuruluşları da dâhil gerçek ve tüzel kişilerden ve tüzel kişiliği olmayan kuruluşlardan her türlü bilgi, belge ve kanunî defterleri istemeye ve bunlar nezdinde her türlü evrak ve kayıtları incelemeye, ilgililerden yazılı ve sözlü bilgi almaya yetkili olup ayrıca diğer kanunların kendilerine verdiği yetkileri de kullanır.
+(3) Yükümlüler, denetim esnasında denetim elemanlarına uygun çalışma ortamı sağlamak da dâhil gerekli her türlü kolaylığı göstermek zorundadır.
+Denetim elemanının görevlendirilmesi
+
+MADDE 37- (1) Başkanın görevlendirme talebi üzerine ilgili birim amirinin teklifi ve bağlı veya ilgili bulundukları Bakanın onayı ile yükümlülük denetimi yapmak üzere denetim elemanı görevlendirilir. Görevlendirme, talep tarihinden itibaren en geç on gün içinde yapılır.
+(2) Münferiden yapılacak yükümlülük denetimi ile görevlendirilen denetim elemanı, göreve ilişkin Başkanlık yazısının kendisine tebliğinden itibaren en geç 15 gün içinde göreve başlayarak göreve başlama tarihini bu süre içinde Başkanlığa ve birimine yazılı olarak bildirir. Bir denetim programı kapsamında yapılan yükümlülük denetimlerinde denetim elemanı göreve fiilen başladığı tarihi Başkanlığa yazılı olarak bildirir.
+(3) Denetim elemanları, Başkanlıkça, yürütmekte oldukları denetimlerde bağlantı kurularak kendilerine intikal ettirilen konuları, ayrı bir görevlendirme onayı aramaksızın ilk görevlendirme onayı kapsamında sonuçlandırır.
+(4) Denetim sonuçlanmadan herhangi bir nedenle görevinden ayrılacak olan denetim elemanı, denetimde gelinen aşamaları gösterir bir devir raporu düzenleyerek Başkanlığa gönderir. İlgili birim, mevcut denetim elemanı görevinden ayrılmadan en az on gün önce, yeni denetim elemanı görevlendirir. Görevinden ayrılacak olan denetim elemanı devir raporunun bir örneğini ve ilgili tüm belgeleri, yeni görevlendirilen denetim elemanına bu süre içerisinde tutanakla teslim eder.
+Yeni görevlendirilen denetim elemanı tutanağın birer örneğini birimine ve Başkanlığa gönderir. İşe başlama ve ayrılma açısından tutanak tarihi esas alınır. Bu işlemlerin zamanında gerçekleştirilmesi hususunda ilgili birimce gerekli tedbirler alınır.
+(5) Başkanlık, denetim için birden fazla denetim elemanından oluşan ekip teşkil edebilir. Başkanlık, denetim elemanlarından birini koordinasyonu sağlamak amacıyla görevlendirir. Koordinasyonu sağlayan denetim elemanı, ekip içerisinde bilgi ve belge akışını sağlar. Ekip çalışmalarının birlikte planlanması, yürütülmesi, sonuçlandırılması ve raporların birlikte düzenlenmesi esastır.
+5349
+(6) Birden fazla ekip oluşturulması halinde koordinasyonu sağlayan denetim elemanlarından biri genel koordinasyonu sağlamak üzere Başkanlıkça görevlendirilebilir.
+(7) Yükümlülük denetiminin, denetime konu işlemlerin gerçekleştiği yerde yapılması esastır.
+Denetim elemanları, yanlarında memuriyet sıfatlarını gösteren fotoğraflı resmi bir belge bulundururlar ve gittikleri yerde işe başlamadan önce bu belgeyi ilgililere gösterirler.
+(8) Hazırlanan raporun Başkanlıkça işleme konulmasına karar verilen tarihte görev sona erer. Bu durum, denetim elemanına ve bağlı olduğu birime bildirilir.
+Denetim elemanının Başkanlıkta geçici olarak görevlendirilmesi ve çalışma esasları
+
+MADDE 37/A- (Ek: 9/5/2014-2014/6381 K.)
+(1) Başkanlık, yükümlülük denetimi görevini Kanunun ek 1 inci maddesine göre Başkanlık emrinde geçici süreyle görevlendirilen denetim elemanları vasıtasıyla da yerine getirebilir.
+(2) Geçici görevli denetim elemanları, görevlendirme süreleri içerisinde Başkanın veya görevlendireceği başkan yardımcısının gözetimi altında ve talimatları doğrultusunda çalışır.
+(3) Geçici görevli denetim elemanları Başkanlık Makamından alınan görevlendirme onayı ile görevlendirilir. Başkanlıkça yükümlülük denetimi kapsamında birden fazla görevlendirme yapılabilir. Görevlendirme onayının tebliği tarihinden itibaren derhal göreve başlanır.
+(4) Verilen denetim görevinin hangi sürede sonuçlandırılacağı Başkanlık tarafından belirlenir.
+Geçici görevli denetim elemanları bu süre sonunda hazırlayacakları raporu Başkanlığa sunar.
+(5) Başkanlık nezdindeki veri tabanı ve erişim sistemleri, Başkanlıkça belirlenen erişim yetkileri çerçevesinde denetim elemanları tarafından kullanılır. Yükümlülük denetimleri denetim elemanları tarafından bizzat yürütülür ve sonuçlandırılır.
+(6) Geçici görevli denetim elemanlarının çalışma usul ve esaslarına ilişkin bu maddede yer almayan hususlarda bu Yönetmeliğin denetimle ilgili diğer hükümleri uygulanır.
+Hazine ve maliye uzmanlarının denetim elemanı olarak görevlendirilmesi ve çalışma esasları
+
+MADDE 37/B - (Ek:RG-24/2/2021-31405 2. Mükerrer-C.K-3580/17 md.)
+(1) Başkanlık, yükümlülük denetimi görevini, Başkanlıkta istihdam edilen ve bu işle görevlendirilen hazine ve maliye uzmanları vasıtasıyla da yerine getirebilir.
+(2) Yükümlülük denetimi ile görevlendirilen hazine ve maliye uzmanları, yükümlülük denetiminden sorumlu daire başkanının gözetim ve koordinasyonunda çalışır.
+(3) Hazine ve maliye uzmanları, Başkanlık Makamından alınan görevlendirme onayı ile görevlendirilir. Başkanlıkça yükümlülük denetimi kapsamında birden fazla görevlendirme yapılabilir. Görevlendirme onayının tebliği tarihinden itibaren derhal göreve başlanır.
+(4) Verilen yükümlülük denetimi görevinin hangi sürede sonuçlandırılacağı Başkanlık tarafından belirlenir. Bu süre sonunda hazırlanacak rapor Başkanlığa sunulur.
+(5) Yükümlülük denetimleri, hazine ve maliye uzmanları tarafından bizzat yürütülür ve sonuçlandırılır. Denetimin yürütülmesinde bu Yönetmeliğin 36 ncı maddesi uygulanır.
+(6) Hazine ve maliye uzmanlarının çalışma usul ve esaslarına ilişkin bu maddede yer almayan hususlarda bu Yönetmeliğin yükümlülük denetimiyle ilgili diğer hükümleri uygulanır.
+Denetim raporları
+
+MADDE 38- (1) Yükümlülüklere uyum denetimi sonucunda yükümlülük uyum denetimi raporu, yükümlülük ihlal incelemesi sonucunda ise yükümlülük ihlali inceleme raporu düzenlenir.
+(2) Denetim elemanları yükümlülüklere uyum denetimi sırasında tespit ettikleri yükümlülük ihlalleri için ayrıca yükümlülük ihlali inceleme raporu düzenler.
+(3) (Ek:RG-7/10/2026-33393-C.K-11845/5 md.) (1) 3 üncü maddenin birinci fıkrasının (f) bendi dışında kalan yükümlüler bakımından yalnızca yükümlülük uyum denetimi raporu düzenlenir.
+Denetim sırasında yükümlülük ihlali tespit edilmesi durumunda raporda bu ihlallere yer verilir ve bu rapor aynı zamanda yükümlülük ihlali inceleme raporu yerine geçer.
+(4) Denetim raporlarına ilişkin usul ve esaslar Başkanlıkça belirlenir.
+____________________
+(1) 7/10/2026 tarihli ve 33393 sayılı Resmî Gazete’de yayımlanan 11845 sayılı Cumhurbaşkanı Kararının 5 inci maddesiyle maddeye ikinci fıkradan sonra gelmek üzere bu fıkra eklenmiş, diğer fıkra buna göre teselsül ettirilmiştir.
+5350 Raporlar üzerine yapılacak işlemler
+
+MADDE 39- (1) Denetim elemanları tarafından düzenlenerek Başkanlığa sunulan raporlar, Başkanlıkça belirlenen rapor standartlarına uygunluk ve hukuki ya da maddi hata bulunup bulunmadığı yönünden değerlendirilir. (Değişik ikinci cümle: 28/12/2009-2009/15720 K.) Başkanlık tarafından yapılan değerlendirme sonucuna göre işlem tesis edilir.
+(2) Bu Yönetmeliğin Üçüncü Bölümü ile 27 nci ve 28 inci maddelerinde belirtilen hükümlere uymayan yükümlüler (…) ile bu Yönetmeliğin 32 nci maddesinde belirtilen hükümlere uymayan yükümlüler hakkında idari para cezası uygulanır. (1)
+(3) (Değişik:RG-24/2/2021-31405 2.
+Mükerrer-C.K-3580/18 md.) Kanunun 5 inci maddesinde yer alan eğitim, iç denetim, kontrol ve risk yönetim sistemleri oluşturulması, uyum görevlisi tayini ile Bakanlıkça çıkarılacak yönetmelikle belirlenecek diğer tedbirler kapsamındaki yükümlülüklere aykırı hareket edilmesinin tespiti halinde yükümlülere yazılı ihtar yapılarak otuz günden az olmamak üzere bir süre verilir. Bu süre sonunda eksikliklerin tamamlanmaması halinde beş yüz bin Türk Lirası idari para cezası uygulanır. İdari para cezasının tebliği ile birlikte yazılı ihtar yapılarak altmış günden az olmamak üzere yeni bir süre verilir. Bu süre sonunda da eksikliklerin tamamlanmaması halinde verilen ilk idari para cezasının iki katı idari para cezası daha uygulanır. İkinci idari para cezasının tebliğinden itibaren otuz gün içinde eksikliklerin tamamlanmaması halinde yükümlünün faaliyetlerinin belli bir süre durdurulması, kısıtlanması veya faaliyet izin belgesinin iptaline yönelik tedbirlerin alınması için durum ilgili kuruma bildirilir. Kanunun 5 inci maddesinin birinci fıkrasında belirtilen söz konusu yükümlülüklere uymayan sorumlu yönetim kurulu üyesine, yoksa üst düzey yöneticisine ise belirtilen ihtarlar yapılmak ve sürelere uyulmak koşuluyla yükümlüye verilen idari para cezasının dörtte biri uygulanır.
+(4) Yönetmeliğin 29 uncu, 31 inci ve 46 ncı maddelerindeki yükümlülüklerin ihlali konusunda düzenlenen yükümlülük ihlali inceleme raporu Başkanlıkça yetkili Cumhuriyet savcılığına gönderilir.
+(5) (Değişik: 9/5/2014-2014/6381 K.) Yükümlülük ihlali inceleme raporlarının Cumhuriyet savcılıkları nezdinde izlenmesi ve davaların takibi ile diğer usule ilişkin işlemler 13/12/1983 tarihli ve 178 sayılı Kanun Hükmünde Kararname ile 26/9/2011 tarihli ve 659 sayılı Kanun Hükmünde Kararname gereğince yapılır.
+Bildirim
+
+MADDE 40- (1) Denetim elemanları, kendi görev alanlarına ilişkin olarak kurumlarınca verilen görevler ile aklama suçu incelemeleri sırasında karşılaştıkları yükümlülük ihlallerini Başkanlığa yazılı olarak derhal bildirir.
+(2) Yükümlü nezdinde herhangi bir kanunla verilmiş denetim yetkisini haiz olanlar, kendi birimlerince verilen görevlerin ifası sırasında, Kanun kapsamındaki bir yükümlülük ihlaliyle karşılaştıklarında durumu birimleri aracılığıyla Başkanlığa intikal ettirir.
+(3) Yükümlülük denetimi sırasında aklama ve terörün finansmanına ilişkin herhangi bir hususun tespit edilmesi veya böyle bir durumun varlığından şüphe edilmesi halinde konu, denetim elemanları tarafından derhal Başkanlığa yazılı olarak bildirilir.
+(4) Denetim elemanları, yükümlülük denetimleri sırasında, diğer kurumların görev alanını ilgilendiren mevzuata aykırı herhangi bir hususu tespit etmeleri veya böyle bir durumun varlığından şüphe etmeleri halinde konuyu ilgili birimlere intikal ettirerek, Başkanlığa da bilgi verir.
+___________________
+(1) 24/2/2021 tarihli ve 31405 2. Mükerrer sayılı Resmî Gazete’de yayımlanan 3580 sayılı Cumhurbaşkanı Kararının 18 inci maddesiyle bu fıkrada yer alan “, bunların işlemi fiilen yapan çalışanları ve işlemin sonuçlandırılması bakımından görev ve sorumluluğu bulunan yöneticileri” ibaresi yürürlükten kaldırılmıştır.
+5351 YEDİNCİ BÖLÜM Gümrük İdaresine Yapılacak Açıklama Açıklama usul ve esasları
+
+MADDE 41- (1) Türk parası, döviz veya bunlarla ödemeyi sağlayan belgeleri yurt dışına çıkaran veya yurda getiren yolcular, gümrük idaresinin talebi üzerine bunlarla ilgili olarak tam ve doğru açıklama yapmakla mükelleftir. Bu değerlerin yolcunun üzerinde, çantasında veya bagajında olması bu maddenin uygulanmasında farklılık arz etmez.
+(2) Bu maddenin uygulanmasında, yolcu beraberinde bulunan bono, poliçe ve çekler ile seyahat çekleri, posta çekleri, yurt içinde veya yurt dışında yerleşik kuruluşlarca verilen ödeme emri mahiyetindeki belgeler Türk parası veya dövizle ödemeyi sağlayan belge olarak kabul edilir.
+Bir tutarı ihtiva eden bu neviden belgenin, tarih, lehtar, imza, adres ve benzeri unsurlar bakımından eksik olması açıklama yükümlülüğünü ortadan kaldırmaz.
+(3) Yolculardan açıklamada bulunmalarını istemeye gümrük idaresinin gümrük kapılarında görevli personeli yetkilidir.
+(4) Yolcu beraberindeki değerler yolcu tarafından açıklama yapılmış olsun veya olmasın gümrük idaresinin yetkili personeli tarafından tespit edilir.
+(5) Bu maddedeki bildirim mecburiyeti Türk parasının kıymetini koruma hakkındaki mevzuatla getirilen bildirim mecburiyetini ortadan kaldırmaz.
+Tutanak düzenlenmesi
+
+MADDE 42- (1) Kendisinden açıklama talep edilen yolcu ile ilgili tespitler bir tutanağa bağlanır.
+(2) Düzenlenen tutanakta asgari aşağıdaki bilgilerin yer alması zorunludur:
+a) Tutanağın düzenlendiği yer ve tarih.
+b) Yolcunun, 6 ncı maddede sayılan bir kimlik belgesi üzerinden tespit edilen kimlik bilgileri.
+c) Yolcunun mesleği veya iştigal konusu.
+ç) Yolcunun beyan ettiği yerleşim yeri adresi ile gideceği adres ve varsa telefon numarası.
+d) Yolcunun, beraberindeki değerlerin cinsi, miktarı, tutarı, kime ait olduğu konusundaki açıklamaları.
+e) Yolcu beraberindeki değerlerin gümrük görevlilerince tespit edilen cins, miktar ve tutarları itibarıyla ayrıntılı listesi.
+f) Kanunun 16 ncı maddesindeki mükellefiyet bakımından ortaya çıkan duruma ilişkin açıklamalar.
+g) Tutanağın sayfa ve nüsha sayısı.
+ğ) Yolcunun imzası.
+h) Tutanağı düzenleyen görevlinin adı, soyadı, unvanı, sicil numarası ve imzası.
+(3) Tutanaklar ilgili merci ve taraflara verilecek örnekler de dikkate alınarak yeterli sayıda düzenlenir.
+Açıklama yapılmaması veya gerçeğe aykırı açıklama yapılması
+
+MADDE 43- (1) Yetkililerce talep edildiği halde herhangi bir açıklama yapılmaması veya yanlış ya da yanıltıcı açıklama yapılması halinde, yolcu beraberindeki değerlerin nakli durdurulur ve bu değerler gümrük idaresi tarafından muhafaza altına alınır. Ayrıca durum şüpheli sayılarak düzenlenen tutanakla birlikte yedi gün içinde Başkanlığa bildirilmekle birlikte ilgili diğer mercilere de intikal ettirilir.
+(2) Gümrük idaresince, beraberindeki değerler hakkında açıklama yapmayan yolcuya beraberindeki değerin, tutar konusunda gerçeğe aykırı açıklamada bulunan yolcuya beyan ettiği değer ile gerçek değer arasındaki farkın onda biri kadar idari para cezası verilir.
+5352
+(3) Binbeşyüz Türk Lirasına kadar olan farklar için birinci ve ikinci fıkra hükümleri uygulanmaz. (1)
+(4) Gümrük idaresi tarafından talep edilecek açıklamaya ilişkin diğer usul ve esaslar Başkanlığın görüşü alınarak Gümrük ve Ticaret Bakanlığı tarafından belirlenir. (2) Arama
+
+MADDE 44- (1) Beraberindeki değerlerin tespiti için görevlilere gerekli kolaylığı sağlamayan yolcuların üst, eşya ve araçları Adli ve Önleme Aramaları Yönetmeliğine göre kolluk tarafından aranır.
+Başkanlığa yapılacak bildirim
+
+MADDE 45- (1) Gümrük ve Ticaret Bakanlığı, 42 nci madde gereğince düzenlenen tutanaklardaki tespitlerin elektronik ortama kaydedilmesi ve kayıtların muhafazası için gerekli önlemleri alır. Başkanlık, elektronik ortama kaydedilen veriler kullanılarak istatistik hazırlanmasını ve verilerin çeşitli formatlarda Başkanlığa intikal ettirilmesini isteyebilir. (2) SEKİZİNCİ BÖLÜM Muhafaza ve İbraz Muhafaza ve ibraz yükümlülüğü
+
+MADDE 46- (1) Yükümlüler her türlü ortamdaki, yükümlülüklerine ve işlemlerine ilişkin belgeleri düzenleme tarihinden, defter ve kayıtları ise son kayıt tarihinden; kimlik tespitine ilişkin belge ve kayıtları son işlem tarihinden itibaren sekiz yıl süre ile muhafaza etmek ve istenmesi halinde yetkililere ibraz etmek zorundadır. Yükümlü nezdindeki hesaplarla ilgili kimlik tespitine ilişkin belgelerin muhafaza süresinin başlangıç tarihi hesabın kapatıldığı tarihtir.
+(2) Başkanlığa yapılan şüpheli işlem bildirimine veya uyum görevlisine yapılan dâhili bildirimlere yönelik belge ve kayıtlar, bildirime ek yapılan belgeler, uyum görevlilerince bildirimde bulunmama kararı verilen şüpheli işlemlere ilişkin yazılı gerekçeler, muhafaza ve ibraz yükümlülüğü kapsamındadır.
+––––––––––––––––
+(1) 28/12/2009 tarihli ve 2009/15720 sayılı Bakanlar Kurulu Eki Yönetmeliğin 18 inci maddesiyle bu fıkrada yer alan “Yeni Türk Lirasına” ibaresi “Türk Lirasına” olarak değiştirilmiştir.
+(2) 9/5/2014 tarihli ve 2014/6381 sayılı Bakanlar Kurulu Eki Yönetmeliğin 18 ve 19 uncu maddeleriyle bu fıkralarda yer alan “Gümrük Müsteşarlığı” ibareleri “Gümrük ve Ticaret Bakanlığı” şeklinde değiştirilmiştir.
+5352-1 DOKUZUNCU BÖLÜM Diğer Hükümler Merkezi Kayıt Kuruluşu Anonim Şirketi ve Borsa İstanbul Anonim Şirketi (1)
+
+MADDE 47- (Değişik:
+29/2/2016-2016/8566 K.)
+(1) Merkezi Kayıt Kuruluşu Anonim Şirketinin bu Yönetmeliğin Üçüncü ve Dördüncü Bölümündeki hükümler bakımından yükümlülüğü 7/8/2014 tarihli ve 29081 sayılı Resmi Gazetede yayımlanarak yürürlüğe giren Merkezi Kayıt Kuruluşunun Kuruluş, Faaliyet, Çalışma ve Denetim Esasları Hakkında Yönetmelikte belirtilen Merkezi Kayıt Kuruluşu Anonim Şirketinin üyeleriyle sınırlıdır.
+(2) Borsa İstanbul Anonim Şirketinin Kıymetli Madenler ve Kıymetli Taşlar Piyasasındaki saklama hizmetine ilişkin olarak bu Yönetmeliğin Üçüncü ve Dördüncü Bölümündeki hükümler bakımından yükümlülüğü, 21/5/2007 tarihli ve 26528 sayılı Resmi Gazetede yayımlanarak yürürlüğe giren Kıymetli Madenler Borsası Aracı Kuruluşlarının Faaliyet Esasları ile Kıymetli Madenler Aracı Kurumlarının Kuruluşu Hakkında Yönetmelikte tanımlanan kıymetli madenler aracı kuruluşları ile sınırlıdır.
+Döviz kurları
+
+MADDE 48- (1) Yabancı para ve yabancı para cinsinden ödemeyi sağlayan belge tutarlarının Türk Lirası karşılıklarının tespitinde, Türkiye Cumhuriyet Merkez Bankası tarafından ilgili gün için ilan edilen gösterge niteliğindeki döviz alış kuru veya alım satıma konu olmayan bilgi amaçlı döviz kuru esas alınır. (2)(3) Özel kayıtların tutulması
+
+MADDE 49- (1) Bakanlık, yükümlüler için 32 nci maddede belirlenen işlemlerin mahiyeti ve niteliğine göre gerektiğinde özel kayıtların tutulmasına ilişkin usul ve esasları belirlemeye yetkilidir.
+Yürürlükten kaldırılan hükümler
+
+MADDE 50- (1) 3/6/1997 tarihli ve 97/9523 sayılı Bakanlar Kurulu Kararı ile yürürlüğe konulan Karaparanın Aklanmasının Önlenmesine Dair 4208 Sayılı Kanunun Uygulanmasına İlişkin Yönetmelik yürürlükten kaldırılmıştır.
+––––––––––––––––
+(1) Bu madde başlığı “Merkezi Kayıt Kuruluşu” iken, 29/2/2016 tarihli ve 2016/8566 sayılı Bakanlar Kurulu Eki Yönetmeliğin 3 üncü maddesiyle metne işlendiği şekilde değiştirilmiştir.
+(2) 28/12/2009 tarihli ve 2009/15720 sayılı Bakanlar Kurulu Eki Yönetmeliğin 17 nci maddesiyle bu fıkrada yer alan “gösterge niteliğindeki döviz alış kuru” ibaresinden sonra gelmek üzere “veya alım satıma konu olmayan bilgi amaçlı döviz kuru” ibaresi eklenmiş ve metne işlenmiştir.
+(3) 28/12/2009 tarihli ve 2009/15720 sayılı Bakanlar Kurulu Eki Yönetmeliğin 18 inci maddesiyle bu fıkrada yer alan “Yeni Türk Lirası” ibaresi “Türk Lirası” olarak değiştirilmiş ve metne işlenmiştir.
+5352-2 ONUNCU BÖLÜM Geçici ve Son Hükümler
+
+GEÇİCİ MADDE 1- Kanunun 5 inci maddesi gereğince çıkarılacak Yönetmelik yürürlüğe girinceye kadar 3/6/1997 tarihli ve 97/9523 sayılı Bakanlar Kurulu Kararı ile yürürlüğe konulan Karaparanın Aklanmasının Önlenmesine Dair 4208 Sayılı Kanunun Uygulanmasına İlişkin Yönetmeliğin 14/A maddesi, 16 ncı maddesinin ikinci fıkrası ile 16/A maddesinin uygulanmasına devam olunur.
+
+GEÇİCİ MADDE 2- (Değişik: 31/3/2008-2008/13460 K.)
+(1) Yükümlüler, bu Yönetmeliğin yürürlüğe girdiği tarih itibarıyla sürekli iş ilişkisi içinde bulundukları müşterilerinin kimlik tespiti kapsamındaki bilgilerini 31/12/2008 tarihine kadar Yönetmeliğe uygun hale getirir. Bu maddenin uygulanmasında yükümlü grupları itibarıyla yapılacak işlemlerin kapsamı, sürelerin yeniden belirlenmesi, uygulamaya ilişkin diğer usul ve esaslar Bakanlıkça belirlenir.
+
+GEÇİCİ MADDE 3- (Ek: 31/3/2008-2008/13460 K.)
+(1) 1/4/2008 ile 30/6/2008 tarihleri arasında yapılan işlemlere ait olup teyidi zorunlu olan adres ve diğer iletişim bilgilerinin teyidi, 5 inci maddenin üçüncü fıkrasında yazılı süreyle bağlı olunmaksızın, yükümlülerce 31/12/2008 tarihine kadar tamamlanır.
+
+GEÇİCİ MADDE 4- (Ek: 1/6/2010-2010/582 K.)
+(1) 28/12/2009 tarihli ve 2009/15720 sayılı Bakanlar Kurulu Kararıyla yürürlüğe konulan Suç Gelirlerinin Aklanmasının ve Terörün Finansmanının Önlenmesine Dair Tedbirler Hakkında Yönetmelikte Değişiklik Yapılmasına Dair Yönetmeliğin 13 üncü maddesi ile değiştirilen 24 üncü madde hükmü 1/1/2011 tarihinden itibaren uygulanır. Bu tarihe kadar, 24 üncü maddenin değiştirilmeden önceki hükmünün uygulanmasına devam olunur.
+Yürürlük
+
+MADDE 51- (1) Bu Yönetmelik 1/4/2008 tarihinde yürürlüğe girer.
+Yürütme
+
+MADDE 52- (1) Bu Yönetmelik hükümlerini Hazine ve Maliye Bakanı yürütür. (1) ________________________________
+(1) 24/2/2021 tarihli ve 31405 2. Mükerrer sayılı Resmî Gazete’de yayımlanan 3580 sayılı Cumhurbaşkanı Kararının 19 uncu maddesiyle bu fıkrada yer alan “Maliye Bakanı” ibaresi “Hazine ve Maliye Bakanı” şeklinde değiştirilmiştir.
+5353-5355 10/12/2007 TARİH VE 2007/13012 SAYILI BAKANLAR KURULU KARARI İLE YÜRÜRLÜĞE KONULAN YÖNETMELİĞE EK VE DEĞİŞİKLİK GETİREN YÖNETMELİKLERİN YÜRÜRLÜĞE GİRİŞ TARİHLERİNİ GÖSTEREN ÇİZELGE Ek ve Değişiklik Getiren Yönetmeliği Yürürlüğe Koyan Kararnamenin 2007/13012 sayılı Bakanlar Kurulu Kararı Eki Yönetmeliğin Değişen Maddeleri Yürürlüğe Giriş Tarihi Tarihi Numarası 31/3/2008 2008/13460 Geçici Madde 2, Geçici Madde 3 1/4/2008 tarihinden geçerli olmak üzere 15/4/2008 28/12/2009 2009/15720 3, 4, 5, 6, 7, 8, 9, 10, 12, 17, 19, 21, 26, 30, 39, 43, 48 2/1/2010 24 1/6/2010 1/6/2010 2010/582 Geçici Madde 4 1/6/2010 tarihinden geçerli olmak üzere 29/6/2010 9/5/2014 2014/6381 3, 11, 16, 17, 17/A, 26/A, 28, 31, 37/A, 39, 43, 45 10/6/2014 29/2/2016 2016/8566 3, 4, 47 18/3/2016 25/4/2016 2016/8793 6 11/5/2016 30/10/2017 2017/10938 6 14/12/2017 24/2/2021 3580 3, 4, 5, 6, 8, 9, 11, 16, 17/A, 20, 23, 24, 25, 26/A, 35, 37/B, 39, 52 1/5/2021 30/4/2021 3941 4 1/5/2021 15/6/2022 5739 5 16/6/2022 13/1/2023 6702 5, 24 1/2/2023 5/4/2023 7037 6/A 5/4/2023 24/12/2024 9305 3, 4 üncü maddesinin birinci fıkrasının (ş) bendi, 5, 6, 7, 8, 9, 10, 12, 17, 21, 26 25/12/2024 4 üncü maddesinin birinci fıkrasının y bendi, 24/A 25/2/2025 12/2/2026 10945 4 13/2/2026 6/10/2026 11845 5, 16, 24, 24/A, 38 7/10/2026

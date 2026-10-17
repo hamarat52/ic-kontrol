@@ -9,3 +9,19 @@ data/app.db
 data/skills/
 data/model_ayarlari.json
 data/*.tmp
+
+# Telifli açık kaynaklar: yalnız bu kurulumda tutulur, repoya girmez
+app/kaynaklar/metin/bcbs-ic-kontrol-cercevesi-1998.txt
+app/kaynaklar/orijinal/bcbs-ic-kontrol-cercevesi-1998.pdf
+app/kaynaklar/metin/bcbs-kurumsal-yonetim-2015.txt
+app/kaynaklar/orijinal/bcbs-kurumsal-yonetim-2015.pdf
+app/kaynaklar/metin/bcbs-operasyonel-risk-2021.txt
+app/kaynaklar/orijinal/bcbs-operasyonel-risk-2021.pdf
+app/kaynaklar/metin/bcbs-operasyonel-dayaniklilik-2021.txt
+app/kaynaklar/orijinal/bcbs-operasyonel-dayaniklilik-2021.pdf
+app/kaynaklar/metin/bcbs-239-risk-verisi.txt
+app/kaynaklar/orijinal/bcbs-239-risk-verisi.pdf
+app/kaynaklar/metin/bcbs-ic-denetim-2012.txt
+app/kaynaklar/orijinal/bcbs-ic-denetim-2012.pdf
+app/kaynaklar/metin/bcbs-uyum-fonksiyonu-2005.txt
+app/kaynaklar/orijinal/bcbs-uyum-fonksiyonu-2005.pdf

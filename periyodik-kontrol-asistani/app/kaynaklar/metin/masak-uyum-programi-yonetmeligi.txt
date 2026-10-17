@@ -1,0 +1,341 @@
+SUÇ GELİRLERİNİN AKLANMASININ VE TERÖRÜN FİNANSMANININ ÖNLENMESİNE İLİŞKİN YÜKÜMLÜLÜKLERE UYUM PROGRAMI HAKKINDA YÖNETMELİK BİRİNCİ KISIM Amaç, Kapsam, Dayanak ve Tanımlar Amaç ve kapsam
+
+MADDE 1 – (1) Bu Yönetmeliğin amacı, 11/10/2006 tarihli ve 5549 sayılı Suç Gelirlerinin Aklanmasının Önlenmesi Hakkında Kanunun uygulanmasına yönelik olarak; suç gelirlerinin aklanmasının ve terörün finansmanının önlenmesi amacıyla yükümlülerin uyum programı oluşturmaları ve uyum görevlisi atamalarına ilişkin usul ve esasları düzenlemektir.
+Dayanak
+
+MADDE 2 – (1) Bu Yönetmelik, 5549 sayılı Kanunun 5 inci maddesine dayanılarak hazırlanmıştır.
+Tanımlar
+
+MADDE 3 – (1) Bu Yönetmelikte geçen;
+a) (Değişik:RG-26/2/2021-31407) (2) Bakanlık: Hazine ve Maliye Bakanlığını,
+b) Başkanlık: Mali Suçları Araştırma Kurulu Başkanlığını,
+c) Hizmet riski: Yüz yüze yapılmayan işlemler, özel bankacılık, muhabir bankacılık gibi hizmetler veya gelişen teknolojiler kullanılarak sunulacak yeni ürünler kapsamında maruz kalınabilecek riski,
+ç) Kanun: 11/10/2006 tarihli ve 5549 sayılı Suç Gelirlerinin Aklanmasının Önlenmesi Hakkında Kanunu,
+d) Müşteri riski:
+Müşterinin faaliyet gösterdiği iş kolunun, yoğun nakit kullanımı, yüksek değerli malların alım satımı veya uluslararası fon transferlerinin kolayca gerçekleştirilmesine imkân vermesi; müşterinin ya da müşteri adına veya hesabına hareket edenlerin, suç gelirlerinin aklanması veya terörün finansmanı amacıyla hareket etmesi sebebiyle yükümlülerin suistimal edilmesi riskini,
+e) Nitelikli pay: Bir ortaklığın sermayesinin veya oy hakkının doğrudan veya dolaylı olarak yüzde on veya daha fazlasını teşkil eden paylar ile bu oranın altında olsa dahi yönetim kurullarına üye belirleme imtiyazı veren payları,
+f) Risk: Yükümlülerin sundukları hizmetlerden, suç gelirlerinin aklanması veya terörün finansmanı amacıyla yararlanılması ya da yükümlülerin Kanun ve Kanun uyarınca çıkarılan yönetmelik ve tebliğlerle getirilen yükümlülüklere tam olarak uymamaları gibi nedenlerle yükümlülerin ya da yükümlü çalışanlarının maruz kalabilecekleri mali ya da itibari zarar ihtimalini,
+g) Tedbirler Yönetmeliği: 9/1/2008 tarihli ve 26751 sayılı Resmî Gazete’de yayımlanan Suç Gelirlerinin Aklanmasının ve Terörün Finansmanının Önlenmesine Dair Tedbirler Hakkında Yönetmeliği,
+ğ) Uyum birimi: Uyum görevlisine bağlı olarak çalışan ve uyum programının yürütülmesiyle görevli çalışanlardan oluşan birimi,
+h) Uyum görevlisi:
+Kanun ve Kanuna dayanılarak yürürlüğe konulan mevzuatla getirilen yükümlülüklere uyumu sağlamak amacıyla istihdam edilen ve gerekli yetkiyle donatılmış görevliyi,
+ı) Uyum programı: Suç gelirlerinin aklanmasının ve terörün finansmanının önlenmesine yönelik olarak oluşturulacak olan ve 5 inci maddede kapsamı belirlenen tedbirler bütününü,
+i) Ülke riski:
+Yükümlülerin; aklama ve terörün finansmanının önlenmesi konusunda yeterli düzenlemelere sahip olmayan, bu suçlarla mücadele konusunda yeterli düzeyde işbirliği yapmayan veya yetkili uluslararası kuruluşlarca riskli kabul edilen ülkelerden Bakanlıkça duyurulanların, vatandaşları, şirketleri ve mali kuruluşları ile girecekleri iş ilişkileri ve işlemleri sebebiyle maruz kalabilecekleri riski,
+j) (Ek:RG-26/2/2021-31407) (2) Finansal grup: Merkezi Türkiye’de ya da yurt dışında bulunan bir ana kuruluşa bağlı veya bu kuruluşun kontrolünde bulunan Türkiye’de yerleşik finansal kuruluşlar ile bunların şube, acente, temsilci ve ticari vekil ve benzeri bağlı birimlerinden oluşan grubu, ifade eder.
+Finansal grubun mahiyeti
+
+MADDE 3/A – (Ek:RG-26/2/2021-31407) (2)
+(1) Bir ana kuruluş tarafından bir finansal kuruluşun; sermayesinin, asgari yüzde elli birine sahip olma şartı aranmaksızın, çoğunluğuna doğrudan veya dolaylı olarak sahip olunması veya bu çoğunluğa sahip olunmamakla birlikte imtiyazlı hisselerin elde bulundurulması veya diğer hissedarlarla yapılan anlaşmalara istinaden oy hakkının çoğunluğu üzerinde tasarrufta bulunulması suretiyle veya herhangi bir suretle yönetim kurulu üyelerinin karara esas çoğunluğunu atayabilme ya da görevden alma gücünün elde bulundurulması, finansal kuruluşun ana kuruluşa bağlı veya ana kuruluşun kontrolünde bulunduğunu gösterir.
+(2) Birinci fıkraya göre, merkezi Türkiye’de ya da yurt dışında bulunan bir ana kuruluşa bağlı olan veya ana kuruluşun kontrolünde bulunan Türkiye’de yerleşik finansal kuruluşlar ile bunların şube, acente, temsilci ve ticari vekil ve benzeri bağlı birimleri, finansal grubu oluşturur. Ana kuruluşun finansal kuruluş olması halinde kendisi, aksi halde ana kuruluşa bağlı veya bu kuruluşun kontrolünde olan finansal kuruluşlardan biri ana finansal kuruluş olarak belirlenir.
+(3) Finansal grubun ana kuruluşu ile finansal grubu oluşturan ana finansal kuruluşun ve diğer finansal kuruluşların merkezlerine ait unvan, pay sahipliği ve kontrol durumu ile iletişim bilgileri ana finansal kuruluş tarafından, finansal grubun oluşumuna ilişkin koşulların gerçekleştiği tarihten itibaren on gün içinde Başkanlığa bildirilir. Başkanlık ikinci fıkraya göre belirlenen ve Başkanlığa bildirilen ana finansal kuruluş yerine, grupta yer alan bir başka finansal kuruluşu ana finansal kuruluş olarak belirleyebilir.
+(4) Finansal gruba daha sonra katılan veya gruptan çıkan finansal kuruluşlar olması halinde bu durum, değişikliğin meydana geldiği tarihten itibaren otuz gün içinde Başkanlığa bildirilir.
+(5) Türkiye Varlık Fonu, Tasarruf Mevduatı Sigorta Fonu, Vakıflar Genel Müdürlüğü gibi finansal kuruluşlarda ortaklığı bulunan kamusal niteliği haiz kurum ve kuruluşlar, finansal grup oluşumu bakımından ana kuruluş olarak değerlendirilmez. Finansal grubun oluşumunda; yukarıda sayılan kurum ve kuruluşların bünyesindeki finansal kuruluşlar, bağlılık ve kontrol ilişkisi içinde olduğu kuruluşlar bakımından ayrı ayrı değerlendirilir.
+İKİNCİ KISIM Uyum Programı BİRİNCİ BÖLÜM Uyum Programı Oluşturulması Uyum programı oluşturacak yükümlüler
+
+MADDE 4 – (1) Tedbirler Yönetmeliğinin 4 üncü maddesinin birinci fıkrasında sayılan yükümlülerden;
+a) Bankalar (Türkiye Cumhuriyet Merkez Bankası ile (Değişik ibare:RG-22/8/2025-32994 ) İstanbul Takas ve Saklama Bankası A.Ş. hariç),
+b) Sermaye piyasası aracı kurumları,
+c) Sigorta ve emeklilik şirketleri,
+ç) Posta ve Telgraf Teşkilatı (Değişik ibare:RG-26/2/2021-31407) (2) Anonim Şirketi (Bankacılık faaliyetiyle sınırlı olmak üzere),
+d) (Ek:RG-26/2/2021-31407) (2) Kambiyo mevzuatında belirtilen A grubu yetkili müesseseler,
+e) (Ek:RG-26/2/2021-31407) (2) Finansman, faktoring ve finansal kiralama şirketleri,
+f) (Ek:RG-26/2/2021-31407) (2) Portföy yönetim şirketleri,
+g) (Ek:RG-26/2/2021-31407) (2) Kıymetli madenler aracı kuruluşları,
+ğ) (Ek:RG-26/2/2021-31407) (2) Elektronik para kuruluşları,
+h) (Ek:RG-26/2/2021-31407) (2) Ödeme kuruluşları (Münhasıran fatura ödemelerine aracılık hizmeti, münhasıran ödeme emri başlatma hizmeti ve münhasıran ödeme hesabına ilişkin bilgilerin sunulması hizmetini sağlayanlar hariç),
+ı) (Ek:RG-25/12/2024-32763) Kripto varlık hizmet sağlayıcılar, uyum programı oluşturur.
+(2) (Ek:RG-26/2/2021-31407) (2)(3) Finansal grup, grup seviyesinde bir uyum programı oluşturur. Bu durum, gruba bağlı her bir finansal kuruluşun grup seviyesinde belirlenen standart ve politikaları gözeterek ayrı bir uyum programı oluşturma yükümlülüğünü ortadan kaldırmaz.
+(3) Oluşturulan uyum programı, merkezi Türkiye’de bulunan yükümlünün yurt dışındaki şube, acente, temsilci ve ticari vekilleri ile benzeri bağlı birimlerini de faaliyet gösterdikleri ülkenin mevzuatı ve yetkili otoritelerinin izin verdiği ölçüde kapsar. (Ek cümle:RG-26/2/2021-31407) (2) İlgili ülke mevzuatının uyum programı kapsamındaki tedbirlerin uygulanmasına izin vermemesi halinde durum Başkanlığa bildirilir ve ilave tedbirler alınır.
+Uyum programının kapsamı
+
+MADDE 5 – (1) Suç gelirlerinin aklanması ve terörün finansmanının önlenmesi için, Kanun ve Kanun uyarınca çıkarılan yönetmelik ve tebliğlere gerekli uyumun sağlanması amacıyla risk temelli bir yaklaşımla oluşturulacak olan uyum programı aşağıdaki tedbirleri içerir:
+a) Kurum politikası ve prosedürlerinin oluşturulması,
+b) Risk yönetimi faaliyetlerinin yürütülmesi,
+c) İzleme ve kontrol faaliyetlerinin yürütülmesi,
+ç) Uyum görevlisi atanması ve uyum birimi oluşturulması,
+d) Eğitim faaliyetlerinin yürütülmesi,
+e) İç denetim faaliyetlerinin yürütülmesi.
+(2) Uyum programı kapsamındaki risk yönetimi ile izleme ve kontrole ilişkin faaliyetler, yönetim kurulunun gözetim, denetim ve sorumluluğunda, uyum görevlisi tarafından yerine getirilir.
+(3) (Değişik:RG-26/2/2021-31407) (2) Finansal grubun uyum programı, birinci fıkrada belirtilen tedbirlerin yanı sıra müşterinin tanınmasına, hesap ve işlemlere ilişkin bilgilerin grup içinde güvenli bir şekilde paylaşımına ilişkin politika ve prosedürlerin oluşturulmasına dair tedbirleri de içerir. Gruba bağlı finansal kuruluşların uyum programları da finansal grubun uyum programı gözetilerek hazırlanır ve uygulanır.
+(4) (Ek:RG-26/2/2021-31407) (2) Uyum programı kapsamında birinci ve üçüncü fıkralarda yer alan tedbirler asgari iki yılda bir gözden geçirilerek, gerekli güncellemeler yapılır.
+Yönetim kurulunun yetki ve sorumluluğu
+
+MADDE 6 – (1) Uyum programının bütününün, yükümlünün faaliyetlerinin kapsamı ve özelliklerine uygun bir biçimde, yeterli ve etkin bir şekilde yürütülmesinden, nihai olarak yönetim kurulu sorumludur. (Ek cümle:RG-26/2/2021-31407) (2) Uyum programının finansal grup seviyesinde yürütülmesinin gözetiminden ise nihai olarak ana finansal kuruluşun yönetim kurulu sorumludur.
+(2) Yönetim kurulu, birinci fıkra kapsamında; uyum görevlisi (Ek ibare:RG-26/2/2021-31407) (2) ve uyum görevlisi yardımcısı atamak, uyum görevlisinin ve uyum biriminin yetki ve sorumluluklarını açık bir şekilde ve yazılı olarak belirlemek, kurum politikalarını, yıllık eğitim programlarını ve gelişmelere göre bunlarda yapılacak değişiklikleri onaylamak, uyum programı kapsamında yürütülen risk yönetimi, izleme ve kontrol ile iç denetim faaliyetlerinin sonuçlarını değerlendirmek, tespit edilen hata ve eksikliklerin zamanında giderilmesi için gerekli tedbirleri almak ve uyum programı kapsamındaki tüm faaliyetlerin etkin bir şekilde ve koordinasyon içerisinde yürütülmesini sağlamakla yetkili ve sorumludur.
+(3) Yönetim kurulu, ikinci fıkra kapsamındaki yetkilerinin bir kısmını veya tamamını, (Ek ibare:RG-26/2/2021-31407) (2) Türkiye’de mukim bir veya birden fazla yönetim kurulu üyesine (açık bir şekilde ve yazılı olarak) devredebilir. Söz konusu yetki devrinin yapılması, yönetim kurulunun bu konudaki sorumluluğunu ortadan kaldırmaz.
+İKİNCİ BÖLÜM Kurum Politikası ve Prosedürleri Kurum politikası
+
+MADDE 7 – (1) Yükümlüler, uyum programı kapsamında, işletme büyüklüklerini, iş hacimlerini ve gerçekleştirdikleri işlemlerin niteliğini gözeterek, bir kurum politikası oluştururlar. (Değişik cümle:RG-26/2/2021-31407) (2) Kurum politikası asgari düzeyde; risk yönetimi, izleme ve kontrol, eğitim ve iç denetim politikalarını, finansal gruplarda ise ayrıca grup içi bilgi paylaşımına ilişkin politikaları içerir. (Ek cümle:RG-26/2/2021-31407) (2) Kurum politikasının oluşturulmasında ulusal risk değerlendirmesi kapsamında belirlenen hususlar da dikkate alınır. (Ek cümleler:RG-25/12/2024-32763) (4) Kurum politikası, 7/2/2013 tarihli ve 6415 sayılı Terörizmin Finansmanının Önlenmesi Hakkında Kanun ile 27/12/2020 tarihli ve 7262 sayılı Kitle İmha Silahlarının Yayılmasının Finansmanının Önlenmesine İlişkin Kanun kapsamında malvarlığının dondurulması kararlarının ihlali, uygulanmaması ve bunlardan kaçınılması risklerine yönelik olarak riskin tanımlanması, değerlendirilmesi, izlenmesi ve azaltılmasına yönelik çalışmalar ile söz konusu yaptırımların uygulanmasına yönelik gelişmiş kontrolleri de kapsar. Kurum politikası kapsamındaki izleme ve kontrol faaliyetlerinde malvarlığının dondurulması kararları ve potansiyel eşleşme kriterleri dikkate alınarak müşterilerin ve işlemlerin devamlı olarak izlenmesine yönelik tedbirler alınır.
+Bu kapsamda elektronik transfer ile kripto varlık transfer mesajlarında yer alan gönderici ve alıcı bilgileri de ayrıca dikkate alınır.
+(2) Kurum politikasının amacı; yükümlünün, suç gelirlerinin aklanmasının ve terörün finansmanının önlenmesine ilişkin yükümlülüklere uyumunu sağlamaya ve müşterilerinin, işlemlerinin ve hizmetlerinin risk temelli bir yaklaşımla değerlendirilerek, maruz kalabileceği riskin azaltılmasına yönelik stratejilerin, kurum içi kontrol ve önlemlerin, işleyiş kurallarının ve sorumlulukların belirlenmesi ile kurum çalışanlarının bu konularda bilinçlendirilmesidir.
+Kurum prosedürleri
+
+MADDE 8 – (1) Kurum politikası kapsamında belirlenen tüm önlem ve işleyiş kurallarından kimlerin sorumlu olduğu, belirli risk limitlerine göre işlemlerin onaylanması, gerçekleştirilmesi, raporlanması ve izlenmesinden kimlerin veya hangi birimlerin sorumlu olacağı gibi hususlar açık şekilde prosedüre bağlanır.
+(2) Prosedürlerin belirlenmesinde, yükümlünün işlemlerinin ve iş akışlarının risklere göre izlenmesi, kontrol edilmesi ve denetlenmesinde görev alacak personelin, aynı zamanda bu işlemleri gerçekleştiren personel olmamasını sağlayacak şekilde görev ve yetkilendirme yapılır.
+Kurum politika ve prosedürlerinin oluşturulması
+
+MADDE 9 – (1) Kurum politika ve prosedürleri; Kanun ve Kanun uyarınca çıkarılan yönetmelik ve tebliğlere uygun olacak şekilde, mümkün olduğunca yükümlü nezdindeki (Ek ibare:RG-26/2/2021-31407) (2) finansal grupta grup nezdindeki, ilgili tüm birimlerin katılımının sağlanmasıyla ve uyum görevlisinin gözetim ve koordinasyonunda, yazılı bir şekilde oluşturulur.
+(2) Kurum politika ve prosedürleri oluşturulurken, Kanun ve Kanun uyarınca çıkarılan yönetmelik ve tebliğlere aykırı olmamak şartıyla diğer ulusal ve uluslararası kuruluşlarca getirilen tavsiye, ilke, standart ve rehberlerden de faydalanılabilir.
+(3) (Değişik:RG-26/2/2021-31407) (2) Yükümlüler faaliyet izninin alınmasını müteakip, uyum görevlisinin atandığı tarihten itibaren en geç otuz gün içinde kurum politikasını oluşturur.
+Finansal grup ise, uyum görevlisinin atandığı tarihten itibaren en geç otuz gün içinde kurum politikası oluşturur. Kurum politikası aynı süre içinde yönetim kurulu tarafından onaylanır.
+(4) (Ek:RG-26/2/2021-31407) (2) Yükümlüler ve finansal grup, ilgili personelini kurum politikaları hakkında bilgilendirir.
+(5) (Ek:RG-26/2/2021-31407) (2) Kurum politikasının Başkanlık veya denetim elemanlarınca talep edildiğinde ibrazı zorunludur.
+Kurum politikası taahhüt formu
+
+MADDE 10 – (Başlığı ile Birlikte Değişik:RG-26/2/2021-31407) (2)
+(1) Kurum politikasına ilişkin Ek-1/A ve Ek-1/B’de yer alan taahhüt formları yönetim kurulu veya yetkisini devrettiği yönetim kurulu üye veya üyeleri tarafından imzalanarak, kurum politikasının onay tarihinden itibaren otuz gün içinde Başkanlığa gönderilir.
+(2) Kurum politikasının değişmesi halinde otuz gün içinde Ek-1/A ve Ek-1/B’de yer alan taahhüt formları yeniden düzenlenerek Başkanlığa gönderilir.
+(3) Başkanlık kurum politikalarına ilişkin taahhüt formlarının içeriğini değiştirmeye yetkilidir.
+Taahhüt formlarında yapılan değişiklikler Başkanlığın resmi internet sitesi vasıtasıyla duyurulur.
+ÜÇÜNCÜ BÖLÜM Risk Yönetimi Risk yönetimi politikası
+
+MADDE 11 – (1) Yükümlüler, kurum politikası kapsamında, işletme büyüklüklerini, iş hacimlerini ve gerçekleştirdikleri işlemlerin niteliğini gözeterek risk yönetim politikası oluştururlar. Risk yönetim politikasının amacı; yükümlünün maruz kalabileceği risklerin tanımlanması, derecelendirilmesi, izlenmesi, değerlendirilmesi ve azaltılmasını sağlamaktır.
+(2) Risk yönetimi politikası asgari düzeyde; Tedbirler Yönetmeliğinin "Müşterinin Tanınmasına İlişkin Esaslar" başlıklı üçüncü bölümünde yer alan tedbirlere ilişkin kurum içi önlem ve işleyiş kurallarını kapsar.
+Risk yönetimi faaliyetleri
+
+MADDE 12 – (1) Risk yönetimine ilişkin faaliyetler asgari düzeyde;
+a) Müşteri riski, hizmet riski ve ülke riskini esas alan risk tanımlama, derecelendirme, sınıflandırma ve değerlendirme yöntemlerinin geliştirilmesi,
+b) Hizmetlerin, işlemlerin ve müşterilerin risklere göre derecelendirilmesi ve sınıflandırılması,
+c) Riskli müşteri, işlem veya hizmetlerin izlenmesinin ve kontrol edilmesinin sağlanması (Ek ibare:RG-26/2/2021-31407) (2) , risklerin azaltılması için gerekli tedbirlerin alınması ; ilgili birimleri uyaracak şekilde rapor edilmesi; işlemin üst makamın onayı ile gerçekleştirilmesi ve gerektiğinde denetlenmesi için uygun işleyiş ve kontrol kurallarının geliştirilmesi,
+ç) Risk tanımlama ve değerlendirme yöntemlerinin, risk derecelendirmesi ve sınıflandırma yöntemlerinin, örnek olaylar ya da gerçekleşen işlemler üzerinden geriye dönük olarak tutarlılıklarının ve etkinliklerinin sorgulanması, varılan sonuçlara ve gelişen koşullara göre yeniden değerlendirilmesi ve güncellenmesi,
+d) Risk kapsamına giren konulara ilişkin ulusal mevzuat ve uluslararası kuruluşlarca getirilen tavsiye, ilke, standart ve rehberlerin takip edilerek gerekli geliştirme çalışmalarının yapılması,
+e) Risk izleme ve değerlendirme sonuçlarının düzenli aralıklarla yönetim kuruluna raporlanması, faaliyetlerini kapsar.
+Yüksek derecede riskli gruplara yönelik ilave tedbirler
+
+MADDE 13 – (Değişik:RG-11/6/2014-29027)
+(1) Yükümlüler, risk derecelendirmesi neticesinde yüksek riskli olarak belirledikleri gruplara yönelik olarak üstlenilecek riskin azaltılmasını teminen, tespit edilen riskle orantılı olarak aşağıda belirtilen tedbirlerin bir veya birden fazlasını ya da tamamını uygular;
+a) Müşteri hakkında ilave bilgi edinmek ve müşteri ile gerçek faydalanıcının kimlik bilgilerini daha sık güncellemek,
+b) İş ilişkisinin mahiyeti hakkında ilave bilgi edinmek,
+c) İşleme konu malvarlığının ve müşteriye ait fonların kaynağı hakkında mümkün olduğu ölçüde bilgi edinmek,
+ç) İşlemin amacı hakkında bilgi edinmek,
+d) İş ilişkisine girilmesini, mevcut iş ilişkisinin sürdürülmesini ya da işlemin gerçekleştirilmesini üst seviyedeki görevlinin onayına bağlamak,
+e) Uygulanan kontrollerin sayı ve sıklığını artırmak ve ilave kontrol gerektiren işlem türlerini belirlemek suretiyle iş ilişkisini sıkı gözetim altında tutmak,
+f) Sürekli iş ilişkisi tesisinde ilk finansal hareketin, müşterinin tanınmasına ilişkin esasların uygulandığı bir başka finansal kuruluştan yapılmasını zorunlu tutmak.
+(2) (Ek:RG-25/12/2024-32763) (4)(5) Finansal kuruluşların kripto varlık hizmet sağlayıcılarla iş ilişkisi tesisinde, kripto varlık hizmet sağlayıcılarının ise müşterileriyle iş ilişkisi tesisi ve kimlik tespiti gerektiren diğer işlemlerinde asgari olarak birinci fıkranın (c), (ç) ve (e) bentlerinde yer alan tedbirler uygulanır, ayrıca tutar ve işlem sayısı sınırı belirlemeye yönelik uygun tedbirler alınır. Finansal kuruluşlar tarafından kripto varlık hizmet sağlayıcılarla iş ilişkisi tesisi üst seviyedeki görevlinin onayına bağlanır.
+(3) (Ek:RG-25/12/2024-32763) (4)(5) 20/6/2013 tarihli ve 6493 sayılı Ödeme ve Menkul Kıymet Mutabakat Sistemleri, Ödeme Hizmetleri ve Elektronik Para Kuruluşları Hakkında Kanunun 12 nci maddesinin birinci fıkrasının (a) ve (b) bentleri ile (c) bendinde yer alan ödeme aracının kabulü hizmeti kapsamında temin edilen terminal aracılığıyla gerçekleştirilen ödeme hizmetinde (terminal hizmeti), müşteriyle (üye işyeri) iş ilişkisi tesisi ve kimlik tespiti gerektiren diğer işlemlerde asgari olarak birinci fıkranın (a) ila (f) bentlerinde yer alan tedbirler uygulanır. Birinci fıkranın (f) bendinde yer alan tedbir bankalar tarafından uygulanmayabilir. Söz konusu terminallerin iş ilişkisinin amacına uygun olarak kullanıldığı veya ilgili mevzuatında izin verilen haller dışında başka kişilere kullandırılmadığı düzenli olarak kontrol edilir; bu kapsamda herhangi bir aykırılığın tespiti halinde iş ilişkisine son verilmesi de dahil olmak üzere gerekli tedbirler alınır.
+(4) Bakanlık, bu madde kapsamında dikkate alınacak yüksek riskli durumlar ile birinci fıkrada sayılanlar dışında ayrıca sıkılaştırılmış tedbirler belirlemeye yetkilidir.
+DÖRDÜNCÜ BÖLÜM İzleme ve Kontrol İzleme ve kontrol
+
+MADDE 14 – (1) Yükümlüler, kurum politikası kapsamında, işletme büyüklüklerini, iş hacimlerini ve gerçekleştirdikleri işlemlerin niteliğini gözeterek, izleme ve kontrol faaliyetleri yürütürler.
+(2) İzleme ve kontrolün amacı; yükümlülerin risklerden korunması ve faaliyetlerinin Kanuna ve Kanun uyarınca çıkarılan yönetmelik ve tebliğlerle, kurum politika ve prosedürlerine uygun olarak yürütülüp yürütülmediğinin sürekli olarak izlenmesi ve kontrol edilmesidir.
+İzleme ve kontrol faaliyetleri
+
+MADDE 15 – (1) İzleme ve kontrol faaliyetleri kapsamında; Kanun uyarınca getirilen yükümlülüklere uyumun sağlanmasıyla ilgili olarak yapılan kontroller neticesinde tespit edilen eksiklikler, gerekli tedbirlerin alınması için ilgili birimlere raporlanarak sonuçları takip edilir.
+(2) İzleme ve kontrol faaliyetleri çerçevesinde yükümlüler, bu faaliyetleri yürütecek personelin kurum içi bilgi kaynaklarına ulaşmasını temin etmek zorundadır.
+(3) İzleme ve kontrol faaliyetleri asgari düzeyde;
+a) Yüksek risk grubundaki müşteri ve işlemlerin izlenmesi ve kontrolü,
+b) Riskli ülkelerle gerçekleştirilen işlemlerin izlenmesi ve kontrolü,
+c) Karmaşık ve olağandışı işlemlerin izlenmesi ve kontrolü,
+ç) Yükümlünün, risk politikasına göre belirleyeceği bir tutarın üzerindeki işlemlerin, müşteri profili ile uyumlu olup olmadığının örnekleme yöntemi ile kontrolü,
+d) Birlikte ele alındıklarında, kimlik tespiti yapılmasını gerektiren tutarı aşan bağlantılı işlemlerin izlenmesi ve kontrolü,
+e) Müşteriler hakkında elektronik ortamda yahut yazılı olarak muhafaza edilmesi gereken bilgi ve belgeler ile elektronik transfer mesajlarında yer verilmesi zorunlu bilgilerin kontrolü ve eksikliklerin tamamlatılması ve bunların güncellenmesi,
+f) Müşteri tarafından yürütülen işlemin; müşterinin, işine, risk profiline ve fon kaynaklarına dair bilgiler ile uyumlu olup olmadığının iş ilişkisi süresince devamlı olarak izlenmesi,
+g) Yüz yüze olmayan işlemler yapılmasını mümkün kılan sistemler kullanılarak gerçekleştirilen işlemlerin kontrolü,
+ğ) Yeni sunulan ürünler ve teknolojik gelişmeler nedeniyle suistimale açık hale gelebilecek hizmetlerin risk odaklı kontrolü, faaliyetlerini kapsar.
+BEŞİNCİ BÖLÜM Uyum Görevlisi ve Uyum Birimi Uyum görevlisi ve uyum görevlisi yardımcısı atanması
+
+MADDE 16 – (Başlığı ile Birlikte Değişik:RG-26/2/2021-31407) (2)
+(1) Yükümlüler, faaliyet izninin alınmasını müteakip otuz gün içinde uyum programının yürütülmesi amacıyla uyum görevlisi atarlar.
+(2) Uyum görevlisi, yönetim kuruluna veya yönetim kurulunun yetkisini devrettiği bir veya birden fazla üyeye bağlı olacak şekilde, münhasıran kurum personeli olarak atanır.
+Uyum görevlisinin uhdesinde satış ve pazarlamayla ilgili olmamak şartıyla, uyum programının yürütülmesini aksatmayacak diğer görevler bulunabilir.
+(3) Yükümlüler, uyum programının yürütülmesi amacıyla uyum görevlisi için aranan şartları ve nitelikleri taşıyan (Ek ibare:RG-25/12/2024-32763) en az bir uyum görevlisi yardımcısı atarlar. Uyum görevlisi yardımcısı, uyum görevlisine bağlı olacak şekilde münhasıran kurum personeli olarak atanır. Uyum görevlisi yardımcısı, uyum görevlisiyle aynı süre ve usulde atanır. (Ek cümle:RG-25/12/2024-32763) Birden fazla uyum görevlisi yardımcısı atanacağı durumlarda, süre şartı ilk uyum görevlisi yardımcısının atanmasında aranır.
+(4) Uyum görevlisi ve uyum görevlisi yardımcısına ilişkin Ek-2’de yer alan taahhüt formu yönetim kurulu veya yetkisini devrettiği yönetim kurulu üye veya üyeleri tarafından imzalanarak, atanma tarihinden itibaren en geç on gün içerisinde Başkanlığa gönderilir.
+(5) Uyum görevlisi, 19 uncu madde kapsamındaki görev ve yetkilerinin bir kısmını veya tamamını, açık bir şekilde ve yazılı olarak uyum görevlisi yardımcısına devredebilir. Söz konusu görev ve yetki devrinin yapılması, uyum görevlisinin bu konudaki sorumluluğunu ortadan kaldırmaz.
+(6) Başkanlık uyum görevlisi ve uyum görevlisi yardımcısına ilişkin taahhüt formunun içeriğini değiştirmeye yetkilidir. Taahhüt formlarında yapılan değişiklikler Başkanlığın resmi internet sitesi vasıtasıyla duyurulur.
+Uyum görevlisi olarak atanacaklarda aranan şartlar
+
+MADDE 17 – (1) 16 ncı madde uyarınca uyum görevlisi olarak atanacak kişilerde aşağıdaki şartlar aranır:
+a) T.C. vatandaşı olmak,
+b) Kamu haklarından mahrum bulunmamak,
+c) Taksirli suçlar hariç olmak üzere affa uğramış olsalar bile mülga 765 sayılı Türk Ceza Kanunu ve diğer kanunlar uyarınca ağır hapis veya beş yıldan fazla hapis, 5237 sayılı Türk Ceza Kanunu ve diğer kanunlar uyarınca üç yıldan fazla hapis cezasıyla cezalandırılmamış olmak veya mülga 3182 sayılı Bankalar Kanunu ve 4389 sayılı Bankalar Kanunu ile 5411 sayılı Bankacılık Kanununun ve (Değişik ibare:RG-25/12/2024-32763) mülga 2499 sayılı Sermaye Piyasası Kanunu ile 6/12/2012 tarihli ve 6362 sayılı Sermaye Piyasası Kanununun ve ödünç para verme işleri hakkında mevzuatın hapis cezası gerektiren hükümlerine muhalefet yahut mülga 765 sayılı Türk Ceza Kanunu, 5237 sayılı Türk Ceza Kanunu veya diğer kanunlar uyarınca basit veya nitelikli zimmet, zimmet, ihtilas, irtikâp, rüşvet, hırsızlık, dolandırıcılık, sahtecilik, inancı kötüye kullanma, dolanlı iflas gibi yüz kızartıcı suçlar ile istimal ve istihlâk kaçakçılığı dışında kalan kaçakçılık suçları, resmî ihale ve alım satımlara fesat karıştırma veya Devletin şahsiyetine karşı işlenen suçlar ile Devlet sırlarını açığa vurma, Devletin egemenlik alametlerine ve organlarının saygınlığına karşı suçlar, Devletin güvenliğine karşı suçlar, Anayasal düzene ve bu düzenin işleyişine karşı suçlar, milli savunmaya karşı suçlar, Devlet sırlarına karşı suçlar ve casusluk, yabancı devletlerle olan ilişkilere karşı suçlar, vergi kaçakçılığı, suçtan kaynaklanan malvarlığı değerlerini aklama ve terörün finansmanı suçlarından veya bu suçlara iştirakten hüküm giymemiş olmak,
+ç) Türkiye'de (veya denkliği Yüksek Öğretim Kurulu'nca tanınmış yurt dışında) en az dört yıllık eğitim veren yüksek öğretim kurumlarından mezun olmak,
+d) 4 üncü maddenin birinci fıkrasında sayılan finansal kuruluşlardan (Türkiye Cumhuriyet Merkez Bankası ile kalkınma ve yatırım bankaları dahil) herhangi birisi nezdinde idareci, uzman veya denetim görevlerinde veya Kanunun 2 nci maddesinin birinci fıkrasının (e) bendinde sayılan denetim elemanlığı görevlerinde ya da Başkanlık nezdinde idareci (Değişik ibare:RG-25/12/2024-32763) veya Hazine ve Maliye Uzmanı görevlerinde en az beş yıl süreyle çalışmış olmak,
+e) (Ek:RG-25/12/2024-32763) (6) Uyum görevlisi olarak yetkilendirilmiş ve Başkanlıkça tutulan uyum görevlisi siciline kayıtlı olmak,
+f) Yükümlü nezdinde veya yükümlünün iştiraklerinde nitelikli pay sahibi olmamak veya yönetiminde bulunmamak,
+g) Yükümlünün nitelikli pay sahibi ortağının, yönetim kurulu üyelerinin veya genel müdürünün eşi veya ikinci dereceye kadar (bu derece dahil) kan veya sıhrî hısmı olmamak.
+(2) (Ek:RG-25/12/2024-32763) (7) Başkanlıkta; idareci olarak fiilen dört yıl veya yardımcılıkta geçen süre dahil Hazine ve Maliye Uzmanlığı görevlerinde fiilen on iki yıl veya denetim elemanlarından fiilen on iki yıl süreyle çalışmış olanlar uyum görevlisi olarak yetkilendirilir. Bu fıkra uyarınca yetkilendirileceklerde bu maddede belirtilenler dışında başkaca şart aranmaz. (Ek cümle:RG-22/8/2025-32994) (7) Ancak bu kişiler, atamanın yapılacağı tarihten önceki iki yılda haklarında inceleme veya yükümlülük denetimi yaptıkları yükümlüler nezdinde uyum görevlisi veya yardımcısı olarak atanamazlar.
+Uyum birimi
+
+MADDE 18 – (1) Yönetim Kurulu, uyum görevlisinin bu Yönetmelikle getirilen görev ve sorumluluklarını etkin bir şekilde yerine getirebilmesini sağlamak amacıyla yükümlünün, işletme büyüklüğü, işlem hacmi, şube ve personel sayısı ya da karşılaşabileceği risklerin yüksekliği gibi unsurları göz önünde bulundurarak uyum görevlisine doğrudan bağlı olan ve uyum programının yürütülmesiyle görevli uyum biriminin oluşmasını ve uyum birimine yeterli personel ve kaynak tahsisi yapılmasını sağlar.
+(2) Uyum biriminde çalışacak personel, şüpheli işlemlere konu teşkil edebilecek dahili bildirimlerin Kanun ve Kanun uyarınca çıkarılan yönetmelik ve tebliğler ile diğer bilgiler ışığında değerlendirilmesi sürecinde görev alabilir, ancak işlemin şüpheli işlem olarak Başkanlığa bildirilip bildirilmemesine karar veremez ya da Başkanlığa doğrudan şüpheli işlem bildiriminde bulunamaz. Şüpheli işlem kapsamında uyum görevlisine yapılan dahili bildirimler de gizlilik kapsamında olduğundan, personelin bu yükümlülüğü ihlal etmeyecek şekilde çalışması için gereken tedbirler yönetim kurulu ve uyum görevlisi tarafından alınır.
+Uyum görevlisinin görev, yetki ve sorumlulukları
+
+MADDE 19 – (1) 16 ncı madde uyarınca atanacak uyum görevlilerinin görev ve sorumlulukları şunlardır:
+a) Yükümlünün Kanun ve Kanun uyarınca çıkarılan düzenlemelere uyumunu sağlamak amacıyla gerekli çalışmaları yapmak ve Başkanlıkla gerekli iletişim ve koordinasyonu sağlamak,
+b) Kurum politikası ve prosedürlerini oluşturmak ve kurum politikalarını yönetim kurulunun onayına sunmak,
+c) Risk yönetimi politikasını oluşturmak, risk yönetimi faaliyetlerini yürütmek,
+ç) İzleme ve kontrol politikalarını oluşturmak ve buna ilişkin faaliyetleri yürütmek,
+d) Suç gelirlerinin aklanmasının ve terörün finansmanının önlenmesine yönelik eğitim programına ilişkin çalışmalarını yönetim kurulunun onayına sunmak ve onaylanan eğitim programının etkin bir şekilde uygulanmasını sağlamak,
+e) Kendisine iletilen veya resen öğrendiği şüpheli olabilecek işlemler hakkında yetki ve imkânları ölçüsünde araştırma yaparak edindiği bilgi ve bulguları değerlendirmek ve şüpheli olduğuna karar verdiği işlemleri Başkanlığa bildirmek,
+f) Bildirimlerin ve ilgili diğer hususların gizliliğinin sağlanmasına yönelik gerekli tedbirleri almak,
+g) İç denetim ve eğitim faaliyetlerine ilişkin bilgi ve istatistikleri düzenli olarak tutmak ve bunları Yönetmelikte belirtilen sürelerde Başkanlığa göndermek.
+(2) Başkanlıkla gerekli iletişim ve koordinasyonun sağlanması kapsamında; yükümlülerin Başkanlığa bilgi ve belge verme yükümlülüğü, uyum görevlisi vasıtasıyla yerine getirilir. Kendisinden bilgi ve belge istenilen yükümlü, söz konusu bilgi ve belgeleri Başkanlıkça belirlenen ve kendisine bildirilen biçim ve yönteme uygun olarak vermek zorundadır.
+(3) Uyum görevlisi, görev ve sorumluluklarını yerine getirirken iyi niyetli, makul ve dürüst bir şekilde, tarafsız ve bağımsız bir irade ile hareket etmek zorundadır.
+(4) Yönetim kurulu, uyum görevlisinin bağımsız bir irade ile karar verebilecek, yükümlü bünyesindeki tüm birimlerden kendi görev alanı ile ilgili her türlü bilgi ve belgeyi talep edebilecek ve bunlara zamanında erişebilecek yetkiyi haiz olmasını sağlar.
+Uyum görevlisinin ve uyum görevlisi yardımcısının görevinden ayrılması
+
+MADDE 20 – (Başlığı ile Birlikte Değişik:RG-26/2/2021-31407) (2)
+(1) Uyum görevlisinin veya yardımcısının bu Yönetmelik ile aranan şartları kaybetmesi veya bu şartları haiz olmadığının sonradan anlaşılması (Ek ibare:RG-22/8/2025-32994 ) , görevinden alınması veya görevinden ayrılması halinde, durum yükümlü tarafından (Ek ibare:RG-22/8/2025-32994 ) nedenleri ile birlikte, ayrılış tarihinden itibaren on gün içinde Başkanlığa yazılı olarak bildirilir (Mülga ibare:RG-25/12/2024-32763) . (Ek cümle:RG-22/8/2025-32994 ) Uyum görevlisi ve yardımcısı da görevinden alınması veya görevinden ayrılması halinde durumu, nedenleri ile birlikte, ayrılış tarihinden itibaren on gün içinde Başkanlığa yazılı olarak bildirir. (Ek cümle:RG-25/12/2024-32763) Uyum görevlisi ve 16 ncı maddesinin üçüncü fıkrasının birinci cümlesi kapsamında gerekmesi halinde uyum görevlisi yardımcısı için yeni atama, ayrılış tarihinden itibaren en geç otuz gün içinde yapılır. Atamaya ilişkin Ek-2’de yer alan taahhüt formu yönetim kurulu veya yetkisini devrettiği yönetim kurulu üye veya üyeleri tarafından imzalanarak, atanma tarihinden itibaren on gün içinde Başkanlığa gönderilir.
+(2) Uyum görevlisi birinci fıkra kapsamında yeniden atanana kadar (Ek ibare:RG-25/12/2024-32763) veya uyum görevlisinin izin, hastalık ve benzeri nedenlerle geçici olarak görevden ayrılması halinde , yerine (Ek ibare:RG-25/12/2024-32763) bir uyum görevlisi yardımcısı vekalet eder.
+Finansal grup uyum görevlisi atanması ve uyum birimi
+
+MADDE 20/A – (Ek:RG-26/2/2021-31407) (2)
+(1) Finansal grup, grup seviyesinde uyum programının yürütülmesi amacıyla ana finansal kuruluşun uyum görevlisini, finansal grup uyum görevlisi olarak belirler. Ana finansal kuruluşun uyum görevlisi yardımcısı ise finansal grup uyum görevlisi yardımcısı olarak belirlenir. Finansal grup uyum görevlisi ve yardımcısı, ana finansal kuruluşun yönetim kuruluna veya yönetim kurulunun yetkisini devrettiği bir veya birden fazla üyeye bağlı olacak şekilde atanır ve atamaya ilişkin olarak 16 ncı maddenin üç ila beşinci fıkraları uygulanır.
+(2) Finansal grup uyum görevlisinin görev ve sorumlulukları şunlardır:
+a) Finansal grubun Kanun ve Kanun uyarınca çıkarılan düzenlemelere grup seviyesinde uyumunu sağlamak amacıyla gerekli çalışmaları yapmak ve Başkanlıkla gerekli iletişim ve koordinasyonu sağlamak.
+b) Finansal grubun politika ve prosedürlerini oluşturmak ve grubun politikalarını yönetim kurulunun onayına sunmak.
+c) Finansal grubun risk yönetimi politikasını oluşturmak, risk yönetimi faaliyetlerini yürütmek.
+ç) Finansal grubun izleme ve kontrol politikalarını oluşturmak ve buna ilişkin faaliyetleri yürütmek.
+d) Risk yönetimi, izleme ve kontrol faaliyetleri sonucunda riskli olduğu değerlendirilen hususları grup bünyesindeki ilgili finansal kuruluşla paylaşmak.
+e) Finansal grubun bilgi paylaşım politikasını oluşturmak ve bu bilgilerin grup içinde güvenli bir şekilde paylaşımına ilişkin gerekli tedbirleri almak.
+f) Suç gelirlerinin aklanmasının ve terörün finansmanının önlenmesine yönelik olarak gruba bağlı finansal kuruluşların eğitim programına ilişkin çalışmaları koordine etmek ve eğitim programlarının etkin bir şekilde uygulanmasını gözetmek.
+(3) Ana finansal kuruluşun uyum birimi, finansal grubun da uyum birimi olarak faaliyet gösterir.
+Ana finansal kuruluşun yönetim kurulu, finansal grup uyum görevlisinin bu Yönetmelikle getirilen görev ve sorumluluklarını etkin bir şekilde yerine getirebilmesini sağlamak amacıyla grubun finansal büyüklüğü, işlem hacmi, şube ve personel sayısı ya da karşılaşabileceği risklerin yüksekliği gibi unsurları göz önünde bulundurarak uyum birimine yeterli personel ve kaynak tahsisi yapılmasını sağlar.
+Finansal grup içi bilgi paylaşımı
+
+MADDE 20/B – (Ek:RG-26/2/2021-31407) (2)
+(1) Gruba bağlı kuruluşlar, uyum programı kapsamındaki tedbirlerin grup seviyesinde alınmasını teminen müşterinin tanınması ile hesap ve işlemlere ilişkin olarak bilgi paylaşımında bulunabilir. Özel kanunlarda yazılı gizlilik hükümleri grup içi bilgi paylaşımında uygulanmaz.
+(2) Gruba bağlı kuruluşlarda görev yapanlar birinci fıkra kapsamında öğrendikleri bilgileri ifşa edemezler ve kendilerinin veya üçüncü şahısların yararına kullanamazlar.
+Bu kapsamda gizli kalması gereken bilgileri ifşa edenler hakkında ilgili kanunlardaki yaptırımlar uygulanır.
+(3) Bilgilerin grup içinde güvenli bir şekilde paylaşılması için gereken tedbirlerin alınmasında finansal grup uyum görevlisi ile birlikte ana finansal kuruluşun yönetim kurulu da sorumludur. Söz konusu sorumluluk gruba bağlı finansal kuruluşların uyum görevlileri ile bu kuruluşların yönetim kurulları için de geçerlidir.
+(4) Gruba bağlı finansal kuruluşlar, şüpheli işlem bildiriminde bulunulduğuna ilişkin bilgi paylaşımında bulunamazlar.
+ALTINCI BÖLÜM Eğitim Eğitim politikası
+
+MADDE 21 – (1) Yükümlüler, kurum politikası kapsamında, eğitim faaliyetlerinin işleyişi, gerçekleştirilmesinden kimlerin sorumlu olacağı, eğitim faaliyetlerine katılacak personelin ve eğiticilerin belirlenmesi, yetiştirilmesi ve eğitim yöntemleri gibi hususları içerecek bir eğitim politikası oluştururlar.
+(2) Eğitim politikasının amacı, Kanun ve Kanun uyarınca çıkarılan yönetmelik ve tebliğlerle getirilen yükümlülüklere uyumun sağlanması, personelin kurum politikası ve prosedürleri ile risk temelli yaklaşım konularında sorumluluk bilincinin artırılarak bir kurum kültürü oluşturulması ve personelin bilgilerinin güncellenmesidir.
+(3) (Ek:RG-26/2/2021-31407) (2) Finansal grubun eğitim politikası; asgari olarak finansal grup seviyesinde kurum politikası ve prosedürlerinin oluşturulması, risk yönetimi, izleme ve kontrol faaliyetlerinin yürütülmesi ile grup içi bilgi paylaşımına ilişkin konuları içerecek şekilde hazırlanır ve eğitim konuları bu kapsamda belirlenir.
+Eğitim faaliyetleri
+
+MADDE 22 – (1) Yükümlüler, suç gelirlerinin aklanmasının ve terörün finansmanının önlenmesi amacıyla işletme büyüklüklerine, iş hacimlerine ve değişen koşullara uyumlu olacak şekilde eğitim faaliyetleri yürütmek zorundadır.
+(2) Eğitim faaliyetleri uyum görevlisi gözetiminde ve koordinasyonunda yürütülür.
+Yükümlüler eğitim faaliyetlerini, 23 üncü maddede belirtilen konuları içerecek şekilde ve (Değişik ibare:RG-26/2/2021-31407) (2) yıllık eğitim programı dâhilinde yürütürler. Eğitim programı uyum görevlisi tarafından ilgili birimlerin de katılımıyla hazırlanır. Eğitim programının etkin bir şekilde uygulanması uyum görevlisi tarafından gözetilir.
+(3) Eğitim faaliyetleri, ölçme ve değerlendirme sonuçlarına göre ilgili birimlerin de katılımıyla gözden geçirilir ve ihtiyaca göre düzenli aralıklarla tekrarlanır.
+(4) Yükümlüler, eğitim faaliyetlerinin kurum geneline yayılmasını temin edecek şekilde; seminer ve paneller düzenlenmesi, çalışma grupları oluşturulması, eğitim faaliyetlerinde görsel ve işitsel materyallerin kullanılması, internet, intranet veya extranet vb. üzerinden çalışan bilgisayar destekli eğitim programları gibi eğitim yöntemlerinden yararlanırlar.
+Eğitim konuları
+
+MADDE 23 – (1) Yükümlüler tarafından personele verilecek eğitimler asgari düzeyde;
+a) Suç gelirlerinin aklanması ve terörün finansmanı kavramları,
+b) Suç gelirlerinin aklanmasının aşamaları, yöntemleri ve bu konuda örnek olay çalışmaları,
+c) Suç gelirlerinin aklanmasının ve terörün finansmanının önlenmesi ile ilgili mevzuat,
+ç) Risk alanları,
+d) Kurum politikası ve prosedürleri,
+e) Kanun ve ilgili mevzuat çerçevesinde;
+1) Müşterinin tanınmasına ilişkin esaslar, 2) Şüpheli işlem bildirimine ilişkin esaslar, 3) Muhafaza ve ibraz yükümlülüğü, 4) Bilgi ve belge verme yükümlülüğü, 5) Yükümlülüklere uyulmaması halinde uygulanacak müeyyideler,
+f) Aklama ve terörün finansmanı ile mücadele alanında uluslararası düzenlemeler, konularını içerir.
+Eğitim sonuçlarının bildirimi
+
+MADDE 24 – (1) Yükümlüler, uyguladıkları eğitim faaliyetlerine ilişkin;
+a) Eğitim tarihleri,
+b) Eğitim verilen bölge veya iller,
+c) Eğitim yöntemi,
+ç) Toplam eğitim saati,
+d) Eğitim verilen personelin sayısı ve toplam personel sayısına oranı,
+e) Eğitim verilen personelin birim ve unvanlarına göre dağılımı,
+f) Eğitimin içeriği,
+g) Eğiticilerin unvanı ve uzmanlık alanları, ile ilgili bilgi ve istatistikleri, (Değişik ibare:RG-26/2/2021-31407) (2) takip eden yılın Mart ayının sonuna kadar uyum görevlisi vasıtasıyla Başkanlığa bildirirler.
+Başkanlıkça düzenlenecek eğitim faaliyetleri
+
+MADDE 25 – (1) Başkanlık, yükümlü çalışanlarının eğitimi amacıyla, eğitim faaliyetleri düzenlemeye, internet üzerinden çalışan bilgisayar destekli uzaktan eğitim programları oluşturmaya ve yükümlü çalışanlarının bu programlara erişimini sağlayacak tedbirleri almaya yetkilidir.
+(2) Başkanlık ayrıca yükümlüler nezdinde eğitim verecek eğiticilerin eğitilmesine yönelik eğitim programları düzenlemeye, bu programları başarı ile tamamlayanlara eğitici sertifikası vermeye yetkilidir. Yükümlüler, eğitim faaliyetlerinde görev alacak personelin, eğitici sertifikası verilen kimselerden olmasına özen gösterirler.
+YEDİNCİ BÖLÜM İç Denetim İç denetim
+
+MADDE 26 – (1) İç denetimin amacı, uyum programının bütününün etkinliği ve yeterliği hususunda yönetim kuruluna güvence sağlamaktır.
+(2) Yükümlüler, kurum politika ve prosedürlerinin, risk yönetimi, izleme ve kontrol faaliyetleri ile eğitim faaliyetlerinin yeterli ve verimli olup olmadığı, yükümlünün risk politikasının yeterliği ve etkinliği, işlemlerin Kanun ve Kanun uyarınca çıkarılan yönetmelik ve tebliğler ile kurum politika ve prosedürlerine uygun olarak yürütülüp yürütülmediği hususlarının yıllık olarak ve risk temelli bir yaklaşımla incelenmesini ve denetlenmesini sağlarlar.
+(3) (Ek:RG-26/2/2021-31407) (2) Uyum programı kapsamındaki yükümlülerin iç denetim faaliyetleri, iç denetim birimleri ya da teftiş kurulu bulunan yükümlülerde bunlar tarafından yerine getirilir. Finansal grubun iç denetimi ana finansal kuruluşun ilgili birimince gerçekleştirilir. Diğer yükümlülerde iç denetim faaliyetleri, yönetim kurulu tarafından yetkilendirilen kişi ya da birim tarafından yerine getirilir.
+İç denetim faaliyetlerini yürütmek üzere yetkilendirilecek personelin, bağımsız çalışmasını teminen, uyum programı kapsamındaki diğer tedbirlerin yerine getirilmesinde görev ve yetki almamış olması gerekir.
+İç denetim faaliyetleri
+
+MADDE 27 – (1) İç denetim neticesinde ortaya çıkarılan eksiklik, hata ve suistimaller ile bunların yeniden ortaya çıkmasının önlenmesine yönelik görüş ve öneriler yönetim kuruluna raporlanır.
+(2) Denetimin kapsamı belirlenirken, izleme ve kontrol çalışmalarında tespit edilen aksaklıklar ve risk içeren müşteriler, hizmetler ve işlemler denetim kapsamına dahil edilir.
+(3) Denetlenecek birimler ile işlemler belirlenirken yükümlünün işletme büyüklüğü ve işlem hacmi göz önünde bulundurulur. Bu kapsamda, yükümlü tarafından gerçekleştirilen işlemlerin tamamını temsil edebilecek nicelik ve nitelikte birim ve işlemin denetlenmesi sağlanır.
+İç denetim sonuçlarının bildirimi
+
+MADDE 28 – (1) İç denetim faaliyeti kapsamında gerçekleştirilen çalışmalara ilişkin olarak; yükümlünün yıllık işlem hacmi, toplam personel sayısı ve toplam şube, acente ve benzeri bağlı birimlerinin sayısı, denetlenen şube, acente ve benzeri birimlerin sayısı, bu birimlerde yapılan denetimlerin tarihleri, toplam denetim süresi, denetimde çalıştırılan personel ve denetlenen işlem sayısına ilişkin bilgileri içeren istatistikler, (Değişik ibare:RG-26/2/2021-31407) (2) takip eden yılın Mart ayı sonuna kadar uyum görevlisi tarafından Başkanlığa bildirilir.
+ÜÇÜNCÜ KISIM Münhasıran Uyum Görevlisi Atanması Münhasıran uyum görevlisi atayacak yükümlüler
+
+MADDE 29 – (1) (Değişik:RG-18/3/2016-29657) Tedbirler Yönetmeliğinin 4 üncü maddesinin birinci fıkrasında sayılan yükümlülerden; (Değişik ibare:RG-22/8/2025-32994 ) Türkiye Cumhuriyet Merkez Bankası, İstanbul Takas ve Saklama Bankası A.Ş., bankalar dışında banka kartı veya kredi kartı düzenleme yetkisini haiz kuruluşlar, (Değişik ibare:RG-26/2/2021-31407) (2) kambiyo mevzuatında belirtilen B grubu yetkili müesseseler, reasürans şirketleri, (Değişik ibare:RG-26/2/2021-31407) (2) varlık yönetim şirketleri, ödeme kuruluşları (Münhasıran fatura ödemelerine aracılık hizmeti, münhasıran ödeme emri başlatma hizmeti ve münhasıran ödeme hesabına ilişkin bilgilerin sunulması hizmetini sağlayanlar), kargo şirketleri ve sermaye piyasası mevzuatı çerçevesinde takas ve saklama hizmeti veren kuruluşlar (Ek ibare:RG-25/12/2024-32763) (4) , orta, büyük veya çok büyük ölçekli elektronik ticaret aracı hizmet sağlayıcılar (Ek ibare:RG-22/8/2025-32994 ) , ilgili mevzuatı uyarınca şans ve bahis oyunu faaliyetlerinin tamamını fiziki bir işyeri bulunmaksızın ve müşteri ile yüz yüze olmaksızın münhasıran elektronik ortamda gerçekleştiren bayiler (Ek ibare:RG-25/12/2024-32763) (4) ile tasarruf finansman şirketleri, faaliyet izninin alınmasını müteakip otuz gün içerisinde bu Yönetmelikte bahsedilen uyum programını oluşturmaksızın idari düzeyde uyum görevlisi atamak zorundadır. Bu madde uyarınca atanacak uyum görevlisinin uhdesinde başka görevler de bulunabilir.
+(2) Uyum görevlisi, yönetim kuruluna veya genel müdüre doğrudan bağlı olacak şekilde görevlendirilir. Görevlendirmeye ilişkin karar, yetkililerce talep edildiğinde ibraz edilmek üzere, yazılı olarak düzenlenir.
+Münhasıran uyum görevlisi olarak atanacaklarda aranan şartlar
+
+MADDE 30 – (1) 29 uncu madde uyarınca uyum görevlisi olarak atanacak kişilerde; 17 nci maddenin birinci fıkrasının (Değişik ibare:RG-22/8/2025-32994) (7) (a), (b), (c), (ç) ve (e) bentlerinde belirtilen şartlar aranır.
+Münhasıran uyum görevlisi olarak atanacakların görev, yetki ve sorumlulukları
+
+MADDE 31 – (1) 29 uncu madde uyarınca atanacak uyum görevlilerinin görev, yetki ve sorumlulukları şunlardır:
+a) Kendisine iletilen veya resen öğrendiği şüpheli olabilecek işlemler hakkında, yetki ve imkânları ölçüsünde araştırma yaparak edindiği bilgi ve bulguları değerlendirmek ve şüpheli olduğuna karar verdiği işlemleri Başkanlığa bildirmek,
+b) Şüpheli işlemlerin değerlendirilmesinde ve Başkanlığa bildirilmesinde iyi niyetli, makul ve dürüst bir şekilde, tarafsız ve bağımsız bir irade ile hareket etmek, bildirimlerin gizliliğinin sağlanmasına yönelik gerekli tedbirleri almak,
+c) Yükümlü bünyesindeki tüm birimlerden şüpheli işlemlerin değerlendirilmesi kapsamında gerekli her türlü bilgi ve belgeyi talep etmek,
+ç) Yükümlünün, Kanun ve Kanun uyarınca çıkarılan yönetmelik ve tebliğlerle getirilen yükümlülüklere uyumunu sağlamak amacıyla eğitim, araştırma, geliştirme, gözetim, (Ek ibare:RG-26/2/2021-31407) (2) ulusal risk değerlendirmesi kapsamında belirlenen riskleri de dikkate almak suretiyle risk yönetimi, izleme ve kontrol çalışmalarını yürütmek ve Başkanlık ile gerekli iletişim ve koordinasyonu sağlamak.
+(2) (Ek:RG-25/12/2024-32763) (4) Birinci fıkranın (ç) bendi kapsamında yürütülen risk yönetimi ile izleme ve kontrol faaliyetleri 6415 sayılı Kanun ile 7262 sayılı Kanun kapsamında malvarlığının dondurulması kararlarının ihlali, uygulanmaması ve bunlardan kaçınılması risklerine yönelik çalışmalar ile söz konusu yaptırımların uygulanmasına yönelik gelişmiş kontrolleri de kapsar. Bu kapsamda malvarlığının dondurulması kararları ve potansiyel eşleşme kriterleri dikkate alınarak müşterilerin ve işlemlerin devamlı olarak izlenmesine yönelik tedbirler alınır.
+Münhasıran uyum görevlisi olarak atananların görevinden ayrılması
+
+MADDE 32 – (1) Uyum görevlisinin izin, hastalık ve benzeri nedenlerle geçici olarak görevden ayrılması halinde uyum görevlisine vekalet edecek kişinin, 30 uncu maddede sayılan şartları haiz olması aranır. Vekaleten görevlendirmeye ilişkin karar, yetkililerce talep edildiğinde ibraz edilmek üzere yazılı olarak düzenlenir, kararda vekalet edilen dönem açıkça belirtilir.
+(2) Uyum görevlisine vekalet eden kişi, uyum görevlisinin tüm görev, yetki ve sorumluluklarını haizdir. Uyum görevlisi görevinden ayrıldığı dönem itibarıyla yürütülen işlerden sorumlu olmaz.
+(3) Uyum görevlisine bir takvim yılı içinde altmış günden fazla süre ile vekalet edilemez.
+(4) Uyum görevlisinin Yönetmelikte aranan şartları kaybetmesi veya bu şartları haiz olmadığının sonradan anlaşılması veya görevinden ayrılması halinde, yeni görevlendirme, 29 uncu madde hükümlerine göre yükümlü tarafından en geç otuz gün içinde yapılır.
+Uyum görevlisi yeniden atanana kadar yukarıdaki fıkralarda öngörülen usuller uygulanır.
+Uyum programı oluşturma veya münhasıran uyum görevlisi atama yükümlülüğü bulunmayan yükümlülerin sorumlulukları
+
+MADDE 32/A – (Ek:RG-26/2/2021-31407) (2)
+(1) Tedbirler Yönetmeliğinin 4 üncü maddesinin birinci fıkrasının (k), (n), (s), (ş), (t) ve (u) bentlerinde sayılan yükümlüler, Kanun ve Kanun uyarınca çıkarılan yönetmelik ve tebliğlerle getirilen yükümlülüklere uyumu sağlamak amacıyla eğitim, gözetim, ulusal risk değerlendirmesi kapsamında belirlenen riskleri de dikkate almak suretiyle risklerin belirlenmesi ile risklerin takibi ve azaltılması için izleme ve kontrol çalışmalarını yürütürler ve bu kapsamda gerekli tedbirleri alırlar.
+(2) (Ek:RG-25/12/2024-32763) (4) Birinci fıkra kapsamında yürütülen risk yönetimi ile izleme ve kontrol faaliyetleri 6415 sayılı Kanun ile 7262 sayılı Kanun kapsamında malvarlığının dondurulması kararlarının ihlali, uygulanmaması ve bunlardan kaçınılması risklerine yönelik çalışmalar ile söz konusu yaptırımların uygulanmasına yönelik gelişmiş kontrolleri de kapsar. Bu kapsamda malvarlığının dondurulması kararları ve potansiyel eşleşme kriterleri dikkate alınarak müşterilerin ve işlemlerin devamlı olarak izlenmesine yönelik tedbirler alınır.
+Uyum görevlisi olarak yetkilendirme
+
+MADDE 32/B- (Ek:RG-25/12/2024-32763)
+(1) Uyum görevlisi olarak yetkilendirilmek isteyenlere ilişkin başvuru şartları, alacakları mesleki eğitim, yetkilendirme sınavı, uyum görevlisi sicili tutulması ve konuya ilişkin diğer hususlar Bakanlıkça belirlenir. Bakanlık söz konusu hususları yükümlüler bakımından ayrı ayrı belirlemeye yetkilidir.
+DÖRDÜNCÜ KISIM Geçici ve Son Hükümler Uyum görevlisi atanmasında süre
+
+GEÇİCİ MADDE 1 – (1) (Değişik birinci cümle:RG-26/9/2008-27009) 4 ve 29 uncu maddeler uyarınca uyum görevlisi atayacak olan yükümlüler durumlarına göre, Yönetmeliğin 17 nci ve 30 uncu maddelerinde yazılı şartları haiz uyum görevlisini 1/12/2008 tarihine kadar atarlar. Bu atama işlemi gerçekleştirilinceye kadar, şüpheli işlem bildirimlerinin, 3/6/1997 tarihli ve 97/9523 sayılı Bakanlar Kurulu Kararı ile yürürlüğe konulan Karaparanın Aklanmasının Önlenmesine Dair 4208 sayılı Kanunun Uygulanmasına İlişkin Yönetmelik ve ilgili Genel Tebliğler uyarınca bildirilmesine devam olunur.
+(2) (Ek:RG-2/1/2010-27450) Vadeli işlemler aracılık şirketleri, Yönetmeliğin 30 uncu maddesinde yazılı şartları haiz uyum görevlisini 2/2/2010 tarihine kadar atarlar.
+(3) (Ek:RG-18/3/2016-29657) Halihazırda faaliyet izni almış bulunan ödeme kuruluşları ve elektronik para kuruluşları ile portföy yönetim şirketleri ve kargo şirketleri bu Yönetmeliğin 30 uncu maddesinde yazılı şartları haiz uyum görevlisini 31/3/2016
+(1) tarihine kadar atarlar.
+(4) (Ek:RG-26/2/2021-31407) (2) Halihazırda faaliyet izni almış bulunan varlık yönetim şirketleri, 30 uncu maddede yazılı şartları haiz uyum görevlisini 1/6/2021 tarihine kadar atarlar.
+(5) (Ek:RG-26/2/2021-31407) (2) Kıymetli maden aracı kuruluşları ile 29 uncu madde uyarınca uyum görevlisi atamış bulunan A grubu yetkili müesseseler, portföy yönetim şirketleri, finansman, faktoring ve finansal kiralama şirketleri, ödeme kuruluşları (Münhasıran fatura ödemelerine aracılık hizmeti, münhasıran ödeme emri başlatma hizmeti ve münhasıran ödeme hesabına ilişkin bilgilerin sunulması hizmetini sağlayanlar hariç) ve elektronik para kuruluşları 17 nci maddede yazılı şartları haiz uyum görevlisi ve yardımcısını 1/6/2021 tarihine kadar atarlar.
+Atanacak uyum görevlisi yardımcısı için 17 nci maddenin birinci fıkrasının (d) bendinde belirtilen şartlar (Değişik ibare:RG-27/5/2023-32203) 1/6/2024 tarihine kadar aranmaz. Bu kuruluşlar uyum programlarını 1/7/2021 tarihine kadar oluşturur.
+(6) (Ek:RG-26/2/2021-31407) (2) 16 ncı madde kapsamında halihazırda uyum görevlisi atamış bulunan yükümlüler uyum görevlisi yardımcısını, finansal gruplar ise uyum görevlisi ve yardımcısını 1/6/2021 tarihine kadar atarlar. Atanacak uyum görevlisi yardımcısı için 17 nci maddenin birinci fıkrasının (d) bendinde belirtilen şartlar 1/6/2022 tarihine kadar aranmaz.
+(7) (Ek:RG-25/12/2024-32763) 6362 sayılı Kanunun geçici 11 inci maddesinin yürürlüğe girdiği tarihte kripto varlık hizmet sağlayıcılığı faaliyeti yürüten ve bu kapsamda Sermaye Piyasası Kuruluna başvuranlardan Sermaye Piyasası Kurulu tarafından faaliyette bulunduğu ilan edilenler, 17 nci maddede yazılı şartları haiz uyum görevlisi ve yardımcısını bu fıkranın yayımı tarihinden itibaren bir ay içinde atarlar. Bu yükümlüler uyum programlarını uyum görevlisinin atanmasından itibaren en geç bir ay içinde oluştururlar. Uyum programı kapsamında belirlenen kurum politikalarına ilişkin Ek-1/A’da yer alan taahhüt formlarını da aynı tarihe kadar Başkanlığa gönderirler.
+(8) (Ek:RG-25/12/2024-32763) Halihazırda faaliyette bulunan orta, büyük veya çok büyük ölçekli elektronik ticaret aracı hizmet sağlayıcılar ile tasarruf finansman şirketleri, 30 uncu maddede yazılı şartları haiz uyum görevlisini bu fıkranın yayımı tarihinden itibaren üç ay içinde atarlar.
+(9) (Ek:RG-22/8/2025-32994) Kalkınma ve yatırım bankaları 17 nci maddede yazılı şartları haiz uyum görevlisini ve yardımcısını 31/10/2025 tarihine kadar atar, uyum programlarını 30/11/2025 tarihine kadar oluştururlar.
+(10) (Ek:RG-22/8/2025-32994) Halihazırda şans ve bahis oyunu faaliyetlerinin tamamını fiziki bir işyeri bulunmaksızın ve müşteri ile yüz yüze olmaksızın münhasıran elektronik ortamda gerçekleştiren bayiler, 30 uncu maddede yazılı şartları haiz uyum görevlisini 31/10/2025 tarihine kadar atarlar.
+Uyum görevlisi olarak çalışanların atanmasında usul
+
+GEÇİCİ MADDE 2 – (1) Bu Yönetmeliğin yayımlandığı tarih itibarıyla 3/6/1997 tarihli ve 97/9523 sayılı Bakanlar Kurulu Kararı ile yürürlüğe konulan Karaparanın Aklanmasının Önlenmesine Dair 4208 sayılı Kanunun Uygulanmasına İlişkin Yönetmeliğin 14/A maddesi uyarınca mevduat ve katılım bankalarında uyum görevlisi olarak çalışanlar, 17 nci maddede yer alan şartları taşımaları ve 16 ncı maddedeki usule uygun olarak atanmaları, Türkiye Cumhuriyet Merkez Bankası ile kalkınma ve yatırım bankalarında uyum görevlisi olarak çalışanlar ise 30 uncu maddede yer alan şartları taşımaları ve 29 uncu maddedeki usule uygun olarak atanmaları kaydıyla görevlerine devam edebilirler.
+Uyum programı oluşturulmasında süre
+
+GEÇİCİ MADDE 3 – (1) 4 üncü maddede belirtilmiş olan yükümlüler, uyum programlarını en geç 1/3/2009 tarihine kadar oluştururlar. Uyum programı kapsamında belirlenen kurum politikalarına ilişkin belgeler de aynı tarihe kadar Başkanlığa gönderilir.
+Finansal grup bilgileri ile kurum politikasına ilişkin taahhüt formlarının gönderilmesinde süre
+
+GEÇİCİ MADDE 4 – (Ek:RG-26/2/2021-31407) (2)
+(1) 3/A maddesinin üçüncü fıkrası kapsamındaki bilgiler ana finansal kuruluş tarafından 1/6/2021 tarihine kadar Başkanlığa bildirilir.
+(2) 4 üncü maddenin birinci fıkrası kapsamında halihazırda kurum politikası oluşturmuş olan yükümlüler ile geçici 1 inci maddenin beşinci fıkrası kapsamındaki yükümlüler Ek-1/A’da yer alan taahhüt formlarını, 1/7/2021 tarihine kadar Başkanlığa gönderirler.
+Münhasıran uyum görevlisi olarak çalışanlar
+
+GEÇİCİ MADDE 5- (Ek:RG-22/8/2025-32994) (7)
+(1) Bu maddenin yürürlüğe girdiği tarih itibarıyla, en az altı ay süreyle 29 uncu maddeye göre uyum görevlisi olarak çalışmakta olanlardan, 17 nci maddenin birinci fıkrasının (ç) bendinde belirtilen şartı taşımayanlar, çalışmalarının Sosyal Güvenlik Kurumu kayıtlarıyla tevsik edilmesi şartıyla, bu maddenin yürürlüğe girdiği tarihten itibaren iki yıl süreyle yetkilendirme sınavına katılabilirler. Söz konusu kişilere, yetkilendirme sınavında başarılı olmaları halinde, Uyum Görevlisi Lisansı verilir. Bu şekilde Uyum Görevlisi Lisansı verilenlerin uyum görevlisi veya uyum görevlisi yardımcısı olarak atanmalarında 17 nci maddenin birinci fıkrasının (ç) bendi aranmaz.
+(2) Birinci fıkra kapsamına giren kişiler 17 nci maddenin birinci fıkrasının (ç) bendi aranmaksızın iki yıl süreyle uyum görevlisi olarak çalışabilirler.
+Yürürlük
+
+MADDE 33 – (Değişik:RG-26/9/2008-27009)
+(1) Bu Yönetmeliğin;
+uyum görevlisi atanması, uyum görevlisi olarak atanacaklarda aranan şartlar, uyum görevlisinin görev, yetki ve sorumlulukları, uyum görevlisinin görevinden ayrılması ile ilgili hükümleri 1/10/2008 tarihinden geçerli olmak üzere yayımı tarihinde, diğer hükümleri 1/3/2009 tarihinde yürürlüğe girer.
+Yürütme
+
+MADDE 34 – (1) Bu Yönetmelik hükümlerini (Değişik ibare:RG-26/2/2021-31407) (2) Hazine ve Maliye Bakanı yürütür.
+___________
+(1) 18/03/2016 tarihli ve 29657 sayılı Resmî Gazete’de aslına uygun olarak yayımlanan Yönetmeliğin çerçeve 3 üncü maddesiyle, Yönetmeliğin geçici 1 inci maddesine eklenen üçüncü fıkrada yer alan “1/3/2016” ibaresi “31/3/2016” olarak Maliye Bakanlığının 18/03/2016 tarihli ve 81683147-010.03.[06] – E.3574 sayılı yazısına istinaden düzeltilmiştir.
+(2) Bu değişiklik 1/5/2021 tarihinde yürürlüğe girer.
+(3) 26/2/2021 tarihli ve 31407 sayılı Resmî Gazete’de yayımlanan değişiklik ile Yönetmeliğin 4 üncü maddesine birinci fıkradan sonra gelmek üzere ikinci fıkra eklenmiş ve diğer fıkra buna göre teselsül ettirilmiştir.
+(4) Bu değişiklik 25/2/2025 tarihinde yürürlüğe girer.
+(5) 25/12/2024 tarihli ve 32763 sayılı Resmî Gazete’de yayımlanan değişiklik ile Yönetmeliğin 13 üncü maddesine birinci fıkradan sonra gelmek üzere ikinci ve üçüncü fıkralar eklenmiş ve diğer fıkra buna göre teselsül ettirilmiştir.
+(6) 25/12/2024 tarihli ve 32763 sayılı Resmî Gazete’de yayımlanan değişiklikle bu fıkraya (d) bendinden sonra gelmek üzere bent eklenmiş ve diğer bentler buna göre teselsül ettirilmiştir. Bu değişiklik 25/12/2025 tarihinde yürürlüğe girer.
+(7) Bu değişiklik 25/12/2025 tarihinde yürürlüğe girer.
+Ekleri için tıklayınız.
+Yönetmeliğin Yayımlandığı Resmî Gazete’nin Tarihi Sayısı 16/9/2008 26999 Yönetmelikte Değişiklik Yapan Mevzuatın Yayımlandığı Resmî Gazete’nin Tarihi Sayısı 1.
+26/9/2008 27009 2.
+2/1/2010 27450 3.
+11/6/2014 29027 4.
+18/3/2016 29657 5.
+26/2/2021 31407 6.
+27/5/2023 32203 7.
+25/12/2024 32763 8.
+22/8/2025 32994
