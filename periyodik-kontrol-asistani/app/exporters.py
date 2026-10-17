@@ -179,7 +179,7 @@ def build_excel(control_set: dict, controls: list[dict], library: bool = False) 
     ws.freeze_panes = "B2"
     ws.auto_filter.ref = ws.dimensions
 
-    info = wb.create_sheet("Kütüphane bilgisi" if library else "Set bilgisi")
+    info = wb.create_sheet("Bilgi" if library else "Set bilgisi")
     rows = [
         ("Başlık", control_set.get("baslik") or ""),
         ("Oluşturulma", control_set.get("created_at") or ""),

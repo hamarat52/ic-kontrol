@@ -92,9 +92,9 @@ def test_library_export(client, env):
     ids = [c["id"] for c in s["controls"]]
     client.post("/api/controls/bulk-decision", json={"ids": ids[:2], "karar": "kabul"})
     w = client.get("/api/library/export/word")
-    assert w.status_code == 200 and "Kontrol%20K%C3%BCt%C3%BCphanesi" in w.headers["content-disposition"]
+    assert w.status_code == 200 and "Kontroller%20" in w.headers["content-disposition"]
     text = "\n".join(p.text for p in Document(io.BytesIO(w.content)).paragraphs)
-    assert "Kontrol Kütüphanesi" in text and "2 kontrol" in text
+    assert "Kontroller" in text and "2 kontrol" in text
     ws = load_workbook(io.BytesIO(client.get("/api/library/export/excel").content))["Kontroller"]
     header = [c.value for c in ws[1]]
     assert header[-1] == "Kaynak set" and "Durum" not in header

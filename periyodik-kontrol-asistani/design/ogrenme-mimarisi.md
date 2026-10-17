@@ -92,4 +92,4 @@ Durum: **TASLAK — kullanıcı onayı bekliyor.** Kod yazılmadı.
 - Onay kapısı varsayılan açık mı olsun (önerilen) yoksa otomatik mi?
 - Yeni konu skill'i açılabilsin mi (ör. "Hazine İşlemleri" belgesi gelince)? Önerilen: sistem önerir, kullanıcı onaylar.
 - Tek kullanıcı mı, ekip mi aynı bilgi tabanını kullanacak? (Ekipse yazan kişi ve rol bilgisi gerekir.)
-- Sayfa adı: "Bilgi Tabanı" mı, "Skill'ler" mi?
+- ~~Sayfa adı~~ → karar: menü "Belgeler · Kontroller · Öğrenilenler".

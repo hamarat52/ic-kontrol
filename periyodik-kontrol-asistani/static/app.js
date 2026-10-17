@@ -728,7 +728,7 @@ function msgHtml(m) {
       ${ch.id ? `<button class="go" data-act="show-row" data-id="${ch.id}">Listede göster</button>` : ""}
     </div>`).join("");
   return `<div class="msg-ai${m.error ? " err" : ""}"><span class="orb"></span><div>${esc(m.content)}${changes}${
-    m.lesson ? `<div class="learned">💡 Bilgi tabanına eklendi: “${esc(m.lesson)}”</div>` : ""}</div></div>`;
+    m.lesson ? `<div class="learned">💡 Öğrenilenlere eklendi: “${esc(m.lesson)}”</div>` : ""}</div></div>`;
 }
 function renderChat() {
   const el = $("#chat"); if (!el) return;
@@ -772,7 +772,7 @@ function showRow(id) {
 /* --- kütüphane */
 async function viewLibrary() {
   const lib = S.lib;
-  setTop(`<b>Kontrol Kütüphanesi</b>`,
+  setTop(`<b>Kontroller</b>`,
     `<button class="pill-btn" data-act="lib-word" ${lib.length ? "" : "disabled"}>${SVG.down}Word</button>
      <button class="pill-btn" data-act="lib-excel" ${lib.length ? "" : "disabled"}>${SVG.down}Excel</button>`);
   const q = S.q.trim().toLocaleLowerCase("tr");
@@ -781,10 +781,10 @@ async function viewLibrary() {
   const order = [...KAT_ORDER.filter((x) => groups[x]), ...Object.keys(groups).filter((x) => !KAT_ORDER.includes(x))];
   const searchFocused = document.activeElement && document.activeElement.id === "ctrlSearch";
   $("#view").innerHTML = `
-    <h1>Kontrol Kütüphanesi</h1>
+    <h1>Kontroller</h1>
     <div class="source"><span>📚 ${lib.length} kontrol</span><span class="sep">·</span><span>${new Set(lib.map((x) => x.set_id)).size} setten</span></div>
     <p class="lead">Kabul ettiğin kontroller burada birikir ve sonraki setlerde tekrar kullanılabilir. Bir kontrolü setin içinde düzenlersen buradaki kopyası da güncellenir.</p>
-    ${lib.length ? `<div class="toolbar"><span></span><label class="mini-search">${SVG.search}<input id="ctrlSearch" placeholder="Kütüphanede ara" value="${esc(S.q)}" /></label></div>` : ""}
+    ${lib.length ? `<div class="toolbar"><span></span><label class="mini-search">${SVG.search}<input id="ctrlSearch" placeholder="Kontrollerde ara" value="${esc(S.q)}" /></label></div>` : ""}
     ${order.map((cat) => `<h2 class="group"><span class="ico">${KAT_ICO[cat] || "📋"}</span>${esc(cat)} <span class="count">${groups[cat].length}</span></h2>
       ${groups[cat].map((c) => `<div class="row" style="cursor:default">
         <span class="ico" style="font-size:14px">✓</span>
@@ -794,7 +794,7 @@ async function viewLibrary() {
           <span class="risk ${RISK_CLS[c.risk] || ""}"><i></i>${esc(c.risk)}</span>
           <button class="row-action" data-act="lib-remove" data-id="${c.id}">Çıkar</button>
         </div></div>`).join("")}`).join("")}
-    ${!lib.length ? `<div class="empty" style="margin-top:8vh"><div class="big">📚</div><h1>Kütüphane boş</h1><p>Bir kontrol setinde kontrolleri kabul ettikçe burada birikecek.</p></div>`
+    ${!lib.length ? `<div class="empty" style="margin-top:8vh"><div class="big">📚</div><h1>Henüz kontrol yok</h1><p>Bir kontrol setinde kontrolleri kabul ettikçe burada birikecek.</p></div>`
       : !vis.length ? `<div class="empty-filter">Aramana uyan kontrol yok.</div>` : ""}`;
   if (searchFocused) { const i = $("#ctrlSearch"); i.focus(); i.setSelectionRange(i.value.length, i.value.length); }
 }
@@ -836,9 +836,9 @@ function learnSource(t) {
   return "Sohbetten";
 }
 async function viewKnowledge(fresh = true) {
-  setTop(`<b>Bilgi Tabanı</b>`);
+  setTop(`<b>Öğrenilenler</b>`);
   if (fresh || !S.skills) {
-    if (!S.skills) $("#view").innerHTML = `<h1>Bilgi Tabanı</h1><p class="lead muted">Yükleniyor…</p>`;
+    if (!S.skills) $("#view").innerHTML = `<h1>Öğrenilenler</h1><p class="lead muted">Yükleniyor…</p>`;
     try { S.skills = await api("/api/skills"); } catch (e) { toast(e.message, true); return; }
   }
   if (S.route.name !== "bilgi") return;
@@ -846,7 +846,7 @@ async function viewKnowledge(fresh = true) {
   const total = parsed.reduce((a, p) => a + p.learned.length, 0);
   const ed = S.kbEdit;
   $("#view").innerHTML = `
-    <h1>Bilgi Tabanı</h1>
+    <h1>Öğrenilenler</h1>
     <div class="source"><span>💡 ${parsed.length} konu</span><span class="sep">·</span><span>${total} öğrenilen kural</span></div>
     <p class="lead">Model her kontrol setini üretirken bu bilgileri kullanır. Reddettiğin, düzelttiğin ya da sohbette açıkladığın şeyler ilgili konunun altına kural olarak eklenir. Yanlış öğrenilen bir kuralı düzeltebilir ya da silebilirsin.</p>
     ${parsed.map((p) => `<section class="kb">
@@ -1061,7 +1061,7 @@ document.addEventListener("click", async (e) => {
   if (a === "menu") { $("#menu").classList.toggle("open"); return; }
   if (a === "delete-set") {
     $("#menu").classList.remove("open");
-    if (!confirm(`“${S.set.baslik || "Bu set"}” silinsin mi? Kütüphanedeki kabul edilmiş kontroller korunur.`)) return;
+    if (!confirm(`“${S.set.baslik || "Bu set"}” silinsin mi? Kontroller sayfasındaki kabul edilmiş kontroller korunur.`)) return;
     await api("/api/sets/" + S.set.id, { method: "DELETE" });
     S.set = null; await refreshSets(); toast("Set silindi"); go("#/"); return;
   }

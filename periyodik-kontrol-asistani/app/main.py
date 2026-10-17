@@ -572,9 +572,9 @@ def get_library():
 def _library_export():
     items = get_library()
     if not items:
-        raise HTTPException(400, "Kütüphanede dışa aktarılacak kontrol yok.")
+        raise HTTPException(400, "Dışa aktarılacak kabul edilmiş kontrol yok.")
     from datetime import date
-    meta = {"baslik": "Kontrol Kütüphanesi", "created_at": date.today().isoformat(),
+    meta = {"baslik": "Kontroller", "created_at": date.today().isoformat(),
             "ozet": f"Kabul edilmiş {len(items)} kontrol, {len({i['set_id'] for i in items})} kontrol setinden derlenmiştir.",
             "belge_adlari": sorted({i["kaynak_belge"] for i in items if i.get("kaynak_belge")})}
     return meta, items
@@ -585,7 +585,7 @@ def library_word():
     meta, items = _library_export()
     return StreamingResponse(exporters.build_word(meta, items, library=True),
                              media_type="application/vnd.openxmlformats-officedocument.wordprocessingml.document",
-                             headers={"Content-Disposition": _disposition(f"Kontrol Kütüphanesi {meta['created_at']}.docx")})
+                             headers={"Content-Disposition": _disposition(f"Kontroller {meta['created_at']}.docx")})
 
 
 @app.get("/api/library/export/excel")
@@ -593,7 +593,7 @@ def library_excel():
     meta, items = _library_export()
     return StreamingResponse(exporters.build_excel(meta, items, library=True),
                              media_type="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
-                             headers={"Content-Disposition": _disposition(f"Kontrol Kütüphanesi {meta['created_at']}.xlsx")})
+                             headers={"Content-Disposition": _disposition(f"Kontroller {meta['created_at']}.xlsx")})
 
 
 @app.delete("/api/library/{item_id}")
