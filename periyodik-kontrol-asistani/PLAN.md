@@ -34,3 +34,8 @@ Her adım: uygula → otomatik test → gerçek yerel modelle bir deneme → com
 
 - 3D ikon üretimi (Codex'e verilecek, kullanıcı isteyince).
 - Çok kullanıcılı yetkilendirme, sunucu kurulumu.
+
+## Dağıtım kararı (kullanıcı)
+- İşyerinde **tek sunucuya (on-prem)** kurulacak, kullanıcılar tarayıcıdan URL ile erişecek. Masaüstü başlatıcı (`baslat.bat`) gerekmiyor.
+- Sonuçları: çok kullanıcılı kullanım → kullanıcı kimliği (USER.md kişiye özel, kim neyi kabul/ret etti izi), sunucunun ağa açılması (host/port ayarı), aynı anda tek üretim kuyruğu, sunucu tarafında yedekleme.
+- Açık: kimlik doğrulama yöntemi (kurum AD/SSO mu, uygulama içi basit giriş mi).
