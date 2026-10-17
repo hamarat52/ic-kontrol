@@ -771,8 +771,10 @@ function showRow(id) {
 
 /* --- kütüphane */
 async function viewLibrary() {
-  setTop(`<b>Kontrol Kütüphanesi</b>`);
   const lib = S.lib;
+  setTop(`<b>Kontrol Kütüphanesi</b>`,
+    `<button class="pill-btn" data-act="lib-word" ${lib.length ? "" : "disabled"}>${SVG.down}Word</button>
+     <button class="pill-btn" data-act="lib-excel" ${lib.length ? "" : "disabled"}>${SVG.down}Excel</button>`);
   const q = S.q.trim().toLocaleLowerCase("tr");
   const vis = lib.filter((c) => !q || `${c.kontrol_adi} ${c.gerekce} ${c.kategori}`.toLocaleLowerCase("tr").includes(q));
   const groups = {}; vis.forEach((c) => (groups[c.kategori] = groups[c.kategori] || []).push(c));
@@ -1052,6 +1054,8 @@ document.addEventListener("click", async (e) => {
     catch (err) { toast(err.message, true); }
     return;
   }
+  if (a === "lib-word") return download("/api/library/export/word");
+  if (a === "lib-excel") return download("/api/library/export/excel");
   if (a === "export-word") return download(`/api/export/word?set_id=${S.set.id}`);
   if (a === "export-excel") return download(`/api/export/excel?set_id=${S.set.id}`);
   if (a === "menu") { $("#menu").classList.toggle("open"); return; }

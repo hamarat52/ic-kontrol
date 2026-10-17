@@ -560,10 +560,40 @@ def history(control_id: int):
 def get_library():
     with storage.db_session() as conn:
         rows = conn.execute(
-            """SELECT l.*, c.baslik AS set_baslik FROM library l
-               LEFT JOIN control_sets c ON c.id = l.set_id ORDER BY l.kategori, l.kontrol_adi"""
+            """SELECT l.*, c.baslik AS set_baslik, s.kaynak, s.kaynak_belge, s.kaynak_bolum, s.kaynak_dogrulandi
+               FROM library l
+               LEFT JOIN control_sets c ON c.id = l.set_id
+               LEFT JOIN suggestions s ON s.id = l.suggestion_id
+               ORDER BY l.kategori, l.kontrol_adi"""
         ).fetchall()
     return [dict(r) for r in rows]
+
+
+def _library_export():
+    items = get_library()
+    if not items:
+        raise HTTPException(400, "Kütüphanede dışa aktarılacak kontrol yok.")
+    from datetime import date
+    meta = {"baslik": "Kontrol Kütüphanesi", "created_at": date.today().isoformat(),
+            "ozet": f"Kabul edilmiş {len(items)} kontrol, {len({i['set_id'] for i in items})} kontrol setinden derlenmiştir.",
+            "belge_adlari": sorted({i["kaynak_belge"] for i in items if i.get("kaynak_belge")})}
+    return meta, items
+
+
+@app.get("/api/library/export/word")
+def library_word():
+    meta, items = _library_export()
+    return StreamingResponse(exporters.build_word(meta, items, library=True),
+                             media_type="application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+                             headers={"Content-Disposition": _disposition(f"Kontrol Kütüphanesi {meta['created_at']}.docx")})
+
+
+@app.get("/api/library/export/excel")
+def library_excel():
+    meta, items = _library_export()
+    return StreamingResponse(exporters.build_excel(meta, items, library=True),
+                             media_type="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+                             headers={"Content-Disposition": _disposition(f"Kontrol Kütüphanesi {meta['created_at']}.xlsx")})
 
 
 @app.delete("/api/library/{item_id}")

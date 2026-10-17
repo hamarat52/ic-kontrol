@@ -81,3 +81,23 @@ def test_document_view_and_download(client, env):
     assert client.get(f"/api/documents/{d['id']}/file").headers["content-disposition"].startswith("inline;")
     assert client.get("/api/documents/99999/text").status_code == 404
     assert client.get("/api/documents/99999/file").status_code == 404
+
+
+def test_library_export(client, env):
+    import io
+    from docx import Document
+    from openpyxl import load_workbook
+    assert client.get("/api/library/export/word").status_code == 400
+    s = _set(client, env)
+    ids = [c["id"] for c in s["controls"]]
+    client.post("/api/controls/bulk-decision", json={"ids": ids[:2], "karar": "kabul"})
+    w = client.get("/api/library/export/word")
+    assert w.status_code == 200 and "Kontrol%20K%C3%BCt%C3%BCphanesi" in w.headers["content-disposition"]
+    text = "\n".join(p.text for p in Document(io.BytesIO(w.content)).paragraphs)
+    assert "Kontrol Kütüphanesi" in text and "2 kontrol" in text
+    ws = load_workbook(io.BytesIO(client.get("/api/library/export/excel").content))["Kontroller"]
+    header = [c.value for c in ws[1]]
+    assert header[-1] == "Kaynak set" and "Durum" not in header
+    assert ws.max_row == 3
+    row = dict(zip(header, [c.value for c in ws[2]]))
+    assert row["Kaynak set"] == "B" and row["Kaynak belge"] == "p.txt"

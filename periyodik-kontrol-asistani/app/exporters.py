@@ -41,7 +41,8 @@ def _shade(cell, hex_fill):
     tc_pr.append(shd)
 
 
-def build_word(control_set: dict, controls: list[dict]) -> BytesIO:
+def build_word(control_set: dict, controls: list[dict], library: bool = False) -> BytesIO:
+    """library=True: Kontrol Kütüphanesi çıktısı (Durum yerine kontrolün geldiği set)."""
     doc = DocxDocument()
     sec = doc.sections[0]
     sec.left_margin = sec.right_margin = Cm(2)
@@ -75,7 +76,7 @@ def build_word(control_set: dict, controls: list[dict]) -> BytesIO:
         table = doc.add_table(rows=1, cols=6)
         table.alignment = WD_TABLE_ALIGNMENT.CENTER
         table.style = "Table Grid"
-        heads = ["Kontrol", "Sıklık", "Risk", "Efor", "Hat", "Durum"]
+        heads = ["Kontrol", "Sıklık", "Risk", "Efor", "Hat", "Set" if library else "Durum"]
         for i, t in enumerate(heads):
             cell = table.rows[0].cells[i]
             cell.text = ""
@@ -102,7 +103,8 @@ def build_word(control_set: dict, controls: list[dict]) -> BytesIO:
                 k = row[0].add_paragraph().add_run(src)
                 k.font.size = Pt(8.5)
                 k.font.color.rgb = MUTED
-            for i, val in enumerate([c.get("siklik"), c.get("risk"), c.get("efor"), c.get("hat"), _durum(c)], start=1):
+            last = (c.get("set_baslik") or "—") if library else _durum(c)
+            for i, val in enumerate([c.get("siklik"), c.get("risk"), c.get("efor"), c.get("hat"), last], start=1):
                 row[i].text = str(val or "")
         for row in table.rows:
             row.cells[0].width = Cm(8.5)
@@ -141,14 +143,15 @@ def _dogrulama(c):
     return "—" if v is None else ("Evet" if v else "Hayır — belgede bulunamadı")
 
 
-def build_excel(control_set: dict, controls: list[dict]) -> BytesIO:
+def build_excel(control_set: dict, controls: list[dict], library: bool = False) -> BytesIO:
     wb = Workbook()
     ws = wb.active
     ws.title = "Kontroller"
     thin = Side(style="thin", color="E6E5E0")
     head_fill = PatternFill("solid", fgColor="1F2025")
 
-    ws.append([c[0] for c in EXCEL_COLS])
+    cols = [(("Kaynak set", "set_baslik", 30) if key is None else (h, key, w)) for h, key, w in EXCEL_COLS] if library else EXCEL_COLS
+    ws.append([c[0] for c in cols])
     for cell in ws[1]:
         cell.font = Font(bold=True, color="FFFFFF")
         cell.fill = head_fill
@@ -158,7 +161,7 @@ def build_excel(control_set: dict, controls: list[dict]) -> BytesIO:
     for kategori, items in _grouped(controls):
         for c in items:
             row = []
-            for _, key, _ in EXCEL_COLS:
+            for _, key, _ in cols:
                 if key is None:
                     row.append(_durum(c))
                 elif key == "_dogrulama":
@@ -167,7 +170,7 @@ def build_excel(control_set: dict, controls: list[dict]) -> BytesIO:
                     row.append(c.get(key) or "")
             ws.append(row)
 
-    for i, (_, _, width) in enumerate(EXCEL_COLS, start=1):
+    for i, (_, _, width) in enumerate(cols, start=1):
         ws.column_dimensions[get_column_letter(i)].width = width
     for row in ws.iter_rows(min_row=2):
         for cell in row:
@@ -176,7 +179,7 @@ def build_excel(control_set: dict, controls: list[dict]) -> BytesIO:
     ws.freeze_panes = "B2"
     ws.auto_filter.ref = ws.dimensions
 
-    info = wb.create_sheet("Set bilgisi")
+    info = wb.create_sheet("Kütüphane bilgisi" if library else "Set bilgisi")
     rows = [
         ("Başlık", control_set.get("baslik") or ""),
         ("Oluşturulma", control_set.get("created_at") or ""),
