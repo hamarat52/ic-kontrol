@@ -92,6 +92,10 @@ def build_word(control_set: dict, controls: list[dict], library: bool = False) -
                 g = row[0].add_paragraph().add_run(c["gerekce"])
                 g.font.size = Pt(9)
                 g.font.color.rgb = MUTED
+            if c.get("sorumlu"):
+                o = row[0].add_paragraph().add_run(f"Sorumlu: {c['sorumlu']}")
+                o.font.size = Pt(8.5)
+                o.font.color.rgb = MUTED
             if c.get("dayanak"):
                 d = row[0].add_paragraph().add_run(f"Dayanak: {c['dayanak']}")
                 d.font.size = Pt(8.5)
@@ -129,7 +133,7 @@ def build_word(control_set: dict, controls: list[dict], library: bool = False) -
 
 
 EXCEL_COLS = [
-    ("Kontrol", "kontrol_adi", 48), ("Kategori", "kategori", 20), ("Hat", "hat", 6),
+    ("Kontrol", "kontrol_adi", 48), ("Kategori", "kategori", 20), ("Hat", "hat", 6), ("Sorumlu", "sorumlu", 24),
     ("Sıklık", "siklik", 16), ("Risk", "risk", 10), ("Efor", "efor", 10),
     ("Gerekçe", "gerekce", 60), ("Dayanak", "dayanak", 30),
     ("Kaynak belge", "kaynak_belge", 28), ("Kaynak bölüm", "kaynak_bolum", 28),

@@ -7,6 +7,8 @@ DATA_DIR = Path(os.environ.get("PKA_DATA_DIR", BASE_DIR / "data"))
 UPLOADS_DIR = DATA_DIR / "uploads"
 SKILLS_DIR = DATA_DIR / "skills"
 DB_PATH = DATA_DIR / "app.db"
+# Uygulamayla gelen açık kaynaklar (mevzuat, standartlar); güncelleme: scripts/kaynaklari_indir.py
+KAYNAK_DIR = Path(os.environ.get("PKA_KAYNAK_DIR", BASE_DIR / "app" / "kaynaklar"))
 
 # AI çağrısı için yapılandırılabilir, OpenAI-uyumlu lokal LLM uç noktası.
 # Sabit bir cloud API anahtarı GÖMÜLMEZ. İşyerinde Ollama/LM Studio/vLLM gibi

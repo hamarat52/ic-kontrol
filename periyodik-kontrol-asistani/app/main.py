@@ -9,12 +9,20 @@ from fastapi.responses import FileResponse, StreamingResponse
 from fastapi.staticfiles import StaticFiles
 from pydantic import BaseModel
 
-from . import config, documents, processing, exporters, jobs, llm, model_settings, skills, storage
+from . import config, documents, processing, exporters, jobs, llm, model_settings, skills, sources, storage
 
 app = FastAPI(title="Periyodik Kontrol Asistanı")
 storage.init_db()
 skills.ensure_seed()
 jobs.recover_interrupted()
+with storage.db_session() as _c:
+    sources.sync_builtin(_c)   # uygulamayla gelen mevzuat ve standartlar
+    # Sınıflandırma gelmeden önce yüklenmiş belgeler için tür/alan önerisi (kullanıcı onaylar)
+    for _r in _c.execute("SELECT id, filename, stored_path FROM documents WHERE yerlesik = 0 AND alanlar IS NULL").fetchall():
+        _t = documents.extract_text(Path(_r["stored_path"])) if Path(_r["stored_path"]).exists() else ""
+        _tur, _al = sources.suggest(_c, _r["filename"], _t) if _t.strip() else ("esas", [])
+        _c.execute("UPDATE documents SET tur = ?, alanlar = ?, onerildi = 1 WHERE id = ?",
+                   (_tur, json.dumps(_al, ensure_ascii=False), _r["id"]))
 
 STATIC_DIR = Path(__file__).resolve().parent.parent / "static"
 
@@ -52,7 +60,7 @@ def _load_set(conn, set_id: str) -> dict | None:
             s[key] = json.loads(s[key]) if s[key] else []
         except json.JSONDecodeError:
             s[key] = []
-    for key in ("progress", "istatistik"):
+    for key in ("progress", "istatistik", "kapsam"):
         try:
             s[key] = json.loads(s[key]) if s[key] else None
         except json.JSONDecodeError:
@@ -67,7 +75,16 @@ def _controls(conn, set_id: str) -> list[dict]:
            FROM suggestions s WHERE s.run_id = ? ORDER BY s.id""",
         (set_id,),
     ).fetchall()
-    return [dict(r) for r in rows]
+    return [_control_out(r) for r in rows]
+
+
+def _control_out(r) -> dict:
+    c = dict(r)
+    try:
+        c["dayanak_bag"] = json.loads(c.get("dayanak_bag") or "[]")
+    except json.JSONDecodeError:
+        c["dayanak_bag"] = []
+    return c
 
 
 def _sync_library(conn, control: dict):
@@ -75,15 +92,15 @@ def _sync_library(conn, control: dict):
     if control["status"] == "kabul":
         conn.execute(
             """INSERT INTO library (suggestion_id, set_id, kontrol_adi, kategori, hat, siklik,
-                                    risk, efor, gerekce, dayanak)
-               VALUES (?,?,?,?,?,?,?,?,?,?)
+                                    risk, efor, gerekce, dayanak, sorumlu)
+               VALUES (?,?,?,?,?,?,?,?,?,?,?)
                ON CONFLICT(suggestion_id) DO UPDATE SET
                  kontrol_adi=excluded.kontrol_adi, kategori=excluded.kategori, hat=excluded.hat,
                  siklik=excluded.siklik, risk=excluded.risk, efor=excluded.efor,
-                 gerekce=excluded.gerekce, dayanak=excluded.dayanak""",
+                 gerekce=excluded.gerekce, dayanak=excluded.dayanak, sorumlu=excluded.sorumlu""",
             (control["id"], control["run_id"], control["kontrol_adi"], control["kategori"],
              control["hat"], control["siklik"], control["risk"], control["efor"],
-             control["gerekce"], control["dayanak"]),
+             control["gerekce"], control["dayanak"], control.get("sorumlu")),
         )
     else:
         conn.execute("DELETE FROM library WHERE suggestion_id = ?", (control["id"],))
@@ -198,8 +215,8 @@ def set_active(body: ActiveIn):
 async def upload_document(file: UploadFile = File(...)):
     name = file.filename or "belge"
     suffix = Path(name).suffix.lower()
-    if suffix not in (".pdf", ".docx", ".txt", ".md"):
-        raise HTTPException(400, "Yalnız pdf, docx, txt ve md dosyaları kabul edilir.")
+    if suffix not in (".pdf", ".docx", ".xlsx", ".txt", ".md"):
+        raise HTTPException(400, "Yalnız pdf, docx, xlsx, txt ve md dosyaları kabul edilir.")
     data = await file.read()
     dest = config.UPLOADS_DIR / f"{uuid.uuid4().hex}{suffix}"
     dest.write_bytes(data)
@@ -207,16 +224,20 @@ async def upload_document(file: UploadFile = File(...)):
     sha = hashlib.sha256(data).hexdigest()
     bolum = len(processing.split_document(text, name)) if text.strip() else 0
     with storage.db_session() as conn:
-        conn.execute(
-            "INSERT INTO documents (filename, stored_path, text_excerpt, char_count, uyari, sha, bolum) VALUES (?,?,?,?,?,?,?)",
-            (name, str(dest), text[:2000], len(text.strip()), warning, sha, bolum),
+        tur, alanlar = sources.suggest(conn, name, text) if text.strip() else ("esas", [])
+        cur = conn.execute(
+            """INSERT INTO documents (filename, stored_path, text_excerpt, char_count, uyari, sha, bolum,
+                                      tur, alanlar, onerildi) VALUES (?,?,?,?,?,?,?,?,?,1)""",
+            (name, str(dest), text[:2000], len(text.strip()), warning, sha, bolum,
+             tur, json.dumps(alanlar, ensure_ascii=False)),
         )
-    return next(d for d in list_documents() if d["sha"] == sha and d["filename"] == name)
+        new_id = cur.lastrowid
+    return next(d for d in list_documents() if d["id"] == new_id)
 
 
 def _backfill_documents(conn):
     """Eski kayıtlarda eksik olan özet (hash) ve bölüm sayısını bir kez hesaplar."""
-    for r in conn.execute("SELECT id, filename, stored_path FROM documents WHERE sha IS NULL OR bolum IS NULL").fetchall():
+    for r in conn.execute("SELECT id, filename, stored_path FROM documents WHERE yerlesik = 0 AND (sha IS NULL OR bolum IS NULL)").fetchall():
         p = Path(r["stored_path"])
         if not p.exists():
             continue
@@ -231,14 +252,22 @@ def list_documents():
     with storage.db_session() as conn:
         _backfill_documents(conn)
         rows = [dict(r) for r in conn.execute(
-            "SELECT id, filename, char_count, uyari, uploaded_at, sha, bolum FROM documents ORDER BY id DESC")]
+            """SELECT id, filename, char_count, uyari, uploaded_at, sha, bolum, tur, alanlar, onerildi,
+                      yerlesik, kurum, kaynak_url FROM documents
+               ORDER BY yerlesik, CASE WHEN yerlesik = 1 THEN id ELSE -id END""")]
         used: dict[str, int] = {}
-        for s in conn.execute("SELECT belge_adlari FROM control_sets"):
-            for n in set(json.loads(s["belge_adlari"] or "[]")):
+        used_ids: dict[int, int] = {}
+        for s in conn.execute("SELECT belge_adlari, kapsam FROM control_sets"):
+            k = json.loads(s["kapsam"] or "{}")
+            for n in set(json.loads(s["belge_adlari"] or "[]")) | set(k.get("organizasyon") or []):
                 used[n] = used.get(n, 0) + 1
+            for i in set(k.get("dayanak") or []):
+                used_ids[i] = used_ids.get(i, 0) + 1
     first_by_sha: dict[str, dict] = {}
     for d in sorted(rows, key=lambda x: x["id"]):
-        d["kullanim"] = used.get(d["filename"], 0)
+        d["alanlar"] = json.loads(d["alanlar"] or "[]")
+        d["tur"] = d["tur"] or "esas"
+        d["kullanim"] = used_ids.get(d["id"], 0) if d["yerlesik"] else used.get(d["filename"], 0)
         prev = first_by_sha.get(d["sha"]) if d["sha"] else None
         d["kopya_of"] = prev["filename"] if prev else None
         if d["sha"] and not prev:
@@ -247,6 +276,8 @@ def list_documents():
 
 
 MEDIA_TYPES = {".pdf": "application/pdf", ".txt": "text/plain; charset=utf-8", ".md": "text/plain; charset=utf-8",
+               ".html": "text/html; charset=utf-8",
+               ".xlsx": "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
                ".docx": "application/vnd.openxmlformats-officedocument.wordprocessingml.document"}
 
 
@@ -263,7 +294,11 @@ def document_file(doc_id: int, indir: int = 0):
     """Orijinal dosya. indir=1: indirme; değilse tarayıcıda açılır (PDF/TXT)."""
     d = _doc_row(doc_id)
     p = Path(d["stored_path"])
-    disp = _disposition(d["filename"])
+    name = d["filename"]
+    if d["yerlesik"] and d.get("orijinal_path") and Path(d["orijinal_path"]).exists():
+        p = Path(d["orijinal_path"])   # mevzuat.gov.tr sayfası ya da standardın PDF'i
+        name = f"{d['filename'][:120]}{p.suffix}"
+    disp = _disposition(name)
     if not indir:
         disp = disp.replace("attachment;", "inline;", 1)
     return FileResponse(p, media_type=MEDIA_TYPES.get(p.suffix.lower(), "application/octet-stream"),
@@ -274,19 +309,51 @@ def document_file(doc_id: int, indir: int = 0):
 def document_text(doc_id: int):
     """Modelin okuduğu metin, modelin gördüğü bölümlere ayrılmış hâlde."""
     d = _doc_row(doc_id)
-    text, warning = documents.extract(Path(d["stored_path"]))
-    chunks = processing.split_document(text, d["filename"]) if text.strip() else []
+    if d["yerlesik"]:
+        from . import retrieval
+        text, warning = Path(d["stored_path"]).read_text(encoding="utf-8"), None
+        parts = [{"bolum": p["label"], "text": p["text"]} for p in retrieval.split_pieces(text)]
+        inline = bool(d.get("orijinal_path")) and Path(d["orijinal_path"]).exists()
+    else:
+        text, warning = documents.extract(Path(d["stored_path"]))
+        parts = [{"bolum": c["bolum"], "text": c["text"]}
+                 for c in (processing.split_document(text, d["filename"]) if text.strip() else [])]
+        inline = Path(d["stored_path"]).suffix.lower() in (".pdf", ".txt", ".md")
     return {"id": d["id"], "filename": d["filename"], "uyari": warning, "char_count": len(text.strip()),
-            "uploaded_at": d["uploaded_at"], "inline": Path(d["stored_path"]).suffix.lower() in (".pdf", ".txt", ".md"),
-            "bolumler": [{"bolum": c["bolum"], "text": c["text"]} for c in chunks]}
+            "uploaded_at": d["uploaded_at"], "inline": inline, "tur": d["tur"] or "esas",
+            "yerlesik": d["yerlesik"], "kurum": d.get("kurum"), "kaynak_url": d.get("kaynak_url"),
+            "bolumler": parts}
+
+
+class DocumentEditIn(BaseModel):
+    tur: str | None = None
+    alanlar: list[str] | None = None
+
+
+@app.patch("/api/documents/{doc_id}")
+def edit_document(doc_id: int, body: DocumentEditIn):
+    """Belgenin türünü ve alanlarını onaylar/değiştirir (önerilen değerler onaylanmış olur)."""
+    d = _doc_row(doc_id)
+    if d["yerlesik"]:
+        raise HTTPException(400, "Uygulamayla gelen kaynaklar değiştirilemez.")
+    tur = body.tur or d["tur"] or "esas"
+    if tur not in sources.KULLANICI_TURLERI:
+        raise HTTPException(400, "Geçersiz belge türü.")
+    alanlar = sources.clean_alanlar(body.alanlar) if body.alanlar is not None else json.loads(d["alanlar"] or "[]")
+    with storage.db_session() as conn:
+        conn.execute("UPDATE documents SET tur = ?, alanlar = ?, onerildi = 0 WHERE id = ?",
+                     (tur, json.dumps(alanlar, ensure_ascii=False), doc_id))
+    return next(x for x in list_documents() if x["id"] == doc_id)
 
 
 @app.delete("/api/documents/{doc_id}")
 def delete_document(doc_id: int):
     with storage.db_session() as conn:
-        row = conn.execute("SELECT stored_path FROM documents WHERE id = ?", (doc_id,)).fetchone()
+        row = conn.execute("SELECT stored_path, yerlesik FROM documents WHERE id = ?", (doc_id,)).fetchone()
         if not row:
             raise HTTPException(404, "Belge bulunamadı.")
+        if row["yerlesik"]:
+            raise HTTPException(400, "Uygulamayla gelen kaynaklar kaldırılamaz.")
         Path(row["stored_path"]).unlink(missing_ok=True)
         conn.execute("DELETE FROM documents WHERE id = ?", (doc_id,))
     return {"ok": True}
@@ -298,14 +365,15 @@ def delete_document(doc_id: int):
 def list_sets():
     with storage.db_session() as conn:
         rows = conn.execute(
-            """SELECT c.id, c.baslik, c.durum, c.created_at,
+            """SELECT c.id, c.baslik, c.durum, c.created_at, c.kapsam,
                       COUNT(s.id) AS toplam,
                       SUM(s.status = 'kabul') AS kabul,
                       SUM(s.status = 'red') AS red
                FROM control_sets c LEFT JOIN suggestions s ON s.run_id = c.id
                GROUP BY c.id ORDER BY c.created_at DESC, c.rowid DESC"""
         ).fetchall()
-    return [{**dict(r), "kabul": r["kabul"] or 0, "red": r["red"] or 0} for r in rows]
+    return [{**dict(r), "kapsam": json.loads(r["kapsam"] or "null"), "kabul": r["kabul"] or 0, "red": r["red"] or 0}
+            for r in rows]
 
 
 @app.get("/api/sets/{set_id}")
@@ -337,45 +405,74 @@ def delete_set(set_id: str):
     return {"ok": True}
 
 
+class SetIn(BaseModel):
+    belgeler: list[int] | None = None      # kontrol üretilecek uygulama esasları; boşsa hepsi
+    dayanaklar: list[int] | None = None    # dayanak olarak bakılacak mevzuat/standartlar
+    organizasyon: bool = True              # organizasyon/görev tanımlarını bağlam olarak kullan
+    alanlar: list[str] = []
+    baslik: str | None = None
+
+
 @app.post("/api/sets", status_code=202)
-def create_set():
-    """Yüklü belgelerden yeni kontrol seti üretimini arka planda başlatır.
+def create_set(body: SetIn | None = None):
+    """Seçilen uygulama esaslarından yeni kontrol seti üretimini arka planda başlatır.
     İlerleme: GET /api/sets/{id}/progress"""
+    body = body or SetIn()
     if jobs.is_running():
         raise HTTPException(409, "Şu an başka bir set üretiliyor. Bitmesini bekleyin ya da durdurun.")
     with storage.db_session() as conn:
         _backfill_documents(conn)
-        rows = conn.execute("SELECT filename, stored_path, sha FROM documents ORDER BY id").fetchall()
-    if not rows:
-        raise HTTPException(400, "Önce en az bir belge yükleyin.")
+        rows = [dict(r) for r in conn.execute("SELECT * FROM documents ORDER BY id").fetchall()]
+    by_id = {r["id"]: r for r in rows}
+    esas = [r for r in rows if not r["yerlesik"] and (r["tur"] or "esas") in sources.URETEN]
+    if body.belgeler is not None:
+        bad = [i for i in body.belgeler if i not in by_id or by_id[i] not in esas]
+        if bad:
+            raise HTTPException(400, "Seçilen belgelerden bazıları uygulama esası değil ya da artık yok.")
+        esas = [by_id[i] for i in body.belgeler]
+    if not esas:
+        raise HTTPException(400, "Önce kontrol üretilecek en az bir uygulama esası seçin.")
+    basis_rows = []
+    for i in body.dayanaklar or []:
+        r = by_id.get(i)
+        if not r or (r["tur"] or "esas") not in sources.DAYANAK:
+            raise HTTPException(400, "Dayanak olarak yalnız mevzuat ve standartlar seçilebilir.")
+        basis_rows.append(r)
+    org_rows = [r for r in rows if r["tur"] == "organizasyon"] if body.organizasyon else []
 
     docs, skipped, seen = [], [], set()
-    for d in rows:
+    for d in esas:
         if d["sha"] and d["sha"] in seen:
             continue   # aynı içerik ikinci kez yüklenmiş: bir kez işlenir
         if d["sha"]:
             seen.add(d["sha"])
-        p = Path(d["stored_path"])
-        text = documents.extract_text(p) if p.exists() else ""
+        text = sources.doc_text(d)
         if text.strip():
             docs.append((d["filename"], text))
         else:
             skipped.append(d["filename"])
     if not docs:
-        raise HTTPException(400, "Yüklü belgelerin hiçbirinden metin okunamadı.")
+        raise HTTPException(400, "Seçilen belgelerin hiçbirinden metin okunamadı.")
+    basis = [{"id": r["id"], "ad": r["filename"], "text": t} for r in basis_rows if (t := sources.doc_text(r)).strip()]
+    org = [{"id": r["id"], "ad": r["filename"], "text": t} for r in org_rows if (t := sources.doc_text(r)).strip()]
 
     set_id = uuid.uuid4().hex[:10]
     names = [n for n, _ in docs]
-    provisional = jobs.pretty_title(names[0]) if len(names) == 1 else f"{len(names)} belge"
+    baslik = (body.baslik or "").strip()[:80]
+    provisional = baslik or (jobs.pretty_title(names[0]) if len(names) == 1 else f"{len(names)} belge")
+    kapsam = {"alanlar": sources.clean_alanlar(body.alanlar), "dayanak": [b["id"] for b in basis],
+              "dayanak_adlari": [b["ad"] for b in basis], "organizasyon": [o["ad"] for o in org],
+              "baslik_sabit": bool(baslik)}
     with storage.db_session() as conn:
         conn.execute(
-            """INSERT INTO control_sets (id, baslik, belge_adlari, model, durum, hata)
-               VALUES (?,?,?,?, 'uretiliyor', ?)""",
+            """INSERT INTO control_sets (id, baslik, belge_adlari, model, durum, hata, kapsam)
+               VALUES (?,?,?,?, 'uretiliyor', ?, ?)""",
             (set_id, provisional, json.dumps(names, ensure_ascii=False), model_settings.active()["model"],
-             f"Metni okunamayan belgeler atlandı: {', '.join(skipped)}" if skipped else None),
+             f"Metni okunamayan belgeler atlandı: {', '.join(skipped)}" if skipped else None,
+             json.dumps(kapsam, ensure_ascii=False)),
         )
     try:
-        jobs.start(set_id, docs)
+        jobs.start(set_id, docs, basis, org)
     except jobs.Busy:
         with storage.db_session() as conn:
             conn.execute("DELETE FROM control_sets WHERE id = ?", (set_id,))
@@ -394,7 +491,7 @@ def set_progress(set_id: str, after: int = 0):
         rows = conn.execute(
             "SELECT *, 0 AS edited FROM suggestions WHERE run_id = ? AND id > ? ORDER BY id", (set_id, after)
         ).fetchall()
-        s["controls"] = [dict(r) for r in rows]
+        s["controls"] = [_control_out(r) for r in rows]
         s["toplam_kontrol"] = conn.execute(
             "SELECT COUNT(*) FROM suggestions WHERE run_id = ?", (set_id,)).fetchone()[0]
     return s
@@ -525,6 +622,7 @@ class EditIn(BaseModel):
     efor: str | None = None
     gerekce: str | None = None
     dayanak: str | None = None
+    sorumlu: str | None = None
 
 
 @app.patch("/api/controls/{control_id}")
@@ -648,8 +746,11 @@ def archive_learning(name: str, body: LearningEditIn):
 
 @app.get("/api/meta")
 def meta():
+    m = sources.manifest()
     return {"kategoriler": llm.KATEGORILER, "sikliklar": llm.SIKLIKLAR,
-            "riskler": llm.RISKLER, "eforlar": llm.EFORLAR}
+            "riskler": llm.RISKLER, "eforlar": llm.EFORLAR,
+            "alanlar": [{"ad": a, "ikon": sources.ALAN_IKON.get(a, "📁")} for a in sources.alanlar()],
+            "turler": sources.TURLER, "eklenemeyenler": m.get("lisansli_eklenemeyenler", [])}
 
 
 # ------------------------------------------------------------------ dışa aktarma

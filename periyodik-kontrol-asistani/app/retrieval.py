@@ -51,12 +51,33 @@ def split_pieces(text: str) -> list[dict]:
     marks = list(_MADDE.finditer(text))
     pieces: list[dict] = []
     if len(marks) >= 3:
+        # Madde başlığı (ör. "Amaç", "Dayanak") maddeden hemen önceki kısa satırdır; önceki
+        # maddenin metnine karışmasın diye her maddenin sonu, sonrakinin başlık satırında biter.
+        titles, starts = [], []
+        def _title_ok(s):
+            return 0 < len(s) <= 60 and not s.endswith((".", ";", ":", ",")) and not re.search(r"\d{4}", s)
+        for m in marks:
+            ls = text.rfind("\n", 0, m.start()) + 1
+            same = text[ls:m.start()].strip()
+            if same:   # eski kanun biçimi: "Kapsam Madde 2 — …" başlık aynı satırda
+                ok = _title_ok(same)
+                titles.append(same if ok else "")
+                starts.append(ls if ok else m.start())
+                continue
+            ps, prev = ls, ""
+            for _ in range(3):                                 # önceki boş olmayan satır
+                if ps <= 0:
+                    break
+                ps = text.rfind("\n", 0, ps - 1) + 1
+                prev = text[ps:text.find("\n", ps) if text.find("\n", ps) >= 0 else len(text)].strip()
+                if prev:
+                    break
+            ok = ls > 0 and _title_ok(prev)
+            titles.append(prev if ok else "")
+            starts.append(ps if ok else m.start())
         for i, m in enumerate(marks):
-            end = marks[i + 1].start() if i + 1 < len(marks) else len(text)
-            # Madde başlığı (ör. "Amaç", "Dayanak") maddeden hemen önceki kısa satır/ifadedir
-            before = text[max(0, m.start() - 80):m.start()].rstrip()
-            title = before.split("\n")[-1].strip()
-            title = title if 0 < len(title) <= 60 and not title.endswith((".", ";", ":")) else ""
+            end = starts[i + 1] if i + 1 < len(marks) else len(text)
+            title = titles[i]
             kind = {"GEÇİCİ": "Geçici", "EK": "Ek"}.get((m.group(1) or "").strip(), (m.group(1) or "").strip())
             label = f"{kind + ' ' if kind else ''}Madde {m.group(3)}{' — ' + title if title else ''}"
             pieces += _split_long(label, text[m.start():end].strip())

@@ -15,6 +15,7 @@ const S = {
   filter: "all", q: "", selectedId: null, chatBusy: false, fresh: new Set(),
   panelMode: null, docId: null, docBack: null, multi: new Set(), anchor: null, changed: new Set(), undo: null, kbd: false,
   uploading: [], kbEdit: null, skills: null,
+  docTab: "sirket", showAll: new Set(), docEdit: null, scope: null, uploadAs: null, openScopeAfter: false,
 };
 const isGen = (s) => s && s.durum === "uretiliyor";
 
@@ -105,11 +106,12 @@ async function route() {
   renderSidebar();
   renderView();
   if (S.health) renderHealth();
+  if (S.openScopeAfter && r.name === "belgeler") { S.openScopeAfter = false; openScope(); }
 }
 
 /* ---------------------------------------------------------------- sidebar */
 function renderSidebar() {
-  $("#cDocs").textContent = S.docs.length || "";
+  $("#cDocs").textContent = S.docs.filter((d) => !d.yerlesik).length || "";
   $("#cSets").textContent = S.sets.length || "";
   $("#cLib").textContent = S.lib.length || "";
   const r = S.route;
@@ -123,7 +125,7 @@ function renderSidebar() {
     const generating = isGen(s);
     const title = s.baslik || "Yeni kontrol seti";
     return `<button class="nav-item${r.name === "set" && r.id === s.id ? " active" : ""}" data-set="${s.id}">
-      <span class="ico">${setIco(title)}</span><span class="label">${esc(title)}</span>
+      <span class="ico">${s.kapsam && s.kapsam.alanlar && s.kapsam.alanlar.length ? ALAN_IKON(s.kapsam.alanlar[0]) : setIco(title)}</span><span class="label">${esc(title)}</span>
       ${generating ? `<span class="gen-tag">üretiliyor</span>` : `<span class="count">${s.toplam || ""}</span>`}
     </button>`;
   }).join("");
@@ -160,74 +162,261 @@ function viewHome() {
       <div class="big">📋</div>
       <h1>Henüz kontrol seti yok</h1>
       <p>${hasDocs ? "Belgelerin hazır. Periyodik kontrolleri çıkararak ilk seti oluştur." : "Süreç ve prosedür belgelerini yükle, periyodik kontrolleri birlikte çıkaralım."}</p>
-      ${hasDocs ? `<button class="btn btn-ink" data-act="generate">Periyodik kontrolleri çıkart</button>`
+      ${hasDocs ? `<button class="btn btn-ink" data-act="scope-open">Periyodik kontrolleri çıkart…</button>`
                 : `<button class="btn btn-ink" data-act="to-docs">Belge yükle</button>`}
     </div>`;
 }
 
-/* --- belgeler */
+/* --- belgeler: Şirket belgeleri / Mevzuat ve standartlar */
+const TUR_IKON = { esas: "📘", organizasyon: "🏢", resmi: "🇹🇷", global: "🌐", lisansli: "🔒" };
+const ALAN_IKON = (a) => ((S.meta && S.meta.alanlar) || []).find((x) => x.ad === a)?.ikon || "📁";
+const isOpenSrc = (d) => ["resmi", "global", "lisansli"].includes(d.tur);
+const SEP = '<span class="sep">·</span>';
+
+function alanChips(d) {
+  if (!d.alanlar || !d.alanlar.length) return d.tur === "organizasyon" ? "Tüm alanlar" : `<span class="alan muted">alan seçilmedi</span>`;
+  return d.alanlar.map((a) => `<span class="alan">${esc(a)}</span>`).join("");
+}
+
+function classifyLine(d) {
+  const all = ((S.meta && S.meta.alanlar) || []).map((x) => x.ad);
+  const rest = all.filter((a) => !d.alanlar.includes(a));
+  const turOpts = ["esas", "organizasyon", "lisansli"].map((t) =>
+    `<option value="${t}" ${d.tur === t ? "selected" : ""}>${esc((S.meta && S.meta.turler[t]) || t)}</option>`).join("");
+  return `<div class="classify" data-classify="${d.id}">
+    ${d.onerildi ? `<span class="ai">✦ Önerildi</span>` : ""}
+    <label>Tür <select class="sel-inline" data-doc-tur="${d.id}">${turOpts}</select></label>
+    ${d.tur === "organizasyon" ? "" : `<span class="lbl">Alan</span>${d.alanlar.map((a) =>
+      `<span class="alan edit">${esc(a)}<button data-act="doc-alan-del" data-id="${d.id}" data-alan="${esc(a)}" title="Kaldır">×</button></span>`).join("")}
+      ${rest.length ? `<select class="sel-inline add" data-doc-alan="${d.id}"><option value="">＋ alan</option>${rest.map((a) => `<option>${esc(a)}</option>`).join("")}</select>` : ""}`}
+    <button class="link" data-act="doc-confirm" data-id="${d.id}">${d.onerildi ? "Onayla" : "Bitti"}</button>
+  </div>`;
+}
+
+function docRowHtml(d) {
+  const open = isOpenSrc(d) && d.yerlesik;
+  const meta = [];
+  if (open) {
+    if (d.kurum) meta.push(esc(d.kurum));
+    meta.push(`${(d.bolum || 0).toLocaleString("tr-TR")} madde/bölüm`);
+    meta.push(`<span class="badge-src">güncel metin · ${fmtDate(d.uploaded_at)}</span>`);
+  } else {
+    meta.push(d.tur === "organizasyon" ? `${(d.char_count || 0).toLocaleString("tr-TR")} karakter` : `${d.bolum || 0} bölüm`);
+    meta.push(fmtDate(d.uploaded_at, true));
+  }
+  meta.push(d.kullanim ? `<span class="used">${d.kullanim} sette kullanıldı</span>` : "henüz kullanılmadı");
+  const editing = !d.yerlesik && (d.onerildi || S.docEdit === d.id);
+  return `<div class="doc-row clickable${S.panelMode === "doc" && S.docId === d.id ? " selected" : ""}" data-doc="${d.id}">
+    <span class="ico">${d.uyari && !d.char_count ? "⚠️" : open ? (d.tur === "resmi" ? "🏛️" : "🌐") : "📄"}</span>
+    <div><div class="title">${esc(d.filename)}</div>
+      <div class="meta doc-meta-line">${editing ? "" : `<span class="chips-in">${alanChips(d)}</span>`}<span class="mi">${meta.join(SEP)}</span></div>
+      ${d.uyari ? `<div class="warn">${esc(d.uyari)}</div>` : ""}
+      ${d.kopya_of ? `<div class="dup">Bu belge “${esc(d.kopya_of)}” ile aynı içerikte; üretimde bir kez kullanılır. <button class="link" data-act="del-doc" data-id="${d.id}">Kaldır</button></div>` : ""}
+      ${editing ? classifyLine(d) : ""}</div>
+    <span class="doc-acts"><a class="row-action" href="/api/documents/${d.id}/file?indir=1" download title="İndir">İndir</a>${d.yerlesik ? "" :
+      `<button class="row-action" data-act="doc-edit" data-id="${d.id}">Düzenle</button><button class="row-action" data-act="del-doc" data-id="${d.id}">Kaldır</button>`}</span>
+  </div>`;
+}
+
+function docGroup(icon, title, list, note = "", limit = 0) {
+  const key = title;
+  const showAll = S.showAll.has(key);
+  const shown = limit && !showAll ? list.slice(0, limit) : list;
+  return `<div class="grp"><div class="grp-head"><h2>${icon} ${esc(title)}</h2><span class="count">${list.length}</span>${note ? `<span class="note">${note}</span>` : ""}</div>
+    <div class="doc-list">${shown.map(docRowHtml).join("")}
+      ${limit && list.length > limit ? `<button class="more" data-act="grp-more" data-key="${esc(key)}">${showAll ? "Daha az göster" : `+ ${list.length - limit} belge daha`}</button>` : ""}</div></div>`;
+}
+
 function viewDocs() {
-  setTop(`<b>Belgeler</b>`);
+  const tab = S.docTab;
+  setTop(tab === "acik" ? `<b>Belgeler</b> <span>/</span> Mevzuat ve standartlar` : `<b>Belgeler</b>`);
   const busy = S.sets.some(isGen);
-  const usable = S.docs.filter((d) => d.char_count > 0 && !d.kopya_of);
-  const bolum = usable.reduce((a, d) => a + (d.bolum || 0), 0);
-  const model = S.health ? S.health.llm_model : "";
-  $("#view").innerHTML = `
-    <h1>Belgeler</h1>
-    <p class="lead">Kontrol çıkarılacak süreç, prosedür ve politika belgelerini ekle. Yeni kontrol seti, burada listelenen tüm belgelerden üretilir; uzun belgeler bölümlere ayrılıp tek tek okunur.</p>
-    <div class="drop" id="drop" tabindex="0">
-      <div class="big">📄</div>
-      <div><strong>Belgeleri sürükle bırak</strong> ya da seçmek için tıkla</div>
-      <small>PDF · Word · TXT · Markdown</small>
-    </div>
-    <div class="doc-list">
-      ${S.uploading.map((name) => `<div class="doc-row">
-          <span class="ico">📄</span>
-          <div><div class="title">${esc(name)}</div><div class="meta">Okunuyor…</div><div class="upbar"><i></i></div></div><span></span>
-        </div>`).join("")}
-      ${S.docs.map((d) => {
-        const meta = [`${(d.char_count || 0).toLocaleString("tr-TR")} karakter`];
-        if (d.bolum) meta.push(`${d.bolum} bölüm`);
-        meta.push(d.kullanim ? `<span class="used">${d.kullanim} sette kullanıldı</span>` : "henüz kullanılmadı");
-        return `<div class="doc-row clickable${S.panelMode === "doc" && S.docId === d.id ? " selected" : ""}" data-doc="${d.id}">
-          <span class="ico">${d.uyari && !d.char_count ? "⚠️" : "📄"}</span>
-          <div><div class="title">${esc(d.filename)}</div>
-            <div class="meta">${meta.join('<span class="sep">·</span>')}<span class="sep">·</span>${fmtDate(d.uploaded_at, true)}</div>
-            ${d.uyari ? `<div class="warn">${esc(d.uyari)}</div>` : ""}
-            ${d.kopya_of ? `<div class="dup">Bu belge “${esc(d.kopya_of)}” ile aynı içerikte; üretimde bir kez kullanılır. <button class="link" data-act="del-doc" data-id="${d.id}">Kaldır</button></div>` : ""}</div>
-          <span class="doc-acts"><a class="row-action" href="/api/documents/${d.id}/file?indir=1" download title="İndir">İndir</a><button class="row-action" data-act="del-doc" data-id="${d.id}">Kaldır</button></span>
-        </div>`;
-      }).join("")}
-    </div>
-    <div class="cta">
-      <button class="btn btn-ink" data-act="generate" ${!usable.length || busy || S.uploading.length ? "disabled" : ""}>Periyodik kontrolleri çıkart</button>
-      <span class="hint">${busy ? "Bir set şu an üretiliyor." : usable.length ? `${usable.length} belge · ${bolum} bölüm${model ? ` · model: ${esc(model)}` : ""}` : "Önce metin içeren en az bir belge ekle."}</span>
-    </div>`;
+  const sirket = S.docs.filter((d) => !isOpenSrc(d));
+  const acik = S.docs.filter(isOpenSrc);
+  const esas = sirket.filter((d) => d.tur !== "organizasyon");
+  const org = sirket.filter((d) => d.tur === "organizasyon");
+  const usable = esas.filter((d) => d.char_count > 0 && !d.kopya_of);
+  const uploading = S.uploading.map((name) => `<div class="doc-row"><span class="ico">📄</span>
+      <div><div class="title">${esc(name)}</div><div class="meta">Okunuyor…</div></div><span></span></div>`).join("");
+  const tabs = `<div class="seg doc-tabs">
+    <button data-doc-tab="sirket" class="${tab !== "acik" ? "on" : ""}">Şirket belgeleri<span>${sirket.length}</span></button>
+    <button data-doc-tab="acik" class="${tab === "acik" ? "on" : ""}">Mevzuat ve standartlar<span>${acik.length}</span></button></div>`;
+  let body;
+  if (tab === "acik") {
+    const lis = acik.filter((d) => d.tur === "lisansli");
+    const names = ((S.meta && S.meta.eklenemeyenler) || []).map((x) => x.ad.split(" (")[0].split(" — ")[0]);
+    body = `
+      <p class="lead">Mevzuat ve standartlar uygulamayla birlikte gelir; internet gerekmez. Model bunlardan kontrol üretmez, kontrolün dayanağını göstermek için kullanır.</p>
+      ${tabs}
+      ${docGroup("🇹🇷", "Resmi düzenlemeler · Türkiye", acik.filter((d) => d.tur === "resmi"), "mevzuat.gov.tr · değişiklikler işlenmiş metin", 6)}
+      ${docGroup("🌐", "Global standartlar", acik.filter((d) => d.tur === "global"), "", 6)}
+      ${lis.length ? docGroup("🔒", "Lisanslı standartlar", lis, "Kurumun yüklediği · yalnız bu sunucuda") + `<div class="cta"><button class="btn btn-ghost" data-act="add-standard">Standart ekle</button></div>`
+        : `<div class="grp"><div class="grp-head"><h2>🔒 Lisanslı standartlar</h2><span class="count">0</span></div>
+          <div class="empty-grp"><span>${esc(names.slice(0, 5).join(", "))} telifli olduğu için uygulamayla gelmez. Kurumunun kopyası varsa ekle; yalnız bu sunucuda kalır.</span>
+          <button class="btn btn-ghost" data-act="add-standard">Standart ekle</button></div></div>`}`;
+  } else {
+    body = `
+      <p class="lead">Kontroller şirketin uygulama esaslarından üretilir. Mevzuat ve standartlar uygulamayla birlikte gelir; model onları kontrolün dayanağını göstermek için kullanır.</p>
+      ${tabs}
+      <div class="drop" id="drop" tabindex="0" style="margin-top:14px">
+        <div class="big">📄</div>
+        <div><strong>Belgeleri sürükle bırak</strong> ya da seçmek için tıkla</div>
+        <small>PDF · Word · Excel · TXT · Markdown — türünü ve alanını önerir, sen onaylarsın</small>
+      </div>
+      ${uploading ? `<div class="doc-list" style="margin-top:14px">${uploading}</div>` : ""}
+      ${esas.length ? docGroup("📘", "Uygulama esasları", esas, "Kontroller bunlardan çıkar")
+        : `<div class="grp"><div class="grp-head"><h2>📘 Uygulama esasları</h2><span class="count">0</span></div><div class="empty-grp">Kontrol üretmek için en az bir uygulama esası yükle.</div></div>`}
+      ${org.length ? docGroup("🏢", "Organizasyon ve görevler", org, "İsteğe bağlı · kontrolün sorumlusunu ve hattını belirlemekte kullanılır")
+        : `<div class="grp"><div class="grp-head"><h2>🏢 Organizasyon ve görevler</h2><span class="count">0</span><span class="note">İsteğe bağlı</span></div>
+          <div class="empty-grp">Organizasyon şeması ya da görev tanımları yüklersen her kontrolün sorumlu birimi ve savunma hattı bunlara göre belirlenir.</div></div>`}
+      <div class="cta">
+        <button class="btn btn-ink" data-act="scope-open" ${!usable.length || busy || S.uploading.length ? "disabled" : ""}>Periyodik kontrolleri çıkart…</button>
+        <span class="hint">${busy ? "Bir set şu an üretiliyor." : usable.length ? "Önce alanı ve belgeleri seçersin" : "Önce metin içeren en az bir uygulama esası ekle."}</span>
+      </div>`;
+  }
+  $("#view").innerHTML = `<h1>Belgeler</h1>${body}`;
   const drop = $("#drop");
-  drop.onclick = () => $("#fileInput").click();
-  drop.onkeydown = (e) => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); $("#fileInput").click(); } };
+  if (!drop) return;
+  drop.onclick = () => { S.uploadAs = null; $("#fileInput").click(); };
+  drop.onkeydown = (e) => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); drop.click(); } };
   ["dragenter", "dragover"].forEach((ev) => drop.addEventListener(ev, (e) => { e.preventDefault(); drop.classList.add("over"); }));
   ["dragleave", "drop"].forEach((ev) => drop.addEventListener(ev, (e) => { e.preventDefault(); drop.classList.remove("over"); }));
-  drop.addEventListener("drop", (e) => upload(e.dataTransfer.files));
+  drop.addEventListener("drop", (e) => { S.uploadAs = null; upload(e.dataTransfer.files); });
 }
 
 async function upload(files) {
   if (!files || !files.length) return;
   const list = [...files];
+  const as = S.uploadAs; S.uploadAs = null;
   S.uploading.push(...list.map((f) => f.name));
   if (S.route.name === "belgeler") viewDocs();
   let ok = 0, dup = 0;
   for (const f of list) {
     const fd = new FormData(); fd.append("file", f);
-    try { const d = await api("/api/documents", { method: "POST", body: fd }); ok++; if (d.kopya_of) dup++; }
-    catch (e) { toast(`${f.name}: ${e.message}`, true); }
+    try {
+      let d = await api("/api/documents", { method: "POST", body: fd });
+      if (as) d = await api(`/api/documents/${d.id}`, jsonOpts("PATCH", { tur: as }));
+      ok++; if (d.kopya_of) dup++;
+    } catch (e) { toast(`${f.name}: ${e.message}`, true); }
     S.uploading.splice(S.uploading.indexOf(f.name), 1);
   }
   S.docs = await api("/api/documents");
   renderSidebar();
   if (S.route.name === "belgeler") viewDocs();
   if (dup) toast(`${dup} belge zaten yüklü olanla aynı içerikte`);
-  else if (ok) toast(ok === 1 ? "Belge eklendi" : `${ok} belge eklendi`);
+  else if (ok) toast(as ? "Standart eklendi" : ok === 1 ? "Belge eklendi · türünü ve alanını kontrol et" : `${ok} belge eklendi · türlerini ve alanlarını kontrol et`);
+}
+
+async function editDoc(id, body) {
+  try {
+    const d = await api(`/api/documents/${id}`, jsonOpts("PATCH", body));
+    const i = S.docs.findIndex((x) => x.id === d.id); if (i >= 0) S.docs[i] = d;
+    if (S.route.name === "belgeler") viewDocs();
+    if (S.panelMode === "scope") renderScope();
+  } catch (e) { toast(e.message, true); }
+}
+
+/* --- kapsam seçimi: yeni kontrol seti (sağ panel) */
+const AY = ["Ocak", "Şubat", "Mart", "Nisan", "Mayıs", "Haziran", "Temmuz", "Ağustos", "Eylül", "Ekim", "Kasım", "Aralık"];
+function scopeTitle(alanlar) {
+  const now = new Date(), when = `${AY[now.getMonth()]} ${now.getFullYear()}`;
+  if (!alanlar.length) return `Kontrol seti — ${when}`;
+  const shortA = (a) => a.replace(" ve Veri Güvenliği", "").replace("Bilgi Sistemleri", "Bilgi Sistemleri").replace(" ve İç Sistemler", "").replace(" ve İş Sürekliliği", "").replace(" ve Finansal Raporlama", "");
+  return `${shortA(alanlar[0])}${alanlar.length > 1 ? ` +${alanlar.length - 1}` : ""} — ${when}`;
+}
+const esasDocs = () => S.docs.filter((d) => !isOpenSrc(d) && d.tur !== "organizasyon" && d.char_count > 0 && !d.kopya_of);
+const basisDocs = () => S.docs.filter(isOpenSrc);
+const orgDocs = () => S.docs.filter((d) => d.tur === "organizasyon" && d.char_count > 0);
+const hasAlan = (d, set) => d.alanlar.some((a) => set.has(a));
+
+function scopeDefaults(sc) {
+  sc.belgeler = new Set(esasDocs().filter((d) => sc.alanlar.size ? hasAlan(d, sc.alanlar) : false).map((d) => d.id));
+  sc.dayanak = new Set(basisDocs().filter((d) => hasAlan(d, sc.alanlar)).map((d) => d.id));
+  if (!sc.nameTouched) sc.baslik = scopeTitle([...sc.alanlar]);
+}
+
+function openScope() {
+  if (S.sets.some(isGen)) { toast("Bir set zaten üretiliyor"); return; }
+  if (S.route.name !== "belgeler") { S.openScopeAfter = true; go("#/belgeler"); return; }
+  const counts = {};
+  esasDocs().forEach((d) => d.alanlar.forEach((a) => (counts[a] = (counts[a] || 0) + 1)));
+  const withDocs = Object.keys(counts);
+  const sc = { alanlar: new Set(withDocs.length === 1 ? withDocs : []), belgeler: new Set(), dayanak: new Set(),
+               org: true, baslik: "", nameTouched: false, more: false };
+  scopeDefaults(sc);
+  S.scope = sc;
+  renderScope();
+  S.selectedId = null;
+  setPanelMode("scope");
+}
+
+function pickRow(d, on, kind, extra = "") {
+  return `<div class="pick${on ? "" : " off"}" data-pick="${kind}" data-id="${d.id}">
+    <span class="cb">${SVG.check}</span>
+    <div>${esc(d.filename)}<div class="m">${extra}</div></div></div>`;
+}
+
+function renderScope() {
+  const sc = S.scope; if (!sc) return;
+  const alanList = (S.meta && S.meta.alanlar) || [];
+  const counts = {};
+  esasDocs().forEach((d) => d.alanlar.forEach((a) => (counts[a] = (counts[a] || 0) + 1)));
+  const esas = esasDocs();
+  const shownEsas = sc.alanlar.size ? esas.filter((d) => hasAlan(d, sc.alanlar) || !d.alanlar.length || sc.belgeler.has(d.id)) : esas;
+  const basis = basisDocs();
+  const primary = basis.filter((d) => hasAlan(d, sc.alanlar) || sc.dayanak.has(d.id));
+  const others = basis.filter((d) => !primary.includes(d));
+  const org = orgDocs();
+  const selEsas = esas.filter((d) => sc.belgeler.has(d.id));
+  const bolum = selEsas.reduce((a, d) => a + (d.bolum || 0), 0);
+  const label = (t) => (S.meta && S.meta.turler[t]) || t;
+  $("#panel").innerHTML = `<div class="scope">
+    <div class="panel-top"><span>Yeni kontrol seti</span><button class="pill-btn icon-btn" data-act="close-panel" title="Kapat (Esc)">${SVG.close}</button></div>
+    <div class="panel-body">
+      <h3>Hangi alanda kontrol üretelim?</h3>
+      <p class="sub">Yalnız seçtiğin alanın belgeleri işlenir. Birden fazla alan seçebilirsin.</p>
+      <div class="step first"><div class="step-h"><span class="n">1</span>Alan</div>
+        <div class="chips">${alanList.map((a) => `<button class="chip${sc.alanlar.has(a.ad) ? " on" : ""}${counts[a.ad] ? "" : " dim"}" data-act="scope-alan" data-alan="${esc(a.ad)}">${a.ikon} ${esc(a.ad)} <span class="c">${counts[a.ad] || 0}</span></button>`).join("")}</div></div>
+
+      <div class="step"><div class="step-h"><span class="n">2</span>Kontrol üretilecek uygulama esasları<span class="r">${selEsas.length} / ${shownEsas.length}</span></div>
+        ${shownEsas.length ? `<div class="picks">${shownEsas.map((d) => pickRow(d, sc.belgeler.has(d.id), "esas",
+          `${d.bolum || 0} bölüm${d.alanlar.length ? " · " + esc(d.alanlar.join(", ")) : " · alan seçilmedi"}`)).join("")}</div>`
+          : `<p class="role">Bu alanda uygulama esası yok.</p>`}</div>
+
+      <div class="step"><div class="step-h"><span class="n">3</span>Dayanak olarak bakılacak kaynaklar<span class="r">${sc.dayanak.size} / ${basis.length}</span></div>
+        <div class="picks">${primary.map((d) => pickRow(d, sc.dayanak.has(d.id), "dayanak", `${esc(label(d.tur))}${d.kurum ? " · " + esc(d.kurum) : ""}`)).join("")}
+          ${!primary.length ? `<div class="pick-empty">${sc.alanlar.size ? "Bu alanla eşleşen kaynak yok." : "Alan seçince ilgili mevzuat ve standartlar işaretli gelir."}</div>` : ""}
+          ${others.length ? (sc.more ? others.map((d) => pickRow(d, sc.dayanak.has(d.id), "dayanak", `${esc(label(d.tur))}${d.kurum ? " · " + esc(d.kurum) : ""}`)).join("")
+            + `<button class="more" data-act="scope-more">Daha az göster</button>`
+            : `<button class="more" data-act="scope-more">Diğer kaynaklardan ekle… (${others.length})</button>`) : ""}</div>
+        <p class="role">Bunlardan kontrol üretilmez; model her kontrol için ilgili maddeyi bulup “Dayanak” olarak gösterir.</p></div>
+
+      <div class="step"><div class="step-h"><span class="n">4</span>Şirket bağlamı</div>
+        ${org.length ? `<button class="switch-row" data-act="scope-org"><div>Organizasyon ve görev tanımlarını kullan<div class="m">${org.length} belge · kontrolün sorumlu birimini ve savunma hattını belirlemek için</div></div><span class="sw${sc.org ? "" : " off"}"></span></button>`
+          : `<div class="switch-row muted"><div>Organizasyon belgesi yüklenmemiş<div class="m">İsteğe bağlı · yüklersen sorumlu birim ve hat buna göre belirlenir</div></div></div>`}</div>
+
+      <div class="step"><div class="step-h"><span class="n">5</span>Set adı</div>
+        <input class="inp-name" id="scopeName" value="${esc(sc.baslik)}" maxlength="80" /></div>
+    </div>
+    <div class="scope-foot"><div class="sum"><b>${selEsas.length} belge · ${bolum} bölüm</b><br>${sc.dayanak.size} dayanak kaynağı${org.length && sc.org ? " · organizasyon" : ""}${S.health ? ` · ${esc(S.health.llm_model)}` : ""}</div>
+      <button class="btn btn-ink" data-act="scope-go" ${selEsas.length ? "" : "disabled"}>Kontrolleri üret</button></div>
+  </div>`;
+}
+
+async function scopeGo() {
+  const sc = S.scope; if (!sc) return;
+  const body = { belgeler: [...sc.belgeler], dayanaklar: [...sc.dayanak], organizasyon: sc.org,
+                 alanlar: [...sc.alanlar], baslik: ($("#scopeName") ? $("#scopeName").value : sc.baslik).trim() };
+  const btn = $('[data-act="scope-go"]'); if (btn) btn.disabled = true;
+  let s;
+  try { s = await api("/api/sets", jsonOpts("POST", body)); }
+  catch (e) { toast(e.message, true); if (btn) btn.disabled = false; return; }
+  S.scope = null;
+  s.controls = []; s.messages = [];
+  S.set = s;
+  await refreshSets();
+  go("#/set/" + s.id);
+  startPoll(s.id);
 }
 
 /* --- kontrol seti */
@@ -273,6 +462,7 @@ function renderSetHead() {
   const belge = (s.belge_adlari || []).length;
   const ist = s.istatistik || {};
   const gaps = (s.bosluklar || []).length;
+  const kap = s.kapsam;
   let status = "";
   if (generating) status = `<div class="status-line"><span class="orb"></span><span class="thinking"><span>${progressText(s)}</span></span>
       <button class="pill-btn" data-act="cancel" style="height:26px;margin-left:4px">Durdur</button></div>`;
@@ -291,7 +481,8 @@ function renderSetHead() {
     <h1>${esc(s.baslik || "Adsız kontrol seti")}</h1>
     <div class="head-pills">
       <div class="source">
-        <span>📄 ${belge} belge</span>${ist.bolum ? `<span class="sep">·</span><span>${ist.bolum} bölüm</span>` : ""}
+        ${kap && kap.alanlar && kap.alanlar.length ? `<span>${ALAN_IKON(kap.alanlar[0])} ${esc(kap.alanlar.join(", "))}</span><span class="sep">·</span>` : ""}
+        <span>📘 ${belge} uygulama esası</span>${kap && kap.dayanak && kap.dayanak.length ? `<span class="sep">·</span><span title="${esc((kap.dayanak_adlari || []).join("\n"))}">${kap.dayanak.length} dayanak kaynağı</span>` : ""}${ist.bolum ? `<span class="sep">·</span><span>${ist.bolum} bölüm</span>` : ""}
         <span class="sep">·</span><span>${fmtDate(s.created_at)}</span>
         <span class="sep">·</span><span>${n} kontrol</span><span class="sep">·</span><span>${esc(s.model || "")}</span>
       </div>
@@ -313,7 +504,7 @@ function rowHtml(c) {
   return `<div class="${cls}" data-id="${c.id}">
     <button class="cb" data-act="toggle" title="${c.status === "kabul" ? "Kabulü geri al" : "Kabul et"}">${SVG.check}</button>
     <div><div class="title">${esc(c.kontrol_adi)}</div>
-      <div class="meta">${esc(c.siklik)}<span class="sep">·</span>Hat ${esc(c.hat)}<span class="sep">·</span>Efor ${esc((c.efor || "").toLocaleLowerCase("tr"))}${c.edited ? `<span class="sep">·</span>düzenlendi` : ""}${warn}${ch}</div></div>
+      <div class="meta">${esc(c.siklik)}<span class="sep">·</span>Hat ${esc(c.hat)}${c.sorumlu ? `<span class="sep">·</span>${esc(c.sorumlu)}` : `<span class="sep">·</span>Efor ${esc((c.efor || "").toLocaleLowerCase("tr"))}`}${c.edited ? `<span class="sep">·</span>düzenlendi` : ""}${warn}${ch}</div></div>
     <span class="risk ${RISK_CLS[c.risk] || ""}"><i></i>${esc(c.risk)}</span>
   </div>`;
 }
@@ -351,18 +542,6 @@ function renderGaps() {
 }
 
 /* --- üretim (arka planda; yoklama ile izlenir) */
-async function generate() {
-  if (S.sets.some(isGen)) { toast("Bir set zaten üretiliyor"); return; }
-  let s;
-  try { s = await api("/api/sets", { method: "POST" }); }
-  catch (e) { toast(e.message, true); return; }
-  s.controls = []; s.messages = [];
-  S.set = s;
-  await refreshSets();
-  go("#/set/" + s.id);
-  startPoll(s.id);
-}
-
 function startPoll(id) {
   if (S.poll && S.poll.id === id) return;
   stopPoll();
@@ -536,6 +715,8 @@ function setPanelMode(mode) {
   w.classList.toggle("has-panel", !!mode);
   w.classList.toggle("chat-open", mode === "chat");
   w.classList.toggle("doc-open", mode === "doc");
+  w.classList.toggle("scope-open", mode === "scope");
+  if (mode !== "scope") S.scope = null;
   if (mode !== "doc") { S.docId = null; S.docBack = null; syncDocRows(); }
   renderBottom();
 }
@@ -580,6 +761,18 @@ function kaynakBlock(c) {
   return `<div class="blk"><h4>Kaynak</h4>${where}${quote}</div>`;
 }
 
+function dayanakItems(c) {
+  const bag = c.dayanak_bag || [];
+  if (!bag.length) return "";
+  return `<div class="basis">${bag.map((b, i) => {
+    const d = S.docs.find((x) => x.id === b.doc_id);
+    const kind = d ? (d.tur === "resmi" ? "Resmi · TR" : d.tur === "global" ? "Global" : "Standart") : "";
+    return `<button class="basis-item" data-act="open-basis" data-i="${i}">
+      <div class="h">${d && d.tur === "resmi" ? "🏛️" : "🌐"} ${esc(b.doc)} — ${esc(b.label)}<span class="k">${kind}</span></div>
+      ${b.alinti ? `<div class="q">${esc(b.alinti)}…</div>` : ""}</button>`;
+  }).join("")}</div>`;
+}
+
 function renderPanel(c) {
   const m = S.meta || { kategoriler: KAT_ORDER, sikliklar: [], riskler: [], eforlar: [] };
   const pending = S.set.controls.filter((x) => x.status === "bekliyor").length;
@@ -594,10 +787,11 @@ function renderPanel(c) {
         <dt>Risk</dt><dd><select data-field="risk">${opts(m.riskler, c.risk)}</select></dd>
         <dt>Efor</dt><dd><select data-field="efor">${opts(m.eforlar, c.efor)}</select></dd>
         <dt>Hat</dt><dd><select data-field="hat">${["1", "2", "3"].map((h) => `<option value="${h}" ${String(c.hat) === h ? "selected" : ""}>${HAT_ADI[h]}</option>`).join("")}</select></dd>
+        <dt>Sorumlu</dt><dd><textarea class="auto owner" data-field="sorumlu" rows="1" placeholder="Birim ekle">${esc(c.sorumlu || "")}</textarea></dd>
       </dl>
       <div class="blk"><h4>Gerekçe</h4><textarea class="auto" data-field="gerekce" rows="1" placeholder="Gerekçe ekle">${esc(c.gerekce)}</textarea></div>
       ${kaynakBlock(c)}
-      <div class="blk"><h4>Dayanak</h4><textarea class="auto" data-field="dayanak" rows="1" placeholder="Mevzuat / politika maddesi ekle">${esc(c.dayanak)}</textarea></div>
+      <div class="blk"><h4>Dayanak</h4>${dayanakItems(c)}<textarea class="auto${(c.dayanak_bag || []).length ? " small" : ""}" data-field="dayanak" rows="1" placeholder="Mevzuat / politika maddesi ekle">${esc(c.dayanak)}</textarea></div>
       <div class="blk"><h4>Geçmiş</h4><ul class="hist" id="hist"><li><time></time>Yükleniyor…</li></ul></div>
     </div>
     <div class="panel-foot" id="panelFoot"></div>
@@ -656,15 +850,17 @@ async function openDoc(id, { quote = "", bolum = "", back = null, verified = nul
       <button class="pill-btn icon-btn" data-act="close-panel" title="Kapat (Esc)">${SVG.close}</button></div>
     <div class="panel-body doc-view">
       <div class="p-doc-title">${esc(d.filename)}</div>
-      <div class="doc-meta">${d.char_count.toLocaleString("tr-TR")} karakter<span class="sep">·</span>${d.bolumler.length} bölüm<span class="sep">·</span>${fmtDate(d.uploaded_at, true)}</div>
+      <div class="doc-meta">${d.yerlesik ? `${esc((S.meta && S.meta.turler[d.tur]) || d.tur)}${d.kurum ? SEP + esc(d.kurum) : ""}${SEP}${d.bolumler.length} madde/bölüm${SEP}güncel metin · ${fmtDate(d.uploaded_at)}`
+        : `${d.char_count.toLocaleString("tr-TR")} karakter${SEP}${d.bolumler.length} bölüm${SEP}${fmtDate(d.uploaded_at, true)}`}</div>
       <div class="doc-actions">
         <a class="pill-btn" href="/api/documents/${d.id}/file?indir=1" download>${SVG.down}İndir</a>
-        ${d.inline ? `<a class="pill-btn" href="/api/documents/${d.id}/file" target="_blank" rel="noopener">Orijinali aç ↗</a>` : ""}
+        ${d.inline ? `<a class="pill-btn" href="/api/documents/${d.id}/file" target="_blank" rel="noopener">${d.yerlesik ? "Kaydedilen kopyayı aç ↗" : "Orijinali aç ↗"}</a>` : ""}
+        ${d.kaynak_url ? `<a class="pill-btn" href="${esc(d.kaynak_url)}" target="_blank" rel="noopener">Resmi kaynak ↗</a>` : ""}
       </div>
       ${note ? `<div class="doc-note">${note}</div>` : ""}
       ${d.uyari ? `<div class="warn">${esc(d.uyari)}</div>` : ""}
       ${secs || `<p class="lead muted">Bu belgeden metin okunamadı.</p>`}
-      <p class="doc-foot">Modelin okuduğu metin, modelin gördüğü bölümlere ayrılmış hâlde gösteriliyor.</p>
+      <p class="doc-foot">${d.yerlesik ? "Modelin dayanak ararken okuduğu metin, madde madde gösteriliyor." : "Modelin okuduğu metin, modelin gördüğü bölümlere ayrılmış hâlde gösteriliyor."}</p>
     </div>`;
   setPanelMode("doc");
   syncDocRows();
@@ -789,7 +985,7 @@ async function viewLibrary() {
       ${groups[cat].map((c) => `<div class="row" style="cursor:default">
         <span class="ico" style="font-size:14px">✓</span>
         <div><div class="title">${esc(c.kontrol_adi)}</div>
-          <div class="meta">${esc(c.siklik)}<span class="sep">·</span>Hat ${esc(c.hat)}<span class="sep">·</span>Efor ${esc((c.efor || "").toLocaleLowerCase("tr"))}${c.set_baslik ? `<span class="sep">·</span>${esc(c.set_baslik)}` : ""}</div></div>
+          <div class="meta">${esc(c.siklik)}<span class="sep">·</span>Hat ${esc(c.hat)}${c.sorumlu ? `<span class="sep">·</span>${esc(c.sorumlu)}` : `<span class="sep">·</span>Efor ${esc((c.efor || "").toLocaleLowerCase("tr"))}`}${c.set_baslik ? `<span class="sep">·</span>${esc(c.set_baslik)}` : ""}</div></div>
         <div style="display:flex;flex-direction:column;align-items:flex-end;gap:6px">
           <span class="risk ${RISK_CLS[c.risk] || ""}"><i></i>${esc(c.risk)}</span>
           <button class="row-action" data-act="lib-remove" data-id="${c.id}">Çıkar</button>
@@ -1025,7 +1221,29 @@ document.addEventListener("click", async (e) => {
     catch (err) { toast(err.message, true); }
     return;
   }
-  if (a === "generate") return generate();
+  if (a === "generate" || a === "scope-open") return openScope();
+  if (a === "scope-go") return scopeGo();
+  if (a === "scope-alan") {
+    const sc = S.scope, v = act.dataset.alan;
+    sc.alanlar.has(v) ? sc.alanlar.delete(v) : sc.alanlar.add(v);
+    scopeDefaults(sc); return renderScope();
+  }
+  if (a === "scope-more") { S.scope.more = !S.scope.more; return renderScope(); }
+  if (a === "scope-org") { S.scope.org = !S.scope.org; return renderScope(); }
+  if (a === "grp-more") { const k = act.dataset.key; S.showAll.has(k) ? S.showAll.delete(k) : S.showAll.add(k); return viewDocs(); }
+  if (a === "doc-edit") { const id = Number(act.dataset.id); S.docEdit = S.docEdit === id ? null : id; return viewDocs(); }
+  if (a === "doc-confirm") { S.docEdit = null; return editDoc(Number(act.dataset.id), {}); }
+  if (a === "doc-alan-del") {
+    const d = S.docs.find((x) => x.id === Number(act.dataset.id));
+    S.docEdit = d.id;
+    return editDoc(d.id, { alanlar: d.alanlar.filter((x) => x !== act.dataset.alan) });
+  }
+  if (a === "add-standard") { S.uploadAs = "lisansli"; $("#fileInput").click(); return; }
+  if (a === "open-basis") {
+    const c = findControl(S.selectedId); const b = c && (c.dayanak_bag || [])[Number(act.dataset.i)];
+    if (b) return openDoc(b.doc_id, { quote: b.alinti, bolum: b.label, back: c.id });
+    return;
+  }
   if (a === "cancel") {
     act.disabled = true; act.textContent = "Durduruluyor…";
     try { await api(`/api/sets/${S.set.id}/cancel`, { method: "POST" }); } catch (err) { toast(err.message, true); }
@@ -1070,8 +1288,15 @@ document.addEventListener("click", async (e) => {
     await refreshLib(); viewLibrary(); return;
   }
 
+  const tabBtn = e.target.closest("[data-doc-tab]");
+  if (tabBtn) { S.docTab = tabBtn.dataset.docTab; if (S.panelMode === "doc") closePanel(); viewDocs(); $("#scroll").scrollTop = 0; return; }
+  const pick = e.target.closest("[data-pick]");
+  if (pick && S.scope) {
+    const set = pick.dataset.pick === "esas" ? S.scope.belgeler : S.scope.dayanak, id = Number(pick.dataset.id);
+    set.has(id) ? set.delete(id) : set.add(id); return renderScope();
+  }
   const docRow = e.target.closest(".doc-row[data-doc]");
-  if (docRow && !e.target.closest("a, button")) {
+  if (docRow && !e.target.closest("a, button, select, label, .classify")) {
     const id = Number(docRow.dataset.doc);
     if (S.panelMode === "doc" && S.docId === id) closePanel(); else openDoc(id);
     return;
@@ -1097,7 +1322,15 @@ document.addEventListener("click", async (e) => {
   }
 });
 
+document.addEventListener("change", (e) => {
+  const tur = e.target.closest("[data-doc-tur]");
+  if (tur) { S.docEdit = Number(tur.dataset.docTur); return editDoc(S.docEdit, { tur: tur.value }); }
+  const al = e.target.closest("[data-doc-alan]");
+  if (al && al.value) { const d = S.docs.find((x) => x.id === Number(al.dataset.docAlan)); S.docEdit = d.id; return editDoc(d.id, { alanlar: [...d.alanlar, al.value] }); }
+});
+
 document.addEventListener("input", (e) => {
+  if (e.target.id === "scopeName" && S.scope) { S.scope.baslik = e.target.value; S.scope.nameTouched = true; }
   if (e.target.id === "ctrlSearch") { S.q = e.target.value; S.route.name === "kutuphane" ? viewLibrary() : renderSetBody(); }
   if (e.target.matches("textarea.auto") || e.target.id === "chatInput" || e.target.id === "kbEditInput") autosize(e.target);
 });
@@ -1113,14 +1346,15 @@ $("#panel").addEventListener("focusout", (e) => {
   saveFields(S.selectedId, { [el.dataset.field]: v });
 });
 $("#panel").addEventListener("keydown", (e) => {
-  if (e.key === "Enter" && !e.shiftKey && e.target.matches('textarea[data-field="kontrol_adi"], textarea[data-field="dayanak"]')) { e.preventDefault(); e.target.blur(); }
+  if (e.key === "Enter" && !e.shiftKey && e.target.matches('textarea[data-field="kontrol_adi"], textarea[data-field="dayanak"], textarea[data-field="sorumlu"]')) { e.preventDefault(); e.target.blur(); }
+  if (e.key === "Enter" && e.target.id === "scopeName") { e.preventDefault(); scopeGo(); }
   if (e.key === "Enter" && !e.shiftKey && e.target.id === "chatInput") { e.preventDefault(); sendChat(); }
   if (e.key === "Escape" && e.target.matches("textarea[data-field]")) { e.preventDefault(); e.target.blur(); }
 });
 
 $("#fileInput").addEventListener("change", (e) => { upload(e.target.files); e.target.value = ""; });
 $("#secToggle").onclick = () => $("#secSets").classList.toggle("closed");
-$("#newSetBtn").onclick = () => go("#/belgeler");
+$("#newSetBtn").onclick = () => openScope();
 $("#userBtn").onclick = () => go("#/model");
 document.addEventListener("submit", (e) => {
   const f = e.target.closest("[data-conn-form]");
@@ -1150,6 +1384,7 @@ document.addEventListener("keydown", (e) => {
     if (menu && menu.classList.contains("open")) return menu.classList.remove("open");
     if (S.multi.size) return clearMulti();
     if (S.panelMode === "chat") return closeChat();
+    if (S.panelMode === "scope") return closePanel();
     if (S.panelMode === "doc") { if (S.docBack) { const id = S.docBack; S.panelMode = null; return openPanel(id); } return closePanel(); }
     if (S.selectedId) return closePanel();
     return;

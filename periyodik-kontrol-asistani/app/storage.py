@@ -85,10 +85,16 @@ CREATE INDEX IF NOT EXISTS idx_messages_set ON set_messages(set_id);
 
 # Eski veritabanlarına sonradan eklenen sütunlar
 MIGRATIONS = {
-    "documents": {"char_count": "INTEGER DEFAULT 0", "uyari": "TEXT", "sha": "TEXT", "bolum": "INTEGER"},
+    "documents": {"char_count": "INTEGER DEFAULT 0", "uyari": "TEXT", "sha": "TEXT", "bolum": "INTEGER",
+                  # kaynak sınıflandırması: tur = esas | organizasyon | resmi | global | lisansli
+                  "tur": "TEXT DEFAULT 'esas'", "alanlar": "TEXT", "onerildi": "INTEGER DEFAULT 0",
+                  "yerlesik": "INTEGER DEFAULT 0", "kaynak_id": "TEXT", "kurum": "TEXT",
+                  "kaynak_url": "TEXT", "orijinal_path": "TEXT"},
     "suggestions": {"dayanak": "TEXT", "kaynak": "TEXT", "kaynak_belge": "TEXT",
-                    "kaynak_bolum": "TEXT", "kaynak_dogrulandi": "INTEGER"},
-    "control_sets": {"progress": "TEXT", "istatistik": "TEXT", "iptal": "INTEGER DEFAULT 0"},
+                    "kaynak_bolum": "TEXT", "kaynak_dogrulandi": "INTEGER",
+                    "sorumlu": "TEXT", "dayanak_bag": "TEXT"},
+    "control_sets": {"progress": "TEXT", "istatistik": "TEXT", "iptal": "INTEGER DEFAULT 0", "kapsam": "TEXT"},
+    "library": {"sorumlu": "TEXT"},
 }
 
 

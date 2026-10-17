@@ -5,11 +5,12 @@ eder; ilerleme veritabanına yazılır, istemci yoklayarak (polling) okur.
 Yerel model tek seferde tek iş yapabildiği için aynı anda yalnız bir üretim çalışır.
 """
 import json
+import re
 import threading
 import traceback
 from pathlib import Path
 
-from . import llm, model_settings, processing, skills, storage
+from . import llm, model_settings, processing, retrieval, skills, storage
 
 _lock = threading.Lock()
 _running: dict[str, threading.Thread] = {}
@@ -63,22 +64,24 @@ def pretty_title(filename: str) -> str:
     return stem[:1].upper() + stem[1:] if stem else "Kontrol seti"
 
 
-def start(set_id: str, docs: list[tuple[str, str]]):
-    """docs: [(belge_adi, metin)]. Meşgulse Busy fırlatır."""
+def start(set_id: str, docs: list[tuple[str, str]], basis: list[dict] | None = None, org: list[dict] | None = None):
+    """docs: [(belge_adi, metin)] — kontrol üretilecek uygulama esasları.
+    basis: [{"id","ad","text"}] dayanak kaynakları (mevzuat/standart); org: organizasyon belgeleri.
+    Meşgulse Busy fırlatır."""
     if not _lock.acquire(blocking=False):
         raise Busy()
     if is_running():
         _lock.release()
         raise Busy()
-    t = threading.Thread(target=_run_safe, args=(set_id, docs), daemon=True, name=f"set-{set_id}")
+    t = threading.Thread(target=_run_safe, args=(set_id, docs, basis or [], org or []), daemon=True, name=f"set-{set_id}")
     _running[set_id] = t
     t.start()
     _lock.release()
 
 
-def _run_safe(set_id, docs):
+def _run_safe(set_id, docs, basis, org):
     try:
-        run(set_id, docs)
+        run(set_id, docs, basis, org)
     except Exception as exc:  # beklenmeyen hata: set asılı kalmasın
         traceback.print_exc()
         _update(set_id, durum="hata", hata=f"Beklenmeyen hata: {exc}")
@@ -109,7 +112,33 @@ def _history() -> tuple[str, list[str]]:
     return "\n".join(lines), rej
 
 
-def run(set_id: str, docs: list[tuple[str, str]]):
+BASIS_HEAD = ("DAYANAK ADAYLARI (yalnız \"dayanak\" ve \"dayanak_no\" alanları için; bunlardan kontrol "
+              "üretme, ilgisizse kullanma):")
+ORG_HEAD = "ŞİRKET ORGANİZASYONU (bu bölümle ilgili birim ve görev tanımları; \"sorumlu\" ve hat için):"
+
+
+def _links(c: dict, hits: list[dict]) -> list[dict]:
+    """Modelin dayanak_no ile işaret ettiği adayları (yoksa dayanak metnindeki madde numarasıyla
+    eşleşenleri) tıklanabilir bağlantıya çevirir."""
+    picked = [hits[n - 1] for n in c.get("dayanak_no") or [] if 1 <= n <= len(hits)]
+    if not picked and c.get("dayanak"):
+        nums = set(re.findall(r"(?:madde|m\.)\s*(\d+)", c["dayanak"], re.I))
+        picked = [h for h in hits if (m := re.match(r"(?:Geçici |Ek )?Madde (\d+)", h["label"])) and m.group(1) in nums]
+    out, seen = [], set()
+    for h in picked:
+        key = (h["doc_id"], h["label"])
+        if key in seen:
+            continue
+        seen.add(key)
+        body = re.sub(r"^\s*(?:(?:GEÇİCİ|Geçici|EK|Ek)\s+)?(?:MADDE|Madde)\s+\S+\s*[–—-]\s*", "", h["text"])
+        out.append({"doc_id": h["doc_id"], "doc": h["doc"], "label": h["label"].replace(" (devam)", ""),
+                    "alinti": " ".join(body.split()[:30])})
+    return out
+
+
+def run(set_id: str, docs: list[tuple[str, str]], basis: list[dict] | None = None, org: list[dict] | None = None):
+    basis_ix = retrieval.Index(basis) if basis else None
+    org_ix = retrieval.Index(org) if org else None
     chunks = []
     for name, text in docs:
         chunks.extend(processing.split_document(text, name))
@@ -130,8 +159,12 @@ def run(set_id: str, docs: list[tuple[str, str]]):
         """Bir bölümü modele sorar; (modelin önerdiği kontrol sayısı, hata oldu mu) döner."""
         nonlocal last_error
         added, failed = 0, False
+        hits = basis_ix.search(chunk["text"], k=5, budget=5000) if basis_ix else []
+        org_hits = org_ix.search(chunk["text"], k=3, budget=2500) if org_ix else []
         for ev in llm.stream_control_set(chunk["text"], skills_text, ctx, should_stop=_StopCheck(set_id),
-                                         examples=examples, hint=hint, conn=llm_conn):
+                                         examples=examples, hint=hint, conn=llm_conn,
+                                         basis=retrieval.format_block(hits, BASIS_HEAD),
+                                         org=retrieval.format_block(org_hits, ORG_HEAD)):
             kind = ev["event"]
             if kind == "control":
                 c = ev["control"]
@@ -146,14 +179,20 @@ def run(set_id: str, docs: list[tuple[str, str]]):
                 if verified is False:
                     stats["dogrulanamayan"] += 1
                 titles.append(c["kontrol_adi"])
+                links = _links(c, hits)
+                if links:
+                    stats["dayanakli"] = stats.get("dayanakli", 0) + 1
+                dayanak = c["dayanak"] or "; ".join(f"{l['doc']} — {l['label']}" for l in links)
                 with storage.db_session() as conn:
                     conn.execute(
                         """INSERT INTO suggestions (run_id, kontrol_adi, kategori, hat, siklik, risk, efor,
-                               gerekce, dayanak, kaynak, kaynak_belge, kaynak_bolum, kaynak_dogrulandi)
-                           VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?)""",
+                               gerekce, dayanak, kaynak, kaynak_belge, kaynak_bolum, kaynak_dogrulandi,
+                               sorumlu, dayanak_bag)
+                           VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)""",
                         (set_id, c["kontrol_adi"], c["kategori"], c["hat"], c["siklik"], c["risk"], c["efor"],
-                         c["gerekce"], c["dayanak"], c["kaynak"], chunk["belge"], chunk["bolum"],
-                         None if verified is None else int(verified)),
+                         c["gerekce"], dayanak, c["kaynak"], chunk["belge"], chunk["bolum"],
+                         None if verified is None else int(verified), c.get("sorumlu") or None,
+                         json.dumps(links, ensure_ascii=False) if links else None),
                     )
             elif kind == "gap":
                 if ev["metin"] and not processing.is_duplicate(ev["metin"], gaps, threshold=0.8):
@@ -188,7 +227,13 @@ def run(set_id: str, docs: list[tuple[str, str]]):
         _update(set_id, progress={"i": total, "toplam": total, "asama": "ozet"})
         meta = llm.summarize_set([d[0] for d in docs], [c["bolum"] for c in chunks], titles, gaps, conn=llm_conn)
         if meta:
-            _update(set_id, baslik=meta["baslik"], ozet=meta["ozet"])
+            with storage.db_session() as conn:
+                r = conn.execute("SELECT kapsam FROM control_sets WHERE id = ?", (set_id,)).fetchone()
+            fixed = bool(r and r["kapsam"] and json.loads(r["kapsam"]).get("baslik_sabit"))
+            if fixed:   # kullanıcının verdiği set adı korunur
+                _update(set_id, ozet=meta["ozet"])
+            else:
+                _update(set_id, baslik=meta["baslik"], ozet=meta["ozet"])
 
     hata = None
     if stats["basarisiz"]:

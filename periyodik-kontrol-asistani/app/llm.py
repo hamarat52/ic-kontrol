@@ -16,7 +16,7 @@ KATEGORILER = ["Operasyonel", "Mevzuat Uyum", "Bilgi Sistemleri", "Finansal Rapo
 SIKLIKLAR = ["Anlık", "Günlük", "Haftalık", "Aylık", "Üç aylık", "Altı aylık", "Yıllık", "Olay tetiklemeli"]
 RISKLER = ["Düşük", "Orta", "Yüksek", "Kritik"]
 EFORLAR = ["Düşük", "Orta", "Yüksek"]
-EDITABLE_FIELDS = ("kontrol_adi", "kategori", "hat", "siklik", "risk", "efor", "gerekce", "dayanak")
+EDITABLE_FIELDS = ("kontrol_adi", "kategori", "hat", "siklik", "risk", "efor", "gerekce", "dayanak", "sorumlu")
 
 SET_SYSTEM_PROMPT = f"""Sen bir bankanın iç kontrol biriminde periyodik kontrol tasarlayan \
 kıdemli bir uzmansın. Sana şirketin bir süreç/prosedür belgesinden TEK BİR BÖLÜM ve birikmiş \
@@ -34,10 +34,20 @@ KATEGORİ (birini seç):
 - Finansal Raporlama: muhasebe kaydı, hesap mutabakatının finansal tablolara yansıması, yönetim raporlaması.
 - AML / Şüpheli İşlem: şüpheli işlem bildirimi (MASAK), yaptırım listesi taraması, müşteri tanıma.
 
-HAT (kontrolü kim uygular):
-- 1: işi yapan birim kendi işini kontrol eder (şube, operasyon, ilgili müdürlük).
-- 2: iç kontrol, uyum, risk yönetimi veya bilgi güvenliği birimi birinci hattın kontrolünü test eder.
+HAT (kontrolü periyodik olarak kim YAPAR):
+- 1: işi yapan ya da sahibi olan birim kendi işini gözden geçirir (şube, operasyon, BT'nin yetki \
+gözden geçirmesi, ilgili müdürlüğün aylık kontrolü). Belgede işi yapan birimin yaptığı gözden geçirmeler Hat 1'dir.
+- 2: iç kontrol, uyum, risk yönetimi veya bilgi güvenliği birimi birinci hattın kontrolünü test eder ya da izler.
 - 3: teftiş kurulu bağımsız denetim yapar.
+Hepsini aynı hatta toplama; her kontrolü yapan birime göre ayrı değerlendir.
+
+DAYANAK ADAYLARI: Mesajda [1], [2]… diye numaralanmış mevzuat maddeleri ve standartlar verilebilir. \
+Bunlardan kontrol ÜRETME; kontroller yalnız BÖLÜM METNİ'nden çıkar. Bir kontrol bir adayla gerçekten \
+ilgiliyse "dayanak_no" alanına adayın numarasını, "dayanak" alanına kısa adını ve maddesini yaz \
+(ör. "BDDK Bilgi Sistemleri Yönetmeliği m.11"). İlgisizse ikisini de boş bırak. Listede olmayan madde uydurma.
+
+ŞİRKET ORGANİZASYONU: Verilirse "sorumlu" alanına kontrolü yapan birimin adını organizasyon metnindeki \
+gibi yaz ve hattı o birime göre seç. Verilmezse bölüm metninde geçen birimi yaz; o da yoksa boş bırak.
 
 SIKLIK: Belgede süre ya da sıklık geçiyorsa (günlük, haftalık, aylık, altı ayda bir, yılda bir, \
 ertesi iş günü, gün sonu) ona uygun değeri seç. Geçmiyorsa riske ve işlem hacmine göre seç.
@@ -50,7 +60,7 @@ Aynı kontrolü farklı adlarla tekrar etme.
 açıklama, liste parantezi veya kod bloğu yazma.
 
 Her kontrol için bir satır:
-{{"tip":"kontrol","kontrol_adi":"...","kategori":"<{' | '.join(KATEGORILER)}>","hat":"<1, 2 veya 3>","siklik":"<{' | '.join(SIKLIKLAR)}>","risk":"<{' | '.join(RISKLER)}>","efor":"<{' | '.join(EFORLAR)}>","gerekce":"<neden gerekli, en fazla 2 cümle>","dayanak":"<belge maddesi ya da mevzuat; yoksa boş>","kaynak":"<bu bölümden kısa BİREBİR alıntı ya da boş>"}}
+{{"tip":"kontrol","kontrol_adi":"...","kategori":"<{' | '.join(KATEGORILER)}>","hat":"<1, 2 veya 3>","siklik":"<{' | '.join(SIKLIKLAR)}>","risk":"<{' | '.join(RISKLER)}>","efor":"<{' | '.join(EFORLAR)}>","gerekce":"<neden gerekli, en fazla 2 cümle>","dayanak":"<dayanak adayının kısa adı ve maddesi; yoksa boş>","dayanak_no":[<ilgili aday numaraları>],"sorumlu":"<kontrolü yapan birim ya da boş>","kaynak":"<bu bölümden kısa BİREBİR alıntı ya da boş>"}}
 
 Bölümde gerçek bir boşluk/tutarsızlık görürsen (ör. tanımlı bir adımı atlayan yol, süresi \
 belirtilmemiş bir takip) bir satır:
@@ -78,7 +88,7 @@ SADECE geçerli bir JSON objesi döndür, başka hiçbir metin yazma:
  "degisiklikler":[{"id":<kontrol id>,"alanlar":{"<alan>":"<yeni değer>"}}],
  "ders":"<gelecekteki setlere de uygulanabilecek genel, kısa bir kural; yoksa null>"}
 
-Değiştirilebilir alanlar: kontrol_adi, kategori, hat, siklik, risk, efor, gerekce, dayanak. \
+Değiştirilebilir alanlar: kontrol_adi, kategori, hat, siklik, risk, efor, gerekce, dayanak, sorumlu. \
 Değişiklik gerekmiyorsa "degisiklikler": [] döndür. Yalnız verilen id'leri kullan. \
 Kategori/sıklık/risk/efor için mevcut değerlerle aynı sözlüğü kullan."""
 
@@ -157,8 +167,26 @@ def normalize_control(obj: dict) -> dict:
         "efor": _pick(obj.get("efor"), EFORLAR, "Orta"),
         "gerekce": (obj.get("gerekce") or "").strip(),
         "dayanak": (obj.get("dayanak") or "").strip(),
+        "dayanak_no": _nums(obj.get("dayanak_no")),
+        "sorumlu": (obj.get("sorumlu") or "").strip()[:120],
         "kaynak": (obj.get("kaynak") or "").strip(),
     }
+
+
+def _nums(v) -> list[int]:
+    if isinstance(v, (int, float)):
+        v = [v]
+    if isinstance(v, str):
+        v = re.findall(r"\d+", v)
+    out = []
+    for x in v or []:
+        try:
+            n = int(x)
+        except (TypeError, ValueError):
+            continue
+        if n not in out:
+            out.append(n)
+    return out
 
 
 def normalize_fields(fields: dict) -> dict:
@@ -217,11 +245,12 @@ def _classify(obj: dict):
 
 def stream_control_set(chunk_text: str, skills_text: str, context: dict | None = None,
                        should_stop=None, examples: str = "", hint: str = "",
-                       conn: dict | None = None) -> Iterator[dict]:
+                       conn: dict | None = None, basis: str = "", org: str = "") -> Iterator[dict]:
     """Bir bölüm için model çıktısını satır satır okuyup olay üretir:
     {"event":"control"|"gap"|"meta"|"empty"|"error", ...}. Asla exception fırlatmaz.
     `should_stop()` True dönerse akışı keser. `examples`: kurumun kabul/ret geçmişi,
-    `hint`: boş dönen bölümü yeniden denerken eklenen uyarı."""
+    `hint`: boş dönen bölümü yeniden denerken eklenen uyarı. `basis`: numaralı dayanak adayları
+    (mevzuat/standart maddeleri), `org`: ilgili organizasyon/görev tanımı parçaları."""
     ctx = context or {}
     where = ""
     if ctx:
@@ -233,6 +262,8 @@ def stream_control_set(chunk_text: str, skills_text: str, context: dict | None =
         {"role": "user", "content": (
             f"BİLGİ TABANI (skill'ler):\n{skills_text}\n\n"
             + (f"{examples}\n\n" if examples else "")
+            + (f"{org}\n\n" if org else "")
+            + (f"{basis}\n\n" if basis else "")
             + f"{where}BÖLÜM METNİ:\n{chunk_text}\n\n"
             + (f"{hint}\n\n" if hint else "")
             + "Şimdi JSON Lines çıktısını üret."

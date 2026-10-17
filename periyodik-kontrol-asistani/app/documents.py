@@ -1,4 +1,4 @@
-"""Yüklenen belgelerden metin çıkarma (PDF / DOCX / TXT / MD).
+"""Yüklenen belgelerden metin çıkarma (PDF / DOCX / XLSX / TXT / MD).
 
 Hata veya boş metin durumunda metin yerine açık bir uyarı döner; uyarı metni
 asla model girdisine karışmaz.
@@ -40,6 +40,20 @@ def _docx_text(path: Path) -> str:
     return "\n".join(out)
 
 
+def _xlsx_text(path: Path) -> str:
+    from openpyxl import load_workbook
+    wb = load_workbook(str(path), read_only=True, data_only=True)
+    out = []
+    for ws in wb.worksheets:
+        out.append(f"# {ws.title}")
+        for row in ws.iter_rows(values_only=True):
+            cells = [str(v).strip() for v in row if v is not None and str(v).strip()]
+            if cells:
+                out.append(" | ".join(cells))
+    wb.close()
+    return "\n".join(out)
+
+
 def _plain_text(path: Path) -> str:
     raw = path.read_bytes()
     for enc in ("utf-8-sig", "cp1254", "latin-1"):  # Windows Türkçe dosyalar cp1254 olabilir
@@ -62,10 +76,12 @@ def extract(path: Path) -> tuple[str, str | None]:
             return text, None
         if suffix == ".docx":
             text = _docx_text(path)
+        elif suffix == ".xlsx":
+            text = _xlsx_text(path)
         elif suffix in (".txt", ".md"):
             text = _plain_text(path)
         else:
-            return "", "Desteklenmeyen dosya türü (yalnız pdf, docx, txt, md)."
+            return "", "Desteklenmeyen dosya türü (yalnız pdf, docx, xlsx, txt, md)."
     except Exception as exc:
         return "", f"Metin çıkarılamadı: {exc}"
     if not text.strip():

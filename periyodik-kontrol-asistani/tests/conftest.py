@@ -37,6 +37,7 @@ def env(tmp_path, fake_llm, monkeypatch):
     monkeypatch.setattr(config, "UPLOADS_DIR", tmp_path / "uploads")
     monkeypatch.setattr(config, "SKILLS_DIR", tmp_path / "skills")
     monkeypatch.setattr(config, "DB_PATH", tmp_path / "app.db")
+    monkeypatch.setattr(config, "KAYNAK_DIR", tmp_path / "kaynaklar")
     monkeypatch.setattr(config, "LLM_BASE_URL", fake_llm.base_url)
     monkeypatch.setattr(config, "LLM_MODEL", "fake-model")
     (tmp_path / "uploads").mkdir()
