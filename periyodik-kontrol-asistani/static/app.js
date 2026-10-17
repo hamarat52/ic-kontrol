@@ -296,7 +296,7 @@ function renderSetBody() {
         ${[["all", "Tümü"], ["bekliyor", "Bekleyen"], ["kabul", "Kabul"], ["red", "Red"]].map(([key, label]) =>
           `<button data-filter="${key}" class="${S.filter === key ? "on" : ""}">${label}<span>${k[key] || 0}</span></button>`).join("")}
       </div>
-      <label class="mini-search">${SVG.search}<input id="ctrlSearch" placeholder="Kontrollerde ara" value="${esc(S.q)}" /></label>
+      <label class="mini-search">${SVG.search}<input id="ctrlSearch" placeholder="Ara" value="${esc(S.q)}" /></label>
     </div>
     ${order.map((cat) => `<h2 class="group"><span class="ico">${KAT_ICO[cat] || "📋"}</span>${esc(cat)} <span class="count">${groups[cat].length}</span></h2>
       ${groups[cat].map(rowHtml).join("")}`).join("")}
@@ -420,9 +420,12 @@ function opts(list, val) {
 
 function kaynakBlock(c) {
   if (!c.kaynak && !c.kaynak_belge) return "";
-  const where = c.kaynak_belge ? `<div class="src">📄 ${esc(c.kaynak_belge)}${c.kaynak_bolum ? ` — ${esc(c.kaynak_bolum)}` : ""}</div>` : "";
+  const where = c.kaynak_belge ? `<div class="src">📄 ${esc(c.kaynak_belge)}${c.kaynak_bolum ? `<span class="src-sec">${esc(c.kaynak_bolum)}</span>` : ""}</div>` : "";
   let quote = "";
-  if (c.kaynak) {
+  // Model bazen alıntı yerine yalnız madde numarası verir ("3.4"): bunu alıntı gibi göstermeyelim.
+  if (c.kaynak && /^[\d.\s,–-]{1,12}$/.test(c.kaynak.trim())) {
+    quote = `<div class="ref">Madde ${esc(c.kaynak.trim())}</div>`;
+  } else if (c.kaynak) {
     const v = c.kaynak_dogrulandi;
     quote = `<div class="quote${v === 0 ? " unverified" : ""}">“${esc(c.kaynak)}”</div>`
       + (v === 0 ? `<div class="verify bad">Bu alıntı belgede bulunamadı; model uydurmuş olabilir. Kaynağı kontrol et.</div>`
