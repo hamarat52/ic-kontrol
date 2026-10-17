@@ -21,7 +21,16 @@ STATIC_DIR = Path(__file__).resolve().parent.parent / "static"
 
 @app.get("/")
 def index():
-    return FileResponse(STATIC_DIR / "index.html")
+    # Arayüz güncellenince tarayıcı eski CSS/JS'yi tutmasın
+    return FileResponse(STATIC_DIR / "index.html", headers={"Cache-Control": "no-cache"})
+
+
+@app.middleware("http")
+async def static_revalidate(request, call_next):
+    resp = await call_next(request)
+    if request.url.path.startswith("/static/"):
+        resp.headers["Cache-Control"] = "no-cache"
+    return resp
 
 
 app.mount("/static", StaticFiles(directory=STATIC_DIR), name="static")
