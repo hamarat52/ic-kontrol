@@ -1,0 +1,262 @@
+<!doctype html>
+<html lang="tr">
+<head>
+<meta charset="utf-8" />
+<title>Mockup v2 — UX iyileştirmeleri</title>
+<link rel="stylesheet" href="/static/style.css" />
+<style>
+/* ---- v2 eklemeleri: hepsi yalnız ton/opaklık; konum değişen tek şey sağ panel ---- */
+.row.rejected{opacity:.55}
+.row.kbd{box-shadow:inset 0 0 0 1.5px #C9D4FF}
+.row.multi{background:#EEF1FB}
+.row.multi .cb{border-color:#8EA2E6}
+.row.changed{background:#FBF6E4}
+.warn-tag{color:#C2410C}
+.risk.r-kritik{color:var(--ink-2)}
+
+.head-pills{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+.gap-pill{display:inline-flex;align-items:center;gap:7px;min-height:30px;padding:0 12px;border-radius:999px;
+  background:#FFF4E5;color:#9A4A00;font-size:12.5px;font-weight:500;cursor:pointer;transition:background var(--t)}
+.gap-pill:hover{background:#FFEBD1}
+.prog{display:flex;align-items:center;gap:12px;margin:18px 0 6px;font-size:12.5px;color:var(--muted)}
+.bar{flex:0 0 220px;height:4px;border-radius:4px;background:var(--soft-2);overflow:hidden;display:flex}
+.bar i{display:block;height:100%}
+.bar .a{background:var(--ink)} .bar .r{background:#CFCFD3}
+
+/* toplu seçim çubuğu: sor çubuğunun yerini alır */
+.bulk{pointer-events:auto;display:flex;align-items:center;gap:6px;height:46px;padding:0 6px 0 16px;border-radius:22px;
+  background:var(--ink);color:#fff;font-size:13px;box-shadow:0 10px 30px rgba(30,30,40,.18)}
+.bulk b{font-weight:600;margin-right:8px}
+.bulk button{height:34px;padding:0 14px;border-radius:17px;color:#fff;font-weight:500;transition:background var(--t)}
+.bulk button:hover{background:rgba(255,255,255,.12)}
+.bulk .ghost{color:rgba(255,255,255,.6)}
+.bulk kbd{font-family:inherit;font-size:11px;color:rgba(255,255,255,.5);margin-left:6px}
+
+.undo{position:fixed;left:50%;top:22px;transform:translateX(-50%);z-index:50;display:flex;align-items:center;gap:14px;
+  background:var(--ink);color:#fff;padding:9px 10px 9px 16px;border-radius:12px;font-size:13px;box-shadow:0 10px 30px rgba(30,30,40,.16)}
+.undo button{color:#fff;font-weight:600;padding:4px 10px;border-radius:8px;background:rgba(255,255,255,.12)}
+.undo kbd{font-family:inherit;font-size:11px;color:rgba(255,255,255,.5)}
+
+.keys{display:flex;gap:14px;justify-content:center;padding:0 0 12px;font-size:11.5px;color:var(--faint)}
+.keys kbd{font-family:inherit;font-size:11px;padding:2px 6px;border-radius:5px;background:var(--soft);color:var(--muted);margin-right:4px}
+.panel-foot{display:flex;gap:10px;padding:14px 22px 10px;border-top:1px solid var(--line)}
+.panel-foot .btn{flex:1}
+.next-hint{font-size:12px;color:var(--faint);text-align:center;padding:0 0 4px}
+
+/* sohbet sağ panelde */
+.cp{display:flex;flex-direction:column;height:100%;width:420px}
+.cp .chat{display:flex;flex:1;padding:6px 20px 14px}
+.cp .composer{display:flex}
+.cp-head{display:flex;align-items:center;justify-content:space-between;height:52px;padding:0 14px 0 20px;font-size:12.5px;color:var(--faint);flex-shrink:0}
+.cp-head b{color:var(--ink-2);font-weight:600}
+.focus-chip{display:inline-flex;align-items:center;gap:6px;margin:0 20px 6px;padding:5px 10px;border-radius:8px;background:var(--soft);font-size:12px;color:var(--muted);align-self:flex-start}
+.change2{margin-top:10px;padding:10px 12px;border-radius:10px;background:var(--side);font-size:12.5px;color:var(--muted)}
+.change2 .c-title{color:var(--ink-2);font-weight:600;margin-bottom:3px}
+.change2 .c-diff{display:flex;align-items:center;gap:6px}
+.change2 s{color:var(--faint)} .change2 b{color:var(--ink-2);font-weight:600}
+.change2 .go{margin-left:auto;color:var(--ink-2);font-weight:600;font-size:12px;cursor:pointer}
+.win.chat-open{grid-template-columns:252px 1fr 420px}
+
+/* bilgi tabanı düzenleme */
+.learn li{position:relative;grid-template-columns:92px 1fr auto}
+.learn .acts{display:flex;gap:2px;opacity:0;transition:opacity var(--t)}
+.learn li:hover .acts,.learn li.hov .acts{opacity:1}
+.learn .acts button{font-size:12px;color:var(--faint);padding:2px 8px;border-radius:6px;transition:background var(--t),color var(--t)}
+.learn .acts button:hover{background:var(--soft-2);color:var(--ink-2)}
+.learn .acts .del:hover{color:var(--r-kritik)}
+.learn li.hov{background:var(--hover)}
+.learn li.editing{background:#fff;box-shadow:0 0 0 1px var(--line),0 0 0 3px var(--focus)}
+.learn li.editing textarea{border:0;outline:none;resize:none;width:100%;font:inherit;line-height:1.55;background:transparent;color:var(--ink)}
+.edit-acts{display:flex;gap:8px;grid-column:2/4;margin-top:6px}
+.edit-acts .btn{height:30px;padding:0 12px;font-size:12.5px}
+.src-chip{font-size:11.5px;color:var(--faint);display:block;margin-top:2px}
+
+/* belgeler */
+.doc-row .meta{gap:6px}
+.used{color:var(--muted)}
+.upbar{height:3px;border-radius:3px;background:var(--soft-2);margin-top:7px;overflow:hidden;width:260px}
+.upbar i{display:block;height:100%;width:62%;background:var(--ink)}
+.dup{margin-top:3px;font-size:12.5px;color:#9A4A00}
+.scene-note{position:fixed;right:22px;bottom:18px;z-index:60;background:#fff;border-radius:10px;padding:8px 12px;font-size:12px;color:var(--muted);box-shadow:0 0 0 1px rgba(0,0,0,.06),0 6px 20px rgba(30,30,40,.08)}
+</style>
+</head>
+<body>
+<div class="win" id="win"></div>
+<script>
+const SIDE = (active) => `
+<aside class="side">
+  <button class="search"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>Ara<kbd>⌘K</kbd></button>
+  <nav>
+    <button class="nav-item ${active==='docs'?'active':''}"><span class="ico">📄</span><span class="label">Belgeler</span><span class="count">4</span></button>
+    <button class="nav-item ${active==='set'?'active':''}"><span class="ico">📋</span><span class="label">Kontrol Setleri</span><span class="count">3</span></button>
+    <button class="nav-item"><span class="ico">📚</span><span class="label">Kontrol Kütüphanesi</span><span class="count">12</span></button>
+    <button class="nav-item ${active==='kb'?'active':''}"><span class="ico">💡</span><span class="label">Bilgi Tabanı</span></button>
+  </nav>
+  <div class="sec"><button class="sec-head"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg>Son setler</button>
+    <div class="sec-body">
+      <button class="nav-item"><span class="ico">💸</span><span class="label">Ödeme ve Fon Transferi</span><span class="gen-tag">üretiliyor</span></button>
+      <button class="nav-item ${active==='set'?'active':''}"><span class="ico">🏦</span><span class="label">Kredi Tahsis ve Erişim</span><span class="count">22</span></button>
+      <button class="nav-item"><span class="ico">🏦</span><span class="label">Kredi Tahsis Prosedürü</span><span class="count">10</span></button>
+    </div></div>
+  <div class="side-foot">
+    <button class="new-btn"><span class="ico">＋</span>Yeni kontrol seti</button>
+    <button class="user"><div class="avatar">Y</div><div>Yusuf<small><span class="dot ok"></span>claude-sonnet · bulut</small></div></button>
+  </div>
+</aside>`;
+
+const CHECK = '<svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg>';
+const row = (t, meta, risk, cls = "", warn = false) => `
+  <div class="row ${cls}"><button class="cb">${CHECK}</button>
+    <div><div class="title">${t}</div><div class="meta">${meta}${warn ? '<span class="sep">·</span><span class="warn-tag">⚠ kaynak doğrulanamadı</span>' : ''}</div></div>
+    <span class="risk r-${risk.toLowerCase().replace('ü','u').replace('ş','s')}"><i></i>${risk}</span></div>`;
+const M = (s, h, e) => `${s}<span class="sep">·</span>Hat ${h}<span class="sep">·</span>Efor ${e}`;
+
+const TOP = (crumb, extra = "") => `<div class="topbar"><div class="crumb">${crumb}</div><div class="actions">${extra}
+  <button class="pill-btn">↓ Word</button><button class="pill-btn">↓ Excel</button><button class="pill-btn icon-btn">⋯</button></div></div>`;
+
+const SET_HEAD = `
+  <h1>Kredi Tahsis ve Erişim Yönetimi</h1>
+  <div class="head-pills">
+    <div class="source"><span>📄 3 belge</span><span class="sep">·</span><span>3 bölüm</span><span class="sep">·</span><span>16 Eki 2026</span><span class="sep">·</span><span>claude-sonnet</span></div>
+    <span class="gap-pill">⚠️ 2 boşluk tespit edildi ↓</span>
+  </div>
+  <div class="prog"><div class="bar"><i class="a" style="width:41%"></i><i class="r" style="width:14%"></i></div>
+    <span><b style="color:var(--ink-2)">12 / 22</b> karar verildi · 9 kabul · 3 red · 10 bekliyor</span></div>`;
+
+const TOOLBAR = (f = "Bekleyen") => `<div class="toolbar" style="margin-top:18px"><div class="seg">
+  ${["Tümü 22","Bekleyen 10","Kabul 9","Red 3"].map(x => { const [l,n] = x.split(" "); return `<button class="${l===f?'on':''}">${l}<span>${n}</span></button>`; }).join("")}
+  </div><label class="mini-search"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg><input placeholder="Ara"></label></div>`;
+
+const DETAIL = `
+<div class="panel-in" style="opacity:1">
+  <div class="panel-top"><span>Kontrol detayı · 4 / 10 bekleyen</span><button class="pill-btn icon-btn">✕</button></div>
+  <div class="panel-body">
+    <textarea class="auto p-title" rows="2">Ayrıcalıklı hesap işlemlerinin haftalık incelendiğinin teyidi</textarea>
+    <dl class="fields">
+      <dt>Kategori</dt><dd><select><option>Bilgi Sistemleri</option></select></dd>
+      <dt>Sıklık</dt><dd><select><option>Haftalık</option></select></dd>
+      <dt>Risk</dt><dd><select><option>Yüksek</option></select></dd>
+      <dt>Efor</dt><dd><select><option>Orta</option></select></dd>
+      <dt>Hat</dt><dd><select><option>2 — Risk / uyum</option></select></dd>
+    </dl>
+    <div class="blk"><h4>Gerekçe</h4><div class="auto" style="font-size:13.5px;line-height:1.6;color:var(--ink-2)">Ayrıcalıklı hesaplar tüm verilere erişebildiği için kötüye kullanım fark edilmezse etkisi yüksektir.</div></div>
+    <div class="blk"><h4>Kaynak</h4><div class="src">📄 sentetik-erisim-yonetimi.docx<span class="src-sec">6. Ayrıcalıklı Hesaplar</span></div>
+      <div class="quote">“Ayrıcalıklı hesaplarla yapılan tüm işlemler kayıt altına alınır ve Bilgi Güvenliği tarafından haftalık incelenir.”</div>
+      <div class="verify ok">Alıntı belgede doğrulandı</div></div>
+  </div>
+  <div class="panel-foot"><button class="btn btn-ghost">Reddet <span style="color:var(--faint);font-weight:500;margin-left:6px">R</span></button><button class="btn btn-ink">Kabul et <span style="opacity:.55;font-weight:500;margin-left:6px">A</span></button></div>
+  <div class="next-hint">Karar verince sıradaki bekleyen kontrol açılır</div>
+  <div class="keys"><span><kbd>↑</kbd><kbd>↓</kbd>gezin</span><span><kbd>A</kbd>kabul</span><span><kbd>R</kbd>red</span><span><kbd>E</kbd>düzenle</span><span><kbd>⌘Z</kbd>geri al</span></div>
+</div>`;
+
+const LIST_BS = `
+  <h2 class="group"><span class="ico">🛡️</span>Bilgi Sistemleri <span class="count">5</span></h2>
+  ${row("Yeni kullanıcı taleplerinin yönetici onayı alınmadan iletilmediğinin teyidi", M("Aylık","2","orta"), "Orta", "done")}
+  ${row("Rol dışı yetki taleplerinin Bilgi Güvenliği onayından geçtiğinin kontrolü", M("Aylık","2","orta"), "Orta", "done")}
+  ${row("Ayrıcalıklı hesap işlemlerinin haftalık incelendiğinin teyidi", M("Haftalık","2","orta"), "Yüksek", "selected kbd")}
+  ${row("Ayrılan personel erişimlerinin aynı gün kapatıldığının kontrolü", M("Günlük","1","düşük"), "Kritik")}
+  ${row("Acil erişim hesabının olay numarasıyla açıldığının teyidi", M("Haftalık","2","düşük"), "Yüksek", "", true)}
+  <h2 class="group"><span class="ico">⚙️</span>Operasyonel <span class="count">4</span></h2>
+  ${row("Kredi başvurularının tahsis öncesi risk analizinden geçtiğinin kontrolü", M("Aylık","1","orta"), "Yüksek", "done")}
+  ${row("Kullandırım süresinin aşılıp aşılmadığının izlenmesi", M("Aylık","1","düşük"), "Orta", "rejected")}
+  ${row("Teminat değerleme raporlarının güncelliğinin teyidi", M("Üç aylık","2","orta"), "Orta")}`;
+
+function sceneReview() {
+  document.getElementById("win").className = "win has-panel";
+  document.getElementById("win").innerHTML = SIDE("set") + `
+  <section class="main">${TOP('Kontrol Setleri <span>/</span> <b>Kredi Tahsis ve Erişim Yönetimi</b>')}
+    <div class="scroll"><div class="doc">${SET_HEAD}${TOOLBAR("Tümü")}${LIST_BS}</div></div>
+    <div class="ask-wrap"><div class="ask"><button class="ask-bar"><span class="orb"></span><span class="ph">“Ayrıcalıklı hesap işlemleri…” kontrolüne geri bildirim ver…</span><kbd class="k">⌘J</kbd></button></div></div>
+  </section><aside class="panel">${DETAIL}</aside>`;
+  document.body.insertAdjacentHTML("beforeend", `<div class="undo">“Rol dışı yetki talepleri…” kabul edildi <button>Geri al</button><kbd>⌘Z</kbd></div>`);
+}
+
+function sceneBulk() {
+  document.getElementById("win").className = "win";
+  const L = LIST_BS.replace('selected kbd', 'multi').replace('"row "><button class="cb">' , '"row "><button class="cb">');
+  let list = LIST_BS.replace("selected kbd", "multi");
+  // ilk iki bekleyeni de seç
+  list = list.replace('<div class="row "><button class="cb">' + CHECK + '\n    <div><div class="title">Ayrılan', '<div class="row multi"><button class="cb">' + CHECK + '\n    <div><div class="title">Ayrılan');
+  list = list.replace('<div class="row "><button class="cb">' + CHECK + '\n    <div><div class="title">Teminat', '<div class="row multi"><button class="cb">' + CHECK + '\n    <div><div class="title">Teminat');
+  document.getElementById("win").innerHTML = SIDE("set") + `
+  <section class="main">${TOP('Kontrol Setleri <span>/</span> <b>Kredi Tahsis ve Erişim Yönetimi</b>')}
+    <div class="scroll"><div class="doc">${SET_HEAD}${TOOLBAR("Tümü")}${list}</div></div>
+    <div class="ask-wrap"><div class="bulk"><b>3 kontrol seçili</b><button>Kabul et<kbd>A</kbd></button><button>Reddet<kbd>R</kbd></button><button class="ghost">Seçimi kaldır<kbd>Esc</kbd></button></div></div>
+  </section><aside class="panel"></aside>`;
+  document.querySelectorAll(".row").forEach((r) => {
+    const tt = r.querySelector(".title").textContent;
+    if (tt.startsWith("Ayrılan") || tt.startsWith("Teminat")) r.classList.add("multi");
+  });
+  document.body.insertAdjacentHTML("beforeend", `<div class="scene-note">⌘ ya da Shift ile tıklayarak çoklu seçim</div>`);
+}
+
+function sceneChat() {
+  document.getElementById("win").className = "win chat-open";
+  let list = LIST_BS.replace("selected kbd", "").replace('<div class="row ">' + '<button class="cb">' + CHECK + '\n    <div><div class="title">Teminat', '<div class="row changed"><button class="cb">' + CHECK + '\n    <div><div class="title">Teminat');
+  list = list.replace(M("Üç aylık","2","orta"), M("Altı aylık","2","orta") + '<span class="sep">·</span><span style="color:#9A6B00">sohbette değişti</span>');
+  document.getElementById("win").innerHTML = SIDE("set") + `
+  <section class="main">${TOP('Kontrol Setleri <span>/</span> <b>Kredi Tahsis ve Erişim Yönetimi</b>')}
+    <div class="scroll"><div class="doc">${SET_HEAD}${TOOLBAR("Tümü")}${list}</div></div>
+  </section>
+  <aside class="panel"><div class="cp">
+    <div class="cp-head"><span><b>Sohbet</b> · bu set</span><button class="pill-btn icon-btn">✕</button></div>
+    <div class="chat">
+      <div class="msg-user">Teminat değerlemesi bizde zaten yılda bir dış eksperle yapılıyor, üç ayda bir kontrol fazla.</div>
+      <div class="msg-ai"><span class="orb"></span><div>Haklısın; değerleme yıllık yapılıyorsa raporların güncelliğini üç ayda bir test etmek gereksiz iş yükü yaratır. Sıklığı altı aya indirdim, böylece yıllık döngünün ortasında bir ara kontrol kalıyor.
+        <div class="change2"><div class="c-title">Teminat değerleme raporlarının güncelliği</div><div class="c-diff">Sıklık <s>Üç aylık</s> → <b>Altı aylık</b><span class="go">Listede göster</span></div></div>
+        <div class="learned">💡 Bilgi tabanına eklendi: “Teminat değerlemesi yılda bir dış eksperle yapılıyor; güncellik kontrolleri altı aydan sık olmasın.”</div></div></div>
+      <div class="msg-user">Ayrılan personel kontrolü neden kritik?</div>
+      <div class="msg-ai"><span class="orb"></span><div class="thinking"><span>Düşünüyor…</span></div></div>
+    </div>
+    <div class="composer"><textarea rows="1" placeholder="Bir şey sor ya da geri bildirim ver…"></textarea><button class="send">↑</button></div>
+  </div></aside>`;
+}
+
+function sceneKB() {
+  document.getElementById("win").className = "win";
+  document.getElementById("win").innerHTML = SIDE("kb") + `
+  <section class="main"><div class="topbar"><div class="crumb"><b>Bilgi Tabanı</b></div><div class="actions"></div></div>
+    <div class="scroll"><div class="doc">
+      <h1>Bilgi Tabanı</h1>
+      <div class="source"><span>💡 3 konu</span><span class="sep">·</span><span>7 öğrenilen kural</span></div>
+      <p class="lead">Model her kontrol setini üretirken bu bilgileri kullanır. Yanlış öğrenilen bir kuralı düzeltebilir ya da silebilirsin.</p>
+      <section class="kb"><h2><span class="ico">📐</span>Kontrol Metrikleri</h2><p class="sub">4 öğrenilen kural</p>
+        <ul class="learn">
+          <li><time>16.10 21:12</time><span>Teminat değerlemesi yılda bir dış eksperle yapılıyor; güncellik kontrolleri altı aydan sık olmasın.<span class="src-chip">Sohbetten · Kredi Tahsis ve Erişim</span></span><span class="acts"><button>Düzenle</button><button class="del">Sil</button></span></li>
+          <li class="hov"><time>16.10 20:48</time><span>Reddedildi: “Kullandırım süresinin aşılıp aşılmadığının izlenmesi” (Operasyonel, Aylık).<span class="src-chip">Ret kararından</span></span><span class="acts"><button>Düzenle</button><button class="del">Sil</button></span></li>
+          <li class="editing"><time>16.10 19:30</time><textarea rows="2">Şube hacmi düşük olduğu için operasyonel kontroller haftalıktan sık olmasın; kritik riskler hariç.</textarea>
+            <div class="edit-acts"><button class="btn btn-ink">Kaydet</button><button class="btn btn-ghost">Vazgeç</button></div></li>
+          <li><time>16.10 18:05</time><span>Mesai dışı işlem kontrollerinde ertesi iş günü listesi esas alınır.<span class="src-chip">Düzenlemeden</span></span><span class="acts"><button>Düzenle</button><button class="del">Sil</button></span></li>
+        </ul>
+        <details class="seed"><summary>Başlangıç bilgisi</summary></details>
+      </section>
+      <section class="kb"><h2><span class="ico">🔍</span>MASAK / AML</h2><p class="sub">Henüz öğrenilen kural yok</p><details class="seed"><summary>Başlangıç bilgisi</summary></details></section>
+    </div></div>
+  </section><aside class="panel"></aside>`;
+}
+
+function sceneDocs() {
+  document.getElementById("win").className = "win";
+  const d = (ico, name, meta, extra = "") => `<div class="doc-row"><span class="ico">${ico}</span><div><div class="title">${name}</div><div class="meta">${meta}</div>${extra}</div><button class="row-action">Kaldır</button></div>`;
+  document.getElementById("win").innerHTML = SIDE("docs") + `
+  <section class="main"><div class="topbar"><div class="crumb"><b>Belgeler</b></div><div class="actions"></div></div>
+    <div class="scroll"><div class="doc">
+      <h1>Belgeler</h1>
+      <p class="lead">Kontrol çıkarılacak süreç, prosedür ve politika belgelerini ekle. Uzun belgeler bölümlere ayrılıp tek tek okunur.</p>
+      <div class="drop"><div class="big">📄</div><div><strong>Belgeleri sürükle bırak</strong> ya da seçmek için tıkla</div><small>PDF · Word · TXT · Markdown</small></div>
+      <div class="doc-list">
+        ${d("📄","kredi-tahsis-uygulama-esaslari.pdf","Okunuyor… 38 / 61 sayfa", '<div class="upbar"><i></i></div>')}
+        ${d("📄","sentetik-odeme-transfer-uygulama-esaslari.txt",'3.476 karakter<span class="sep">·</span>2 bölüm<span class="sep">·</span><span class="used">2 sette kullanıldı</span>')}
+        ${d("📄","sentetik-erisim-yonetimi-uygulama-esaslari.docx",'2.557 karakter<span class="sep">·</span>1 bölüm<span class="sep">·</span><span class="used">1 sette kullanıldı</span>')}
+        ${d("📄","sentetik-erisim-yonetimi-uygulama-esaslari (1).docx",'2.557 karakter<span class="sep">·</span>yeni', '<div class="dup">Bu belge zaten yüklü görünüyor (içerik aynı). <u>Kaldır</u></div>')}
+      </div>
+      <div class="cta"><button class="btn btn-ink">Periyodik kontrolleri çıkart</button><span class="hint">3 belge · ~6 bölüm · seçili model: claude-sonnet</span></div>
+    </div></div>
+  </section><aside class="panel"></aside>`;
+}
+
+const s = new URLSearchParams(location.search).get("s") || "review";
+({ review: sceneReview, bulk: sceneBulk, chat: sceneChat, kb: sceneKB, docs: sceneDocs }[s] || sceneReview)();
+</script>
+</body>
+</html>
