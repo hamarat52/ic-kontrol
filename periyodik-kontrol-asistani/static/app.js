@@ -115,10 +115,10 @@ function renderSidebar() {
   const r = S.route;
   document.querySelectorAll("#nav .nav-item").forEach((b) => {
     const n = b.dataset.route;
-    b.classList.toggle("active", n === r.name || (n === "setler" && (r.name === "home")));
+    b.classList.toggle("active", n === r.name);
   });
   const list = $("#setList");
-  if (!S.sets.length) { list.innerHTML = `<div class="sec-empty">Henüz set yok</div>`; return; }
+  if (!S.sets.length) { list.innerHTML = `<div class="sec-empty">Henüz set yok · belge yükleyip başla</div>`; return; }
   list.innerHTML = S.sets.map((s) => {
     const generating = isGen(s);
     const title = s.baslik || "Yeni kontrol seti";
