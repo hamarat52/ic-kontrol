@@ -67,3 +67,17 @@ def test_documents_metadata(client, env):
     docs = {d["filename"]: d for d in client.get("/api/documents").json()}
     assert docs["a.txt"]["kullanim"] == 1 and docs["a (1).txt"]["kullanim"] == 0   # kopya üretimde atlanır
     assert len([c for c in env.calls if c.get("stream")]) == 1
+
+
+def test_document_view_and_download(client, env):
+    body = "1. Amaç\nKredi süreci.\n2. Onay\nŞube müdürü onaylar.\n".encode()
+    d = client.post("/api/documents", files={"file": ("Kredi Prosedürü.txt", body, "text/plain")}).json()
+    r = client.get(f"/api/documents/{d['id']}/text").json()
+    assert r["filename"] == "Kredi Prosedürü.txt" and r["inline"] is True
+    assert "Şube müdürü onaylar." in "".join(b["text"] for b in r["bolumler"])
+    f = client.get(f"/api/documents/{d['id']}/file?indir=1")
+    assert f.status_code == 200 and f.content == body
+    assert f.headers["content-disposition"].startswith("attachment;") and "Kredi%20Prosed" in f.headers["content-disposition"]
+    assert client.get(f"/api/documents/{d['id']}/file").headers["content-disposition"].startswith("inline;")
+    assert client.get("/api/documents/99999/text").status_code == 404
+    assert client.get("/api/documents/99999/file").status_code == 404

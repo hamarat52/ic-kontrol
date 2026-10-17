@@ -237,6 +237,41 @@ def list_documents():
     return rows
 
 
+MEDIA_TYPES = {".pdf": "application/pdf", ".txt": "text/plain; charset=utf-8", ".md": "text/plain; charset=utf-8",
+               ".docx": "application/vnd.openxmlformats-officedocument.wordprocessingml.document"}
+
+
+def _doc_row(doc_id: int):
+    with storage.db_session() as conn:
+        row = conn.execute("SELECT * FROM documents WHERE id = ?", (doc_id,)).fetchone()
+    if not row or not Path(row["stored_path"]).exists():
+        raise HTTPException(404, "Belge bulunamadı.")
+    return dict(row)
+
+
+@app.get("/api/documents/{doc_id}/file")
+def document_file(doc_id: int, indir: int = 0):
+    """Orijinal dosya. indir=1: indirme; değilse tarayıcıda açılır (PDF/TXT)."""
+    d = _doc_row(doc_id)
+    p = Path(d["stored_path"])
+    disp = _disposition(d["filename"])
+    if not indir:
+        disp = disp.replace("attachment;", "inline;", 1)
+    return FileResponse(p, media_type=MEDIA_TYPES.get(p.suffix.lower(), "application/octet-stream"),
+                        headers={"Content-Disposition": disp})
+
+
+@app.get("/api/documents/{doc_id}/text")
+def document_text(doc_id: int):
+    """Modelin okuduğu metin, modelin gördüğü bölümlere ayrılmış hâlde."""
+    d = _doc_row(doc_id)
+    text, warning = documents.extract(Path(d["stored_path"]))
+    chunks = processing.split_document(text, d["filename"]) if text.strip() else []
+    return {"id": d["id"], "filename": d["filename"], "uyari": warning, "char_count": len(text.strip()),
+            "uploaded_at": d["uploaded_at"], "inline": Path(d["stored_path"]).suffix.lower() in (".pdf", ".txt", ".md"),
+            "bolumler": [{"bolum": c["bolum"], "text": c["text"]} for c in chunks]}
+
+
 @app.delete("/api/documents/{doc_id}")
 def delete_document(doc_id: int):
     with storage.db_session() as conn:

@@ -13,7 +13,7 @@ const S = {
   docs: [], sets: [], lib: [], health: null, meta: null,
   route: { name: "home" }, set: null, poll: null,
   filter: "all", q: "", selectedId: null, chatBusy: false, fresh: new Set(),
-  panelMode: null, multi: new Set(), anchor: null, changed: new Set(), undo: null, kbd: false,
+  panelMode: null, docId: null, docBack: null, multi: new Set(), anchor: null, changed: new Set(), undo: null, kbd: false,
   uploading: [], kbEdit: null, skills: null,
 };
 const isGen = (s) => s && s.durum === "uretiliyor";
@@ -189,13 +189,13 @@ function viewDocs() {
         const meta = [`${(d.char_count || 0).toLocaleString("tr-TR")} karakter`];
         if (d.bolum) meta.push(`${d.bolum} bölüm`);
         meta.push(d.kullanim ? `<span class="used">${d.kullanim} sette kullanıldı</span>` : "henüz kullanılmadı");
-        return `<div class="doc-row">
+        return `<div class="doc-row clickable${S.panelMode === "doc" && S.docId === d.id ? " selected" : ""}" data-doc="${d.id}">
           <span class="ico">${d.uyari && !d.char_count ? "⚠️" : "📄"}</span>
           <div><div class="title">${esc(d.filename)}</div>
             <div class="meta">${meta.join('<span class="sep">·</span>')}<span class="sep">·</span>${fmtDate(d.uploaded_at, true)}</div>
             ${d.uyari ? `<div class="warn">${esc(d.uyari)}</div>` : ""}
             ${d.kopya_of ? `<div class="dup">Bu belge “${esc(d.kopya_of)}” ile aynı içerikte; üretimde bir kez kullanılır. <button class="link" data-act="del-doc" data-id="${d.id}">Kaldır</button></div>` : ""}</div>
-          <button class="row-action" data-act="del-doc" data-id="${d.id}">Kaldır</button>
+          <span class="doc-acts"><a class="row-action" href="/api/documents/${d.id}/file?indir=1" download title="İndir">İndir</a><button class="row-action" data-act="del-doc" data-id="${d.id}">Kaldır</button></span>
         </div>`;
       }).join("")}
     </div>
@@ -535,13 +535,16 @@ function setPanelMode(mode) {
   const w = $("#win");
   w.classList.toggle("has-panel", !!mode);
   w.classList.toggle("chat-open", mode === "chat");
+  w.classList.toggle("doc-open", mode === "doc");
+  if (mode !== "doc") { S.docId = null; S.docBack = null; syncDocRows(); }
   renderBottom();
 }
 function openPanel(id, { keepKbd = false } = {}) {
   const c = findControl(id); if (!c) return;
   if (!keepKbd) S.kbd = false;
   S.selectedId = c.id;
-  if (S.panelMode === "chat") { renderChatFocus(); syncRows(); return; }   // sohbet açıkken satır seçimi odağı değiştirir
+  if (S.panelMode === "chat") { renderChatFocus(); syncRows(); return; }
+  if (S.panelMode === "doc") S.panelMode = null;   // sohbet açıkken satır seçimi odağı değiştirir
   renderPanel(c);
   setPanelMode("detail");
   syncRows();
@@ -563,7 +566,7 @@ function opts(list, val) {
 
 function kaynakBlock(c) {
   if (!c.kaynak && !c.kaynak_belge) return "";
-  const where = c.kaynak_belge ? `<div class="src">📄 ${esc(c.kaynak_belge)}${c.kaynak_bolum ? `<span class="src-sec">${esc(c.kaynak_bolum)}</span>` : ""}</div>` : "";
+  const where = c.kaynak_belge ? `<div class="src"><button class="src-link" data-act="open-src" title="Belgede göster">📄 ${esc(c.kaynak_belge)}</button>${c.kaynak_bolum ? `<span class="src-sec">${esc(c.kaynak_bolum)}</span>` : ""}</div>` : "";
   let quote = "";
   // Model bazen alıntı yerine yalnız madde numarası verir ("3.4"): bunu alıntı gibi göstermeyelim.
   if (c.kaynak && /^[\d.\s,–-]{1,12}$/.test(c.kaynak.trim())) {
@@ -619,6 +622,62 @@ async function loadHistory(id) {
     el.innerHTML = items.map((h) => `<li><time>${fmtTime(h.t)}</time><span>${esc(h.text)}</span></li>`).join("");
   } catch {}
 }
+
+/* ---------------------------------------------------------------- belge görüntüleme (sağ panel) */
+async function openDoc(id, { quote = "", bolum = "", back = null, verified = null } = {}) {
+  S.docId = Number(id); S.docBack = back;
+  let d;
+  try { d = await api(`/api/documents/${id}/text`); } catch (e) { toast(e.message, true); return; }
+  if (S.docId !== Number(id)) return;
+  // Alıntıyı bul: önce tamamı, olmazsa en uzun ardışık kelime dizisi (en az 4 kelime)
+  const words = (quote || "").trim().split(/\s+/).filter(Boolean).map((w) => esc(w).replace(/[.*+?^${}()|[\]\\]/g, "\\$&"));
+  const tries = [];
+  for (let n = words.length; n >= Math.min(4, words.length); n--)
+    for (let s = 0; s + n <= words.length; s++) tries.push(new RegExp(words.slice(s, s + n).join("\\s+"), "i"));
+  const escd = d.bolumler.map((b) => esc(b.text));
+  let hit = null;   // [bölüm index, regex, tam mı]
+  if (words.length >= 3) {
+    for (const re of tries) { const i = escd.findIndex((x) => re.test(x)); if (i >= 0) { hit = [i, re, re === tries[0]]; break; } }
+  }
+  const fmt = (html) => html.split("\n").map((l) => (l.startsWith("# ") ? `<b class="dh">${l.slice(2)}</b>` : l)).join("\n");
+  let relIdx = -1;
+  if (!hit && bolum && d.bolumler.length > 1) relIdx = d.bolumler.findIndex((b) => b.bolum === bolum);
+  const secs = d.bolumler.map((b, i) => {
+    let body = escd[i];
+    if (hit && hit[0] === i) body = body.replace(hit[1], (m) => `<mark id="docHit">${m}</mark>`);
+    return `<section class="doc-sec${i === relIdx ? " rel" : ""}"><h4>${esc(b.bolum || `Bölüm ${i + 1}`)}<span>${i === relIdx ? "ilgili bölüm · " : ""}${i + 1}/${d.bolumler.length}</span></h4><div class="doc-text">${fmt(body)}</div></section>`;
+  }).join("");
+  const note = !quote || words.length < 3 ? "" : !hit ? (verified === 0 ? "Alıntı belgede bulunamadı; model uydurmuş olabilir." : "")
+    : !hit[2] ? "Alıntı birebir bulunamadı; en yakın eşleşen kısım işaretlendi." : "";
+  const backC = back && findControl(back);
+  $("#panel").innerHTML = `
+    <div class="panel-top">
+      ${backC ? `<button class="back-btn" data-act="doc-back">← ${esc(short(backC.kontrol_adi))}</button>` : `<span>Belge</span>`}
+      <button class="pill-btn icon-btn" data-act="close-panel" title="Kapat (Esc)">${SVG.close}</button></div>
+    <div class="panel-body doc-view">
+      <div class="p-doc-title">${esc(d.filename)}</div>
+      <div class="doc-meta">${d.char_count.toLocaleString("tr-TR")} karakter<span class="sep">·</span>${d.bolumler.length} bölüm<span class="sep">·</span>${fmtDate(d.uploaded_at, true)}</div>
+      <div class="doc-actions">
+        <a class="pill-btn" href="/api/documents/${d.id}/file?indir=1" download>${SVG.down}İndir</a>
+        ${d.inline ? `<a class="pill-btn" href="/api/documents/${d.id}/file" target="_blank" rel="noopener">Orijinali aç ↗</a>` : ""}
+      </div>
+      ${note ? `<div class="doc-note">${note}</div>` : ""}
+      ${d.uyari ? `<div class="warn">${esc(d.uyari)}</div>` : ""}
+      ${secs || `<p class="lead muted">Bu belgeden metin okunamadı.</p>`}
+      <p class="doc-foot">Modelin okuduğu metin, modelin gördüğü bölümlere ayrılmış hâlde gösteriliyor.</p>
+    </div>`;
+  setPanelMode("doc");
+  syncDocRows();
+  requestAnimationFrame(() => {
+    const el = $("#docHit") || $(".doc-sec.rel");
+    if (el) el.scrollIntoView({ block: "center" });
+  });
+}
+function syncDocRows() {
+  document.querySelectorAll(".doc-row[data-doc]").forEach((r) =>
+    r.classList.toggle("selected", S.panelMode === "doc" && Number(r.dataset.doc) === S.docId));
+}
+function docByName(name) { return [...S.docs].sort((a, b) => b.id - a.id).find((d) => d.filename === name); }
 
 /* ---------------------------------------------------------------- sohbet (sağ panelde) */
 function updateAskPlaceholder() {
@@ -949,6 +1008,12 @@ document.addEventListener("click", async (e) => {
   if (a === "chat-detail") { const id = S.selectedId; S.panelMode = null; return openPanel(id); }
   if (a === "chat-unfocus") { S.selectedId = null; syncRows(); renderChatFocus(); updateAskPlaceholder(); return; }
   if (a === "show-row") return showRow(act.dataset.id);
+  if (a === "open-src") {
+    const c = findControl(S.selectedId); const d = c && docByName(c.kaynak_belge);
+    if (!d) { toast("Belge artık yüklü değil", true); return; }
+    return openDoc(d.id, { quote: c.kaynak, bolum: c.kaynak_bolum, back: c.id, verified: c.kaynak_dogrulandi });
+  }
+  if (a === "doc-back") { const id = S.docBack; S.panelMode = null; return openPanel(id); }
   if (a === "kb-edit") { const li = act.closest("li"); S.kbEdit = { skill: li.dataset.skill, text: li.dataset.text }; return viewKnowledge(false); }
   if (a === "kb-cancel") { S.kbEdit = null; return viewKnowledge(false); }
   if (a === "kb-save") return kbSave();
@@ -982,6 +1047,7 @@ document.addEventListener("click", async (e) => {
     return;
   }
   if (a === "del-doc") {
+    if (S.docId === Number(act.dataset.id)) closePanel();
     try { await api("/api/documents/" + act.dataset.id, { method: "DELETE" }); S.docs = await api("/api/documents"); renderSidebar(); viewDocs(); }
     catch (err) { toast(err.message, true); }
     return;
@@ -998,6 +1064,13 @@ document.addEventListener("click", async (e) => {
   if (a === "lib-remove") {
     await api("/api/library/" + act.dataset.id, { method: "DELETE" });
     await refreshLib(); viewLibrary(); return;
+  }
+
+  const docRow = e.target.closest(".doc-row[data-doc]");
+  if (docRow && !e.target.closest("a, button")) {
+    const id = Number(docRow.dataset.doc);
+    if (S.panelMode === "doc" && S.docId === id) closePanel(); else openDoc(id);
+    return;
   }
 
   const row = e.target.closest("#setBody .row");
@@ -1073,6 +1146,7 @@ document.addEventListener("keydown", (e) => {
     if (menu && menu.classList.contains("open")) return menu.classList.remove("open");
     if (S.multi.size) return clearMulti();
     if (S.panelMode === "chat") return closeChat();
+    if (S.panelMode === "doc") { if (S.docBack) { const id = S.docBack; S.panelMode = null; return openPanel(id); } return closePanel(); }
     if (S.selectedId) return closePanel();
     return;
   }

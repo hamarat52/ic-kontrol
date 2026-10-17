@@ -435,3 +435,33 @@ kbd.k{font-family:inherit;font-size:11px;color:var(--faint);padding:3px 7px;bord
 
 /* bildirimler alttaki sor çubuğunun hemen üstünde; üst çubuktaki düğmeleri örtmesin */
 .toast{top:auto;bottom:92px}
+
+/* ---------- belge görüntüleme ---------- */
+.win.doc-open{grid-template-columns:252px 1fr 520px}
+.win.doc-open .panel-in{width:520px}
+.doc-row.clickable{cursor:pointer}
+.doc-row.selected{background:var(--sel)}
+.doc-acts{display:flex;gap:14px;align-items:center}
+.doc-row .row-action{opacity:0}
+.doc-row:hover .row-action,.doc-row.selected .row-action{opacity:1}
+a.row-action{text-decoration:none}
+a.row-action:hover{color:var(--ink-2)}
+.doc-acts .row-action[data-act=del-doc]:hover{color:var(--r-kritik)}
+.back-btn{font-size:12.5px;color:var(--muted);padding:4px 8px;margin-left:-8px;border-radius:8px;max-width:360px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;transition:background var(--t),color var(--t)}
+.back-btn:hover{background:var(--hover);color:var(--ink-2)}
+.p-doc-title{font-size:18px;font-weight:700;letter-spacing:-.01em;line-height:1.35;word-break:break-word}
+.doc-meta{font-size:12.5px;color:var(--faint);margin:6px 0 12px;display:flex;gap:6px;flex-wrap:wrap}
+.doc-meta .sep{color:#CFCFD3}
+.doc-actions{display:flex;gap:8px;margin-bottom:18px}
+a.pill-btn{text-decoration:none}
+.doc-note{font-size:12.5px;color:#9A4A00;margin:-6px 0 14px}
+.doc-sec{padding:14px 0;border-top:1px solid var(--line);border-radius:8px;transition:background var(--t)}
+.doc-sec.rel h4{color:#9A6B00}
+.doc-text .dh{color:var(--ink);font-weight:600}
+.doc-sec h4{display:flex;justify-content:space-between;gap:10px;font-size:12px;color:var(--faint);font-weight:600;margin:0 0 8px}
+.doc-sec h4 span{font-weight:500}
+.doc-text{font-size:13px;line-height:1.65;color:var(--ink-2);white-space:pre-wrap;word-break:break-word}
+.doc-text mark{background:#FCEFC0;color:var(--ink);border-radius:3px;padding:1px 0}
+.doc-foot{font-size:12px;color:var(--faint);margin-top:16px}
+.src-link{color:var(--ink-2);font-size:12.5px;text-decoration:underline;text-decoration-color:#D6D5D0;text-underline-offset:3px;padding:0;transition:text-decoration-color var(--t)}
+.src-link:hover{text-decoration-color:var(--ink-2)}
