@@ -5,6 +5,8 @@ bölümü kullanım/geri bildirim arttıkça büyür. Şimdilik güncelleme kura
 tabanlı (LLM olmadan da çalışır); LLM varsa daha nitelikli özetleme için
 kullanılabilir (bkz. llm.summarize_feedback_for_skill).
 """
+import json
+import re
 from datetime import datetime
 from pathlib import Path
 
@@ -73,3 +75,86 @@ def guess_skill_for_category(kategori: str) -> str:
     if "masak" in kategori_l or "aml" in kategori_l or "şüpheli" in kategori_l:
         return "masak-aml"
     return "kontrol-metrikleri"
+
+
+# ---------------------------------------------------------------- öğrenilenleri yönetme
+
+_ENTRY = re.compile(r"^- \[(\d{4}-\d{2}-\d{2}(?: \d{2}:\d{2})?)\]\s*(.+)$")
+
+
+def skill_path(name: str) -> Path | None:
+    """Yalnız var olan skill dosyalarına izin verir (yol enjeksiyonu yok)."""
+    if not re.fullmatch(r"[a-z0-9-]{1,60}", name or ""):
+        return None
+    p = config.SKILLS_DIR / f"{name}.md"
+    return p if p.exists() else None
+
+
+def _archive(name: str, line: str, reason: str) -> None:
+    rec = {"ts": datetime.now().isoformat(timespec="seconds"), "skill": name, "satir": line, "neden": reason}
+    with open(config.DATA_DIR / "skills_arsiv.jsonl", "a", encoding="utf-8") as f:
+        f.write(json.dumps(rec, ensure_ascii=False) + "\n")
+
+
+def _rewrite(name: str, fn) -> bool:
+    """Öğrenilenler bölümündeki her madde satırına fn(ts, text) uygular.
+    fn: None (dokunma) | "" (sil) | yeni metin döndürür. Bir satır değiştiyse True."""
+    path = skill_path(name)
+    if not path:
+        return False
+    lines = path.read_text(encoding="utf-8").split("\n")
+    try:
+        start = next(i for i, l in enumerate(lines) if l.strip() == "## Öğrenilenler")
+    except StopIteration:
+        return False
+    changed = False
+    out = lines[: start + 1]
+    for line in lines[start + 1:]:
+        m = _ENTRY.match(line)
+        res = fn(m.group(1), m.group(2)) if m else None
+        if res is None:
+            out.append(line)
+            continue
+        changed = True
+        if res == "":
+            _archive(name, line, "arşivlendi")
+        else:
+            out.append(f"- [{m.group(1)}] {res}")
+    if changed:
+        path.write_text("\n".join(out), encoding="utf-8")
+    return changed
+
+
+def edit_learning(name: str, old_text: str, new_text: str) -> bool:
+    new_text = " ".join((new_text or "").split())
+    if not new_text:
+        return False
+    done = []
+
+    def fn(ts, text):
+        if not done and text == old_text:
+            done.append(1)
+            return new_text
+        return None
+    return _rewrite(name, fn)
+
+
+def archive_learning(name: str, old_text: str) -> bool:
+    done = []
+
+    def fn(ts, text):
+        if not done and text == old_text:
+            done.append(1)
+            return ""
+        return None
+    return _rewrite(name, fn)
+
+
+def remove_last_learning_starting(name: str, prefix: str) -> bool:
+    """Karar geri alınınca o karardan yazılmış son öğrenilen satırı kaldırır."""
+    path = skill_path(name)
+    if not path:
+        return False
+    texts = [m.group(2) for l in path.read_text(encoding="utf-8").split("\n") if (m := _ENTRY.match(l))]
+    match = next((t for t in reversed(texts) if t.startswith(prefix)), None)
+    return archive_learning(name, match) if match else False

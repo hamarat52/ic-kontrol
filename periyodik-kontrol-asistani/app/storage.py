@@ -85,7 +85,7 @@ CREATE INDEX IF NOT EXISTS idx_messages_set ON set_messages(set_id);
 
 # Eski veritabanlarına sonradan eklenen sütunlar
 MIGRATIONS = {
-    "documents": {"char_count": "INTEGER DEFAULT 0", "uyari": "TEXT"},
+    "documents": {"char_count": "INTEGER DEFAULT 0", "uyari": "TEXT", "sha": "TEXT", "bolum": "INTEGER"},
     "suggestions": {"dayanak": "TEXT", "kaynak": "TEXT", "kaynak_belge": "TEXT",
                     "kaynak_bolum": "TEXT", "kaynak_dogrulandi": "INTEGER"},
     "control_sets": {"progress": "TEXT", "istatistik": "TEXT", "iptal": "INTEGER DEFAULT 0"},

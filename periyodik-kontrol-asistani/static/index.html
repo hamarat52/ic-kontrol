@@ -48,25 +48,13 @@
 
     <div class="ask-wrap">
       <div class="ask" id="ask" hidden>
-        <div class="chat-head">
-          <span id="chatTitle">Kontrol setiyle sohbet</span>
-          <button class="pill-btn icon-btn" id="chatClose" title="Kapat (Esc)">
-            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M6 6l12 12M18 6 6 18"/></svg>
-          </button>
-        </div>
-        <div class="chat" id="chat"></div>
-        <div class="composer">
-          <textarea id="chatInput" rows="1" placeholder="Bir şey sor ya da geri bildirim ver…"></textarea>
-          <button class="send" id="chatSend" title="Gönder (Enter)">
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M12 19V5m0 0-6 6m6-6 6 6"/></svg>
-          </button>
-        </div>
         <button class="ask-bar" id="askBar">
           <span class="orb"></span>
           <span class="ph" id="askPh">Bu kontrol setine sor ya da geri bildirim ver…</span>
           <kbd class="k">⌘J</kbd>
         </button>
       </div>
+      <div class="bulk" id="bulk" hidden></div>
     </div>
   </section>
 
@@ -77,6 +65,7 @@
 
 <input type="file" id="fileInput" accept=".pdf,.docx,.txt,.md" multiple hidden />
 <div class="toast" id="toast"></div>
+<div class="undo" id="undo" hidden></div>
 <script src="/static/app.js"></script>
 </body>
 </html>

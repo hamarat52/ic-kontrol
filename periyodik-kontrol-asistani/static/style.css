@@ -166,6 +166,7 @@ h2.group .count{margin-left:0}
 .row.done .cb svg{opacity:1}
 .row.done .title{color:var(--muted)}
 .row.rejected .title{color:var(--faint);text-decoration:line-through}
+.row.rejected{opacity:.6}
 .row.rejected .cb{border-style:dashed}
 .title{font-size:14.5px;line-height:1.4;color:var(--ink);transition:color var(--t)}
 .meta{margin-top:3px;font-size:12.5px;color:var(--faint);display:flex;gap:6px;align-items:center;flex-wrap:wrap}
@@ -354,3 +355,83 @@ kbd.k{font-family:inherit;font-size:11px;color:var(--faint);padding:3px 7px;bord
 #addConn{padding-top:18px;border-top:1px solid var(--line)}
 #addConn .conn-form{margin-left:0}
 .row-action.show:hover{color:var(--ink-2)}
+
+/* ---------- v2: gözden geçirme ---------- */
+.row.kbd{box-shadow:inset 0 0 0 1.5px var(--focus)}
+.row.multi{background:#EEF1FB}
+.row.multi .cb{border-color:#8EA2E6}
+.row.changed{background:#FBF6E4}
+.row.changed.selected{background:#F5EDD2}
+.warn-tag{color:#C2410C}
+.chg-tag{color:#9A6B00}
+.head-pills{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+.gap-pill{display:inline-flex;align-items:center;gap:7px;min-height:30px;padding:0 12px;border-radius:999px;
+  background:#FFF4E5;color:#9A4A00;font-size:12.5px;font-weight:500;transition:background var(--t)}
+.gap-pill:hover{background:#FFEBD1}
+.prog{display:flex;align-items:center;gap:12px;margin:0 0 6px;font-size:12.5px;color:var(--muted)}
+.prog b{color:var(--ink-2);font-weight:600}
+.bar{flex:0 0 220px;height:4px;border-radius:4px;background:var(--soft-2);overflow:hidden;display:flex}
+.bar i{display:block;height:100%;transition:width var(--t)}
+.bar .a{background:var(--ink)} .bar .r{background:#CFCFD3}
+
+.bulk{pointer-events:auto;display:flex;align-items:center;gap:6px;height:46px;padding:0 6px 0 18px;border-radius:22px;
+  background:var(--ink);color:#fff;font-size:13px;box-shadow:0 10px 30px rgba(30,30,40,.18)}
+.bulk[hidden],.undo[hidden]{display:none}
+.bulk b{font-weight:600;margin-right:8px}
+.bulk button{height:34px;padding:0 14px;border-radius:17px;color:#fff;font-weight:500;transition:background var(--t)}
+.bulk button:hover{background:rgba(255,255,255,.12)}
+.bulk .ghost{color:rgba(255,255,255,.62)}
+.bulk kbd{font-family:inherit;font-size:11px;color:rgba(255,255,255,.5);margin-left:6px}
+
+.undo{position:fixed;left:50%;bottom:92px;transform:translateX(-50%);z-index:50;display:flex;align-items:center;gap:14px;
+  background:var(--ink);color:#fff;padding:8px 10px 8px 16px;border-radius:12px;font-size:13px;box-shadow:0 10px 30px rgba(30,30,40,.16)}
+.undo button{color:#fff;font-weight:600;padding:4px 10px;border-radius:8px;background:rgba(255,255,255,.12);transition:background var(--t)}
+.undo button:hover{background:rgba(255,255,255,.2)}
+.undo kbd{font-family:inherit;font-size:11px;color:rgba(255,255,255,.5)}
+
+.kh{font-weight:500;margin-left:7px;opacity:.5}
+.next-hint{font-size:12px;color:var(--faint);text-align:center;padding:2px 0 6px}
+.keys{display:flex;gap:14px;justify-content:center;padding:0 0 14px;font-size:11.5px;color:var(--faint)}
+.keys kbd{font-family:inherit;font-size:11px;padding:2px 6px;border-radius:5px;background:var(--soft);color:var(--muted);margin-right:4px}
+
+/* ---------- v2: sohbet sağ panelde ---------- */
+.win.chat-open{grid-template-columns:252px 1fr 420px}
+.win.chat-open .panel-in{width:420px}
+.cp-head{display:flex;align-items:center;justify-content:space-between;height:52px;padding:0 14px 0 20px;font-size:12.5px;color:var(--faint);flex-shrink:0}
+.cp-head b{color:var(--ink-2);font-weight:600}
+#panel .chat{display:flex;flex:1;padding:6px 20px 14px}
+#panel .composer{display:flex}
+.focus-chip{display:flex;align-items:center;gap:6px;margin:0 20px 6px;padding:5px 6px 5px 10px;border-radius:8px;background:var(--soft);font-size:12px;color:var(--muted)}
+.focus-chip span{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.focus-chip button{font-size:12px;color:var(--muted);padding:2px 7px;border-radius:6px;transition:background var(--t)}
+.focus-chip button:hover{background:var(--soft-2);color:var(--ink-2)}
+.change2{margin-top:10px;padding:10px 12px;border-radius:10px;background:var(--side);font-size:12.5px;color:var(--muted)}
+.change2 .c-title{color:var(--ink-2);font-weight:600;margin-bottom:3px}
+.change2 .c-diff{line-height:1.6}
+.change2 s{color:var(--faint)} .change2 b{color:var(--ink-2);font-weight:600}
+.change2 .go{margin-top:4px;color:var(--ink-2);font-weight:600;font-size:12px;padding:2px 0;transition:color var(--t)}
+.change2 .go:hover{color:var(--ink)}
+
+/* ---------- v2: bilgi tabanı ---------- */
+.learn li{grid-template-columns:92px 1fr auto}
+.learn .acts{display:flex;gap:2px;opacity:0;transition:opacity var(--t)}
+.learn li:hover .acts,.learn li:focus-within .acts{opacity:1}
+.learn .acts button{font-size:12px;color:var(--faint);padding:2px 8px;border-radius:6px;transition:background var(--t),color var(--t)}
+.learn .acts button:hover{background:var(--soft-2);color:var(--ink-2)}
+.learn .acts .del:hover{color:var(--r-kritik)}
+.learn li.editing{background:#fff;box-shadow:0 0 0 1px var(--line),0 0 0 3px var(--focus)}
+.learn li.editing:hover{background:#fff}
+.learn li.editing textarea{grid-column:2/4;border:0;outline:none;resize:none;width:100%;font:inherit;line-height:1.55;background:transparent;color:var(--ink);overflow:hidden}
+.edit-acts{display:flex;gap:8px;grid-column:2/4;margin-top:6px}
+.edit-acts .btn{height:30px;padding:0 12px;font-size:12.5px}
+.src-chip{font-size:11.5px;color:var(--faint);display:block;margin-top:2px}
+
+/* ---------- v2: belgeler ---------- */
+.used{color:var(--muted)}
+.upbar{height:3px;border-radius:3px;background:var(--soft-2);margin-top:7px;overflow:hidden;width:260px}
+.upbar i{display:block;height:100%;width:100%;background:var(--ink);animation:breathe 1.6s ease-in-out infinite}
+.dup{margin-top:3px;font-size:12.5px;color:#9A4A00}
+.link{color:inherit;text-decoration:underline;font-size:inherit;padding:0}
+
+/* bildirimler alttaki sor çubuğunun hemen üstünde; üst çubuktaki düğmeleri örtmesin */
+.toast{top:auto;bottom:92px}

@@ -13,6 +13,8 @@ const S = {
   docs: [], sets: [], lib: [], health: null, meta: null,
   route: { name: "home" }, set: null, poll: null,
   filter: "all", q: "", selectedId: null, chatBusy: false, fresh: new Set(),
+  panelMode: null, multi: new Set(), anchor: null, changed: new Set(), undo: null, kbd: false,
+  uploading: [], kbEdit: null, skills: null,
 };
 const isGen = (s) => s && s.durum === "uretiliyor";
 
@@ -84,7 +86,12 @@ async function route() {
   const r = parseRoute();
   const changed = JSON.stringify(r) !== JSON.stringify(S.route);
   S.route = r;
-  if (changed) { closePanel(true); closeChat(); S.filter = "all"; S.q = ""; S.editConn = null; S.addingConn = false; $("#scroll").scrollTop = 0; }
+  if (changed) {
+    S.panelMode = null; closePanel(true);
+    S.filter = "all"; S.q = ""; S.editConn = null; S.addingConn = false; S.kbEdit = null;
+    S.multi.clear(); S.changed.clear(); S.undo = null; $("#undo").hidden = true;
+    $("#scroll").scrollTop = 0;
+  }
   if (r.name === "home" || r.name === "setler") {
     if (S.sets.length) { location.replace("#/set/" + S.sets[0].id); return; }
   }
@@ -136,7 +143,7 @@ function setTop(crumbHtml, actionsHtml = "") { $("#crumb").innerHTML = crumbHtml
 
 function renderView() {
   const n = S.route.name;
-  $("#ask").hidden = n !== "set";
+  renderBottom();
   if (n === "belgeler") return viewDocs();
   if (n === "kutuphane") return viewLibrary();
   if (n === "bilgi") return viewKnowledge();
@@ -162,7 +169,9 @@ function viewHome() {
 function viewDocs() {
   setTop(`<b>Belgeler</b>`);
   const busy = S.sets.some(isGen);
-  const usable = S.docs.filter((d) => !d.uyari || d.char_count > 0);
+  const usable = S.docs.filter((d) => d.char_count > 0 && !d.kopya_of);
+  const bolum = usable.reduce((a, d) => a + (d.bolum || 0), 0);
+  const model = S.health ? S.health.llm_model : "";
   $("#view").innerHTML = `
     <h1>Belgeler</h1>
     <p class="lead">Kontrol çıkarılacak süreç, prosedür ve politika belgelerini ekle. Yeni kontrol seti, burada listelenen tüm belgelerden üretilir; uzun belgeler bölümlere ayrılıp tek tek okunur.</p>
@@ -172,17 +181,27 @@ function viewDocs() {
       <small>PDF · Word · TXT · Markdown</small>
     </div>
     <div class="doc-list">
-      ${S.docs.map((d) => `<div class="doc-row">
+      ${S.uploading.map((name) => `<div class="doc-row">
+          <span class="ico">📄</span>
+          <div><div class="title">${esc(name)}</div><div class="meta">Okunuyor…</div><div class="upbar"><i></i></div></div><span></span>
+        </div>`).join("")}
+      ${S.docs.map((d) => {
+        const meta = [`${(d.char_count || 0).toLocaleString("tr-TR")} karakter`];
+        if (d.bolum) meta.push(`${d.bolum} bölüm`);
+        meta.push(d.kullanim ? `<span class="used">${d.kullanim} sette kullanıldı</span>` : "henüz kullanılmadı");
+        return `<div class="doc-row">
           <span class="ico">${d.uyari && !d.char_count ? "⚠️" : "📄"}</span>
           <div><div class="title">${esc(d.filename)}</div>
-            <div class="meta">${(d.char_count || 0).toLocaleString("tr-TR")} karakter<span class="sep">·</span>${fmtDate(d.uploaded_at, true)}</div>
-            ${d.uyari ? `<div class="warn">${esc(d.uyari)}</div>` : ""}</div>
+            <div class="meta">${meta.join('<span class="sep">·</span>')}<span class="sep">·</span>${fmtDate(d.uploaded_at, true)}</div>
+            ${d.uyari ? `<div class="warn">${esc(d.uyari)}</div>` : ""}
+            ${d.kopya_of ? `<div class="dup">Bu belge “${esc(d.kopya_of)}” ile aynı içerikte; üretimde bir kez kullanılır. <button class="link" data-act="del-doc" data-id="${d.id}">Kaldır</button></div>` : ""}</div>
           <button class="row-action" data-act="del-doc" data-id="${d.id}">Kaldır</button>
-        </div>`).join("")}
+        </div>`;
+      }).join("")}
     </div>
     <div class="cta">
-      <button class="btn btn-ink" data-act="generate" ${!usable.length || busy ? "disabled" : ""}>Periyodik kontrolleri çıkart</button>
-      <span class="hint">${busy ? "Bir set şu an üretiliyor." : usable.length ? `${usable.length} belge kullanılacak · yerel modelde belge uzunluğuna göre dakikalar sürebilir, sayfayı kapatsan da devam eder` : "Önce metin içeren en az bir belge ekle."}</span>
+      <button class="btn btn-ink" data-act="generate" ${!usable.length || busy || S.uploading.length ? "disabled" : ""}>Periyodik kontrolleri çıkart</button>
+      <span class="hint">${busy ? "Bir set şu an üretiliyor." : usable.length ? `${usable.length} belge · ${bolum} bölüm${model ? ` · model: ${esc(model)}` : ""}` : "Önce metin içeren en az bir belge ekle."}</span>
     </div>`;
   const drop = $("#drop");
   drop.onclick = () => $("#fileInput").click();
@@ -194,16 +213,21 @@ function viewDocs() {
 
 async function upload(files) {
   if (!files || !files.length) return;
-  let ok = 0;
-  for (const f of files) {
+  const list = [...files];
+  S.uploading.push(...list.map((f) => f.name));
+  if (S.route.name === "belgeler") viewDocs();
+  let ok = 0, dup = 0;
+  for (const f of list) {
     const fd = new FormData(); fd.append("file", f);
-    try { await api("/api/documents", { method: "POST", body: fd }); ok++; }
+    try { const d = await api("/api/documents", { method: "POST", body: fd }); ok++; if (d.kopya_of) dup++; }
     catch (e) { toast(`${f.name}: ${e.message}`, true); }
+    S.uploading.splice(S.uploading.indexOf(f.name), 1);
   }
   S.docs = await api("/api/documents");
   renderSidebar();
   if (S.route.name === "belgeler") viewDocs();
-  if (ok) toast(ok === 1 ? "Belge eklendi" : `${ok} belge eklendi`);
+  if (dup) toast(`${dup} belge zaten yüklü olanla aynı içerikte`);
+  else if (ok) toast(ok === 1 ? "Belge eklendi" : `${ok} belge eklendi`);
 }
 
 /* --- kontrol seti */
@@ -231,7 +255,7 @@ function viewSet() {
      <div class="menu" id="menu"><button class="danger" data-act="delete-set" ${generating ? "disabled" : ""}>Seti sil</button></div>`
   );
   $("#view").innerHTML = `<div id="setHead"></div><div id="setBody"></div><div id="setGaps"></div>`;
-  renderSetHead(); renderSetBody(); renderGaps(); updateAskPlaceholder();
+  renderSetHead(); renderSetBody(); renderGaps(); updateAskPlaceholder(); renderBottom();
 }
 
 function progressText(s) {
@@ -248,6 +272,7 @@ function renderSetHead() {
   const n = s.controls.length;
   const belge = (s.belge_adlari || []).length;
   const ist = s.istatistik || {};
+  const gaps = (s.bosluklar || []).length;
   let status = "";
   if (generating) status = `<div class="status-line"><span class="orb"></span><span class="thinking"><span>${progressText(s)}</span></span>
       <button class="pill-btn" data-act="cancel" style="height:26px;margin-left:4px">Durdur</button></div>`;
@@ -256,25 +281,39 @@ function renderSetHead() {
   if (!generating && ist.tekrar) notes.push(`${ist.tekrar} tekrar ayıklandı`);
   if (ist.reddedilene_benzer) notes.push(`daha önce reddedilene benzeyen ${ist.reddedilene_benzer} öneri elendi`);
   if (ist.dogrulanamayan) notes.push(`${ist.dogrulanamayan} alıntı belgede bulunamadı`);
+  let prog = "";
+  if (!generating && n) {
+    const k = counts(s.controls), done = k.kabul + k.red;
+    prog = `<div class="prog"><div class="bar"><i class="a" style="width:${(k.kabul / n) * 100}%"></i><i class="r" style="width:${(k.red / n) * 100}%"></i></div>
+      <span><b>${done} / ${n}</b> karar verildi · ${k.kabul} kabul · ${k.red} red · ${k.bekliyor} bekliyor</span></div>`;
+  }
   el.innerHTML = `
     <h1>${esc(s.baslik || "Adsız kontrol seti")}</h1>
-    <div class="source">
-      <span>📄 ${belge} belge</span>${ist.bolum ? `<span class="sep">·</span><span>${ist.bolum} bölüm</span>` : ""}
-      <span class="sep">·</span><span>${fmtDate(s.created_at)}</span>
-      <span class="sep">·</span><span>${n} kontrol</span><span class="sep">·</span><span>${esc(s.model || "")}</span>
+    <div class="head-pills">
+      <div class="source">
+        <span>📄 ${belge} belge</span>${ist.bolum ? `<span class="sep">·</span><span>${ist.bolum} bölüm</span>` : ""}
+        <span class="sep">·</span><span>${fmtDate(s.created_at)}</span>
+        <span class="sep">·</span><span>${n} kontrol</span><span class="sep">·</span><span>${esc(s.model || "")}</span>
+      </div>
+      ${gaps && !generating ? `<button class="gap-pill" data-act="to-gaps">⚠️ ${gaps} boşluk tespit edildi ↓</button>` : ""}
     </div>
     ${notes.length ? `<div class="notes">${notes.map(esc).join(" · ")}</div>` : ""}
     ${s.ozet ? `<p class="lead">${esc(s.ozet)}</p>` : generating ? `<p class="lead muted">Belgeler bölüm bölüm okunuyor; kontroller hazırlandıkça aşağıya eklenecek. Sayfayı kapatsan da üretim devam eder.</p>` : `<div style="height:22px"></div>`}
+    ${prog}
     ${status}`;
 }
 
 function rowHtml(c) {
   const cls = ["row", c.status === "kabul" ? "done" : "", c.status === "red" ? "rejected" : "",
-    S.selectedId === c.id ? "selected" : "", S.fresh.has(c.id) ? "fresh" : ""].filter(Boolean).join(" ");
+    S.selectedId === c.id ? "selected" : "", S.selectedId === c.id && S.kbd ? "kbd" : "",
+    S.multi.has(c.id) ? "multi" : "", S.changed.has(c.id) ? "changed" : "",
+    S.fresh.has(c.id) ? "fresh" : ""].filter(Boolean).join(" ");
+  const warn = c.kaynak_dogrulandi === 0 ? `<span class="sep">·</span><span class="warn-tag">⚠ kaynak doğrulanamadı</span>` : "";
+  const ch = S.changed.has(c.id) ? `<span class="sep">·</span><span class="chg-tag">sohbette değişti</span>` : "";
   return `<div class="${cls}" data-id="${c.id}">
     <button class="cb" data-act="toggle" title="${c.status === "kabul" ? "Kabulü geri al" : "Kabul et"}">${SVG.check}</button>
     <div><div class="title">${esc(c.kontrol_adi)}</div>
-      <div class="meta">${esc(c.siklik)}<span class="sep">·</span>Hat ${esc(c.hat)}<span class="sep">·</span>Efor ${esc((c.efor || "").toLocaleLowerCase("tr"))}${c.edited ? `<span class="sep">·</span>düzenlendi` : ""}</div></div>
+      <div class="meta">${esc(c.siklik)}<span class="sep">·</span>Hat ${esc(c.hat)}<span class="sep">·</span>Efor ${esc((c.efor || "").toLocaleLowerCase("tr"))}${c.edited ? `<span class="sep">·</span>düzenlendi` : ""}${warn}${ch}</div></div>
     <span class="risk ${RISK_CLS[c.risk] || ""}"><i></i>${esc(c.risk)}</span>
   </div>`;
 }
@@ -369,18 +408,112 @@ async function pollTick() {
 /* --- kararlar ve düzenleme */
 function findControl(id) { return S.set && S.set.controls.find((c) => c.id === Number(id)); }
 
-async function decide(id, karar) {
-  const c = findControl(id); if (!c) return;
-  const prev = c.status; c.status = karar;          // önce arayüz
-  renderSetBody(); if (S.selectedId === c.id) renderPanelFoot(c);
-  try { const r = await api(`/api/controls/${id}/decision`, jsonOpts("POST", { karar })); Object.assign(c, r.control); }
-  catch (e) { c.status = prev; renderSetBody(); toast(e.message, true); return; }
-  if (S.selectedId === c.id) loadHistory(c.id);
+/* Ekranda görünen sırayla (kategori gruplarına göre) kontrol listesi */
+function orderedVisible() {
+  const vis = visibleControls();
+  const groups = {};
+  vis.forEach((c) => (groups[c.kategori] = groups[c.kategori] || []).push(c));
+  const order = [...KAT_ORDER.filter((x) => groups[x]), ...Object.keys(groups).filter((x) => !KAT_ORDER.includes(x))];
+  return order.flatMap((k) => groups[k]);
+}
+function nextPendingAfter(id) {
+  const list = orderedVisible();
+  const i = list.findIndex((c) => c.id === id);
+  const after = [...list.slice(i + 1), ...list.slice(0, Math.max(i, 0))];
+  const n = after.find((c) => c.status === "bekliyor" && c.id !== id);
+  return n ? n.id : null;
+}
+
+function refreshAfterDecision() {
+  renderSetBody(); renderSetHead();
+  const c = S.selectedId && findControl(S.selectedId);
+  if (c && S.panelMode === "detail") renderPanelFoot(c);
   refreshLib(); updateSetCounts();
 }
+
+/* karar ver; advance=true ise sıradaki bekleyen kontrole geç */
+async function decide(id, karar, { advance = false, undoable = true } = {}) {
+  const c = findControl(id); if (!c) return;
+  const prev = c.status;
+  if (prev === karar) return;
+  const next = advance && karar !== "bekliyor" ? nextPendingAfter(c.id) : null;
+  c.status = karar;
+  if (next) openPanel(next, { keepKbd: true });
+  refreshAfterDecision();
+  try { const r = await api(`/api/controls/${id}/decision`, jsonOpts("POST", { karar })); Object.assign(c, r.control); }
+  catch (e) { c.status = prev; refreshAfterDecision(); toast(e.message, true); return; }
+  if (S.selectedId === c.id && S.panelMode === "detail") loadHistory(c.id);
+  if (undoable) showUndo([{ id: c.id, prev }], `“${short(c.kontrol_adi)}” ${LABEL[karar]}`);
+}
+
+async function decideMany(ids, karar) {
+  const items = ids.map(findControl).filter((c) => c && c.status !== karar);
+  if (!items.length) { clearMulti(); return; }
+  const undo = items.map((c) => ({ id: c.id, prev: c.status }));
+  items.forEach((c) => (c.status = karar));
+  clearMulti(); refreshAfterDecision();
+  try {
+    const r = await api("/api/controls/bulk-decision", jsonOpts("POST", { ids: items.map((c) => c.id), karar }));
+    r.controls.forEach((x) => { const c = findControl(x.id); if (c) Object.assign(c, x); });
+  } catch (e) { undo.forEach((u) => (findControl(u.id).status = u.prev)); refreshAfterDecision(); toast(e.message, true); return; }
+  showUndo(undo, `${items.length} kontrol ${LABEL[karar]}`);
+}
+
+const LABEL = { kabul: "kabul edildi", red: "reddedildi", bekliyor: "beklemeye alındı" };
+const short = (t) => (t.length > 46 ? t.slice(0, 44) + "…" : t);
+
+let undoTimer;
+function showUndo(items, text) {
+  S.undo = items;
+  const u = $("#undo");
+  u.innerHTML = `<span>${esc(text)}</span><button data-act="undo-last">Geri al</button><kbd>⌘Z</kbd>`;
+  u.hidden = false;
+  clearTimeout(undoTimer); undoTimer = setTimeout(() => (u.hidden = true), 6000);
+}
+async function undoLast() {
+  const items = S.undo; if (!items || !items.length) return;
+  S.undo = null; $("#undo").hidden = true;
+  const byPrev = {};
+  items.forEach((u) => { const c = findControl(u.id); if (c) { c.status = u.prev; (byPrev[u.prev] = byPrev[u.prev] || []).push(u.id); } });
+  refreshAfterDecision();
+  try {
+    for (const [karar, ids] of Object.entries(byPrev)) {
+      const r = await api("/api/controls/bulk-decision", jsonOpts("POST", { ids, karar }));
+      r.controls.forEach((x) => { const c = findControl(x.id); if (c) Object.assign(c, x); });
+    }
+    toast("Geri alındı");
+  } catch (e) { toast(e.message, true); }
+  if (S.selectedId && S.panelMode === "detail") loadHistory(S.selectedId);
+}
+
 function updateSetCounts() {
   const it = S.sets.find((x) => x.id === S.set.id); if (!it) return;
   const k = counts(S.set.controls); it.toplam = k.all; it.kabul = k.kabul; it.red = k.red; renderSidebar();
+}
+
+/* --- çoklu seçim */
+function clearMulti() { S.multi.clear(); S.anchor = null; syncRows(); renderBottom(); }
+function syncRows() {
+  document.querySelectorAll("#setBody .row").forEach((r) => {
+    const id = Number(r.dataset.id);
+    r.classList.toggle("multi", S.multi.has(id));
+    r.classList.toggle("selected", S.selectedId === id);
+    r.classList.toggle("kbd", S.selectedId === id && S.kbd);
+  });
+}
+function renderBottom() {
+  const onSet = S.route.name === "set" && S.set && !isGen(S.set);
+  const bulk = $("#bulk"), ask = $("#ask");
+  if (onSet && S.multi.size) {
+    bulk.innerHTML = `<b>${S.multi.size} kontrol seçili</b>
+      <button data-act="bulk-accept">Kabul et<kbd>A</kbd></button>
+      <button data-act="bulk-reject">Reddet<kbd>R</kbd></button>
+      <button class="ghost" data-act="bulk-clear">Seçimi kaldır<kbd>Esc</kbd></button>`;
+    bulk.hidden = false; ask.hidden = true;
+  } else {
+    bulk.hidden = true;
+    ask.hidden = !(S.route.name === "set" && S.set && S.set.controls.length) || S.panelMode === "chat";
+  }
 }
 
 async function saveFields(id, fields) {
@@ -396,20 +529,30 @@ async function saveFields(id, fields) {
   } catch (e) { toast(e.message, true); }
 }
 
-/* ---------------------------------------------------------------- sağ panel */
-function openPanel(id) {
+/* ---------------------------------------------------------------- sağ panel (detay ya da sohbet) */
+function setPanelMode(mode) {
+  S.panelMode = mode;
+  const w = $("#win");
+  w.classList.toggle("has-panel", !!mode);
+  w.classList.toggle("chat-open", mode === "chat");
+  renderBottom();
+}
+function openPanel(id, { keepKbd = false } = {}) {
   const c = findControl(id); if (!c) return;
+  if (!keepKbd) S.kbd = false;
   S.selectedId = c.id;
+  if (S.panelMode === "chat") { renderChatFocus(); syncRows(); return; }   // sohbet açıkken satır seçimi odağı değiştirir
   renderPanel(c);
-  $("#win").classList.add("has-panel");
-  document.querySelectorAll(".row.selected").forEach((r) => r.classList.remove("selected"));
-  const row = document.querySelector(`.row[data-id="${c.id}"]`); if (row) row.classList.add("selected");
+  setPanelMode("detail");
+  syncRows();
+  const row = document.querySelector(`.row[data-id="${c.id}"]`);
+  if (row && S.kbd) row.scrollIntoView({ block: "nearest" });
   updateAskPlaceholder();
 }
 function closePanel(silent) {
   S.selectedId = null;
-  $("#win").classList.remove("has-panel");
-  if (!silent) document.querySelectorAll(".row.selected").forEach((r) => r.classList.remove("selected"));
+  setPanelMode(null);
+  if (!silent) syncRows();
   updateAskPlaceholder();
 }
 
@@ -436,8 +579,9 @@ function kaynakBlock(c) {
 
 function renderPanel(c) {
   const m = S.meta || { kategoriler: KAT_ORDER, sikliklar: [], riskler: [], eforlar: [] };
+  const pending = S.set.controls.filter((x) => x.status === "bekliyor").length;
   $("#panel").innerHTML = `
-    <div class="panel-top"><span>Kontrol detayı<span class="saved" id="saved">· Kaydedildi</span></span>
+    <div class="panel-top"><span>Kontrol detayı${pending ? ` · ${pending} bekleyen` : ""}<span class="saved" id="saved">· Kaydedildi</span></span>
       <button class="pill-btn icon-btn" data-act="close-panel" title="Kapat (Esc)">${SVG.close}</button></div>
     <div class="panel-body">
       <textarea class="auto p-title" data-field="kontrol_adi" rows="1">${esc(c.kontrol_adi)}</textarea>
@@ -453,7 +597,9 @@ function renderPanel(c) {
       <div class="blk"><h4>Dayanak</h4><textarea class="auto" data-field="dayanak" rows="1" placeholder="Mevzuat / politika maddesi ekle">${esc(c.dayanak)}</textarea></div>
       <div class="blk"><h4>Geçmiş</h4><ul class="hist" id="hist"><li><time></time>Yükleniyor…</li></ul></div>
     </div>
-    <div class="panel-foot" id="panelFoot"></div>`;
+    <div class="panel-foot" id="panelFoot"></div>
+    <div class="next-hint">Karar verince sıradaki bekleyen kontrol açılır</div>
+    <div class="keys"><span><kbd>↑</kbd><kbd>↓</kbd>gezin</span><span><kbd>A</kbd>kabul</span><span><kbd>R</kbd>red</span><span><kbd>E</kbd>düzenle</span><span><kbd>⌘Z</kbd>geri al</span></div>`;
   $("#panel").querySelectorAll("textarea.auto").forEach(autosize);
   requestAnimationFrame(() => $("#panel").querySelectorAll("textarea.auto").forEach(autosize));
   renderPanelFoot(c);
@@ -462,9 +608,10 @@ function renderPanel(c) {
 function renderPanelFoot(c) {
   const f = $("#panelFoot"); if (!f) return;
   f.innerHTML = `
-    <button class="btn btn-ghost" data-act="${c.status === "red" ? "undo" : "reject"}">${c.status === "red" ? "Reddi geri al" : "Reddet"}</button>
-    <button class="btn btn-ink" data-act="${c.status === "kabul" ? "undo" : "accept"}">${c.status === "kabul" ? "Kabulü geri al" : "Kabul et"}</button>`;
+    <button class="btn btn-ghost" data-act="${c.status === "red" ? "undo" : "reject"}">${c.status === "red" ? "Reddi geri al" : `Reddet<span class="kh">R</span>`}</button>
+    <button class="btn btn-ink" data-act="${c.status === "kabul" ? "undo" : "accept"}">${c.status === "kabul" ? "Kabulü geri al" : `Kabul et<span class="kh">A</span>`}</button>`;
 }
+
 async function loadHistory(id) {
   try {
     const items = await api(`/api/controls/${id}/history`);
@@ -473,43 +620,69 @@ async function loadHistory(id) {
   } catch {}
 }
 
-/* ---------------------------------------------------------------- sohbet */
+/* ---------------------------------------------------------------- sohbet (sağ panelde) */
 function updateAskPlaceholder() {
   const c = S.selectedId && findControl(S.selectedId);
   $("#askPh").textContent = c ? `“${c.kontrol_adi}” kontrolüne geri bildirim ver…` : "Bu kontrol setine sor ya da geri bildirim ver…";
-  $("#chatTitle").textContent = c ? `Odak: ${c.kontrol_adi}` : "Kontrol setiyle sohbet";
-  $("#chatInput").placeholder = c ? "Bu kontrol için ne değişmeli?" : "Bir şey sor ya da geri bildirim ver…";
 }
 function openChat() {
   if (S.route.name !== "set" || !S.set) return;
   if (isGen(S.set)) { toast("Üretim bitince sohbet açılır"); return; }
   if (!S.set.controls.length) return;
-  $("#ask").classList.add("open"); renderChat();
-  setTimeout(() => $("#chatInput").focus(), 60);
+  $("#panel").innerHTML = `
+    <div class="cp-head"><span><b>Sohbet</b> · bu set</span>
+      <button class="pill-btn icon-btn" data-act="chat-close" title="Kapat (Esc)">${SVG.close}</button></div>
+    <div id="chatFocus"></div>
+    <div class="chat" id="chat"></div>
+    <div class="composer">
+      <textarea id="chatInput" rows="1"></textarea>
+      <button class="send" data-act="chat-send" id="chatSend" title="Gönder (Enter)">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M12 19V5m0 0-6 6m6-6 6 6"/></svg></button>
+    </div>`;
+  setPanelMode("chat");
+  renderChatFocus(); renderChat();
+  setTimeout(() => { const i = $("#chatInput"); if (i) i.focus(); }, 80);
 }
-function closeChat() { $("#ask").classList.remove("open"); }
+function closeChat() {
+  if (S.panelMode !== "chat") return;
+  const c = S.selectedId && findControl(S.selectedId);
+  if (c) { S.panelMode = null; openPanel(c.id); } else closePanel();
+}
+function renderChatFocus() {
+  const el = $("#chatFocus"); if (!el) return;
+  const c = S.selectedId && findControl(S.selectedId);
+  el.innerHTML = c ? `<div class="focus-chip"><span>Odak: ${esc(short(c.kontrol_adi))}</span>
+      <button data-act="chat-detail" title="Detayı aç">Detay</button><button data-act="chat-unfocus" title="Odağı kaldır">✕</button></div>` : "";
+  const i = $("#chatInput");
+  if (i) i.placeholder = c ? "Bu kontrol için ne değişmeli?" : "Bir şey sor ya da geri bildirim ver…";
+}
 
 function msgHtml(m) {
   if (m.role === "user") {
     const c = m.control_id && findControl(m.control_id);
     return `<div class="msg-user">${c ? `<span class="focus-tag">${esc(c.kontrol_adi)}</span>` : ""}${esc(m.content)}</div>`;
   }
-  const changes = (m.changes || []).map((ch) => `<div class="change"><b>${esc(ch.kontrol_adi)}</b>${
-    Object.entries(ch.alanlar || {}).map(([k, [a, b]]) => `<span><s>${esc(a || "—")}</s> → ${esc(b)}</span>`).join("")}</div>`).join("");
+  const FN = { kontrol_adi: "Ad", kategori: "Kategori", hat: "Hat", siklik: "Sıklık", risk: "Risk", efor: "Efor", gerekce: "Gerekçe", dayanak: "Dayanak" };
+  const changes = (m.changes || []).map((ch) => `<div class="change2">
+      <div class="c-title">${esc(ch.kontrol_adi)}</div>
+      ${Object.entries(ch.alanlar || {}).map(([k, [a, b]]) => `<div class="c-diff">${FN[k] || k} <s>${esc(short(String(a || "—")))}</s> → <b>${esc(short(String(b)))}</b></div>`).join("")}
+      ${ch.id ? `<button class="go" data-act="show-row" data-id="${ch.id}">Listede göster</button>` : ""}
+    </div>`).join("");
   return `<div class="msg-ai${m.error ? " err" : ""}"><span class="orb"></span><div>${esc(m.content)}${changes}${
-    m.lesson ? `<div class="learned">Bilgi tabanına eklendi: “${esc(m.lesson)}”</div>` : ""}</div></div>`;
+    m.lesson ? `<div class="learned">💡 Bilgi tabanına eklendi: “${esc(m.lesson)}”</div>` : ""}</div></div>`;
 }
 function renderChat() {
+  const el = $("#chat"); if (!el) return;
   const msgs = S.set ? S.set.messages : [];
-  const el = $("#chat");
   el.innerHTML = (msgs.length ? msgs.map(msgHtml).join("") :
-    `<div class="chat-empty">Kontrolleri doğal dille düzelt: “Şube hacmi düşük, sıklıkları azalt”, “Bu kontrol neden kritik?” gibi. Bir kontrol seçiliyse mesaj ona odaklanır. Model değişiklikleri uygular ve öğrendiğini bilgi tabanına yazar.</div>`)
-    + (S.chatBusy ? `<div class="thinking"><span class="orb"></span><span>Düşünüyor…</span></div>` : "");
+    `<div class="chat-empty">Kontrolleri doğal dille düzelt: “Şube hacmi düşük, sıklıkları azalt”, “Bu kontrol neden kritik?” gibi. Listeden bir kontrol seçersen mesaj ona odaklanır. Model değişiklikleri uygular, değişen satırlar listede işaretlenir.</div>`)
+    + (S.chatBusy ? `<div class="msg-ai"><span class="orb"></span><div class="thinking"><span>Düşünüyor…</span></div></div>` : "");
   el.scrollTop = el.scrollHeight;
-  $("#chatSend").disabled = S.chatBusy;
+  const b = $("#chatSend"); if (b) b.disabled = S.chatBusy;
 }
 async function sendChat() {
-  const input = $("#chatInput"); const text = input.value.trim();
+  const input = $("#chatInput"); if (!input) return;
+  const text = input.value.trim();
   if (!text || S.chatBusy || !S.set) return;
   const set = S.set, control_id = S.selectedId || null;
   set.messages.push({ role: "user", content: text, control_id });
@@ -522,14 +695,19 @@ async function sendChat() {
       set.messages.push(r.message);
       set.controls = r.controls;
       if (S.set === set) {
-        renderSetBody();
-        const c = S.selectedId && findControl(S.selectedId); if (c) renderPanel(c);
+        S.changed = new Set((r.message.changes || []).map((c) => c.id));
+        renderSetBody(); renderSetHead();
         if (set.controls.some((c) => c.status === "kabul")) refreshLib();
       }
     }
   } catch (e) { set.messages.push({ role: "ai", content: e.message, error: true }); }
   S.chatBusy = false;
   if (S.set === set) renderChat();
+}
+function showRow(id) {
+  if (S.filter !== "all" && !visibleControls().some((c) => c.id === Number(id))) { S.filter = "all"; renderSetBody(); }
+  const row = document.querySelector(`.row[data-id="${id}"]`);
+  if (row) row.scrollIntoView({ block: "center", behavior: "smooth" });
 }
 
 /* --- kütüphane */
@@ -590,25 +768,49 @@ function parseSkill(content) {
   });
   return { title, seed: seedLines.join("\n").trim(), learned: learned.reverse() };
 }
-async function viewKnowledge() {
+const KB_ICO = { "genel-cerceve": "🏛️", "kontrol-metrikleri": "📐", "masak-aml": "🔍" };
+function learnSource(t) {
+  if (t.startsWith("Reddedildi")) return "Ret kararından";
+  if (t.startsWith("Kullanıcı düzeltti")) return "Düzenlemeden";
+  return "Sohbetten";
+}
+async function viewKnowledge(fresh = true) {
   setTop(`<b>Bilgi Tabanı</b>`);
-  $("#view").innerHTML = `<h1>Bilgi Tabanı</h1><p class="lead muted">Yükleniyor…</p>`;
-  let skills = [];
-  try { skills = await api("/api/skills"); } catch (e) { toast(e.message, true); }
+  if (fresh || !S.skills) {
+    if (!S.skills) $("#view").innerHTML = `<h1>Bilgi Tabanı</h1><p class="lead muted">Yükleniyor…</p>`;
+    try { S.skills = await api("/api/skills"); } catch (e) { toast(e.message, true); return; }
+  }
   if (S.route.name !== "bilgi") return;
-  const parsed = skills.map((s) => ({ name: s.name, ...parseSkill(s.content) }));
+  const parsed = S.skills.map((s) => ({ name: s.name, ...parseSkill(s.content) }));
   const total = parsed.reduce((a, p) => a + p.learned.length, 0);
-  const icon = { "genel-cerceve": "🏛️", "kontrol-metrikleri": "📐", "masak-aml": "🔍" };
+  const ed = S.kbEdit;
   $("#view").innerHTML = `
     <h1>Bilgi Tabanı</h1>
     <div class="source"><span>💡 ${parsed.length} konu</span><span class="sep">·</span><span>${total} öğrenilen kural</span></div>
-    <p class="lead">Model her kontrol setini üretirken bu bilgileri kullanır. Reddettiğin, düzelttiğin ya da sohbette açıkladığın her şey ilgili konunun altına öğrenilen kural olarak eklenir.</p>
+    <p class="lead">Model her kontrol setini üretirken bu bilgileri kullanır. Reddettiğin, düzelttiğin ya da sohbette açıkladığın şeyler ilgili konunun altına kural olarak eklenir. Yanlış öğrenilen bir kuralı düzeltebilir ya da silebilirsin.</p>
     ${parsed.map((p) => `<section class="kb">
-      <h2><span class="ico">${icon[p.name] || "📘"}</span>${esc(p.title)}</h2>
+      <h2><span class="ico">${KB_ICO[p.name] || "📘"}</span>${esc(p.title)}</h2>
       <p class="sub">${p.learned.length ? `${p.learned.length} öğrenilen kural` : "Henüz öğrenilen kural yok"}</p>
-      ${p.learned.length ? `<ul class="learn">${p.learned.map((x) => `<li><time>${esc(x.date.slice(8, 10) + "." + x.date.slice(5, 7))} ${esc(x.time)}</time><span>${esc(x.text)}</span></li>`).join("")}</ul>` : ""}
+      ${p.learned.length ? `<ul class="learn">${p.learned.map((x) => {
+        const time = `<time>${esc(x.date.slice(8, 10) + "." + x.date.slice(5, 7))} ${esc(x.time)}</time>`;
+        if (ed && ed.skill === p.name && ed.text === x.text) return `<li class="editing">${time}
+          <textarea id="kbEditInput" rows="2">${esc(x.text)}</textarea>
+          <div class="edit-acts"><button class="btn btn-ink" data-act="kb-save">Kaydet</button><button class="btn btn-ghost" data-act="kb-cancel">Vazgeç</button></div></li>`;
+        return `<li data-skill="${p.name}" data-text="${esc(x.text)}">${time}
+          <span>${esc(x.text)}<span class="src-chip">${learnSource(x.text)}</span></span>
+          <span class="acts"><button data-act="kb-edit">Düzenle</button><button class="del" data-act="kb-del">Sil</button></span></li>`;
+      }).join("")}</ul>` : ""}
       <details class="seed"><summary>Başlangıç bilgisi</summary><div class="md">${mdLite(p.seed)}</div></details>
     </section>`).join("")}`;
+  const inp = $("#kbEditInput");
+  if (inp) { autosize(inp); inp.focus(); inp.setSelectionRange(inp.value.length, inp.value.length); }
+}
+async function kbSave() {
+  const ed = S.kbEdit, inp = $("#kbEditInput"); if (!ed || !inp) return;
+  const yeni = inp.value.trim();
+  if (!yeni || yeni === ed.text) { S.kbEdit = null; return viewKnowledge(false); }
+  try { await api(`/api/skills/${ed.skill}/learnings`, jsonOpts("PATCH", { eski: ed.text, yeni })); S.kbEdit = null; toast("Kural güncellendi"); viewKnowledge(); }
+  catch (e) { toast(e.message, true); }
 }
 
 /* --- model ayarları */
@@ -710,6 +912,12 @@ async function saveConn(form) {
 }
 
 /* ---------------------------------------------------------------- olaylar */
+const typing = (el) => el && (el.matches("input, textarea, select") || el.isContentEditable);
+
+document.addEventListener("mousedown", (e) => {
+  if (e.shiftKey && e.target.closest("#setBody .row")) e.preventDefault();   // shift+tık metin seçmesin
+});
+
 document.addEventListener("click", async (e) => {
   const menu = $("#menu");
   if (menu && menu.classList.contains("open") && !e.target.closest("#menu") && !e.target.closest('[data-act="menu"]')) menu.classList.remove("open");
@@ -728,10 +936,28 @@ document.addEventListener("click", async (e) => {
     const row = act.closest(".row"); const c = findControl(row.dataset.id);
     decide(c.id, c.status === "kabul" ? "bekliyor" : "kabul"); return;
   }
-  if (a === "accept" || a === "reject" || a === "undo") {
-    decide(S.selectedId, a === "accept" ? "kabul" : a === "reject" ? "red" : "bekliyor"); return;
-  }
+  if (a === "accept" || a === "reject") return decide(S.selectedId, a === "accept" ? "kabul" : "red", { advance: true });
+  if (a === "undo") return decide(S.selectedId, "bekliyor");
+  if (a === "undo-last") return undoLast();
+  if (a === "bulk-accept") return decideMany([...S.multi], "kabul");
+  if (a === "bulk-reject") return decideMany([...S.multi], "red");
+  if (a === "bulk-clear") return clearMulti();
+  if (a === "to-gaps") { const g = $("#setGaps"); if (g) g.scrollIntoView({ block: "start", behavior: "smooth" }); return; }
   if (a === "close-panel") return closePanel();
+  if (a === "chat-close") return closeChat();
+  if (a === "chat-send") return sendChat();
+  if (a === "chat-detail") { const id = S.selectedId; S.panelMode = null; return openPanel(id); }
+  if (a === "chat-unfocus") { S.selectedId = null; syncRows(); renderChatFocus(); updateAskPlaceholder(); return; }
+  if (a === "show-row") return showRow(act.dataset.id);
+  if (a === "kb-edit") { const li = act.closest("li"); S.kbEdit = { skill: li.dataset.skill, text: li.dataset.text }; return viewKnowledge(false); }
+  if (a === "kb-cancel") { S.kbEdit = null; return viewKnowledge(false); }
+  if (a === "kb-save") return kbSave();
+  if (a === "kb-del") {
+    const li = act.closest("li");
+    try { await api(`/api/skills/${li.dataset.skill}/learnings/archive`, jsonOpts("POST", { eski: li.dataset.text })); toast("Kural silindi (arşivde saklanıyor)"); viewKnowledge(); }
+    catch (err) { toast(err.message, true); }
+    return;
+  }
   if (a === "generate") return generate();
   if (a === "cancel") {
     act.disabled = true; act.textContent = "Durduruluyor…";
@@ -745,7 +971,7 @@ document.addEventListener("click", async (e) => {
   if (a === "conn-add") { S.addingConn = true; viewModel(false); const i = $('#addConn input[name="ad"]'); if (i) i.focus(); return; }
   if (a === "conn-add-cancel") { S.addingConn = false; return viewModel(false); }
   if (a === "conn-key-del") {
-    try { S.models = await api("/api/models/connections", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ id: act.dataset.id, anahtari_sil: true }) }); S.editConn = null; viewModel(false); toast("Anahtar silindi"); }
+    try { S.models = await api("/api/models/connections", jsonOpts("POST", { id: act.dataset.id, anahtari_sil: true })); S.editConn = null; viewModel(false); toast("Anahtar silindi"); }
     catch (err) { toast(err.message, true); }
     return;
   }
@@ -775,12 +1001,28 @@ document.addEventListener("click", async (e) => {
   }
 
   const row = e.target.closest("#setBody .row");
-  if (row) { const id = Number(row.dataset.id); if (S.selectedId === id) closePanel(); else openPanel(id); }
+  if (row) {
+    const id = Number(row.dataset.id);
+    if (e.metaKey || e.ctrlKey) {                       // çoklu seçim
+      S.multi.has(id) ? S.multi.delete(id) : S.multi.add(id); S.anchor = id;
+      syncRows(); renderBottom(); return;
+    }
+    if (e.shiftKey) {                                   // aralık seçimi
+      const list = orderedVisible().map((c) => c.id);
+      const from = list.indexOf(S.anchor ?? S.selectedId ?? id), to = list.indexOf(id);
+      const [i, j] = from < 0 ? [to, to] : [Math.min(from, to), Math.max(from, to)];
+      list.slice(i, j + 1).forEach((x) => S.multi.add(x));
+      syncRows(); renderBottom(); return;
+    }
+    if (S.multi.size) clearMulti();
+    if (S.changed.has(id)) { S.changed.delete(id); row.classList.remove("changed"); }
+    if (S.selectedId === id && S.panelMode === "detail") closePanel(); else openPanel(id);
+  }
 });
 
 document.addEventListener("input", (e) => {
   if (e.target.id === "ctrlSearch") { S.q = e.target.value; S.route.name === "kutuphane" ? viewLibrary() : renderSetBody(); }
-  if (e.target.matches("textarea.auto") || e.target.id === "chatInput") autosize(e.target);
+  if (e.target.matches("textarea.auto") || e.target.id === "chatInput" || e.target.id === "kbEditInput") autosize(e.target);
 });
 
 /* panel alan kaydetme */
@@ -795,6 +1037,8 @@ $("#panel").addEventListener("focusout", (e) => {
 });
 $("#panel").addEventListener("keydown", (e) => {
   if (e.key === "Enter" && !e.shiftKey && e.target.matches('textarea[data-field="kontrol_adi"], textarea[data-field="dayanak"]')) { e.preventDefault(); e.target.blur(); }
+  if (e.key === "Enter" && !e.shiftKey && e.target.id === "chatInput") { e.preventDefault(); sendChat(); }
+  if (e.key === "Escape" && e.target.matches("textarea[data-field]")) { e.preventDefault(); e.target.blur(); }
 });
 
 $("#fileInput").addEventListener("change", (e) => { upload(e.target.files); e.target.value = ""; });
@@ -807,30 +1051,61 @@ document.addEventListener("submit", (e) => {
 });
 $("#searchBtn").onclick = () => { const i = $("#ctrlSearch"); if (i) i.focus(); else if (S.lib.length) go("#/kutuphane"); };
 $("#askBar").onclick = openChat;
-$("#chatClose").onclick = closeChat;
-$("#chatSend").onclick = sendChat;
-$("#chatInput").addEventListener("keydown", (e) => { if (e.key === "Enter" && !e.shiftKey) { e.preventDefault(); sendChat(); } });
+
+/* klavye: gezinme ve karar */
+function moveSelection(dir) {
+  const list = orderedVisible(); if (!list.length) return;
+  const i = list.findIndex((c) => c.id === S.selectedId);
+  const next = i < 0 ? list[dir > 0 ? 0 : list.length - 1] : list[Math.min(list.length - 1, Math.max(0, i + dir))];
+  S.kbd = true;
+  openPanel(next.id, { keepKbd: true });
+  const row = document.querySelector(`.row[data-id="${next.id}"]`); if (row) row.scrollIntoView({ block: "nearest" });
+}
 
 document.addEventListener("keydown", (e) => {
   const mod = e.metaKey || e.ctrlKey;
-  if (mod && e.key.toLowerCase() === "k") { e.preventDefault(); $("#searchBtn").click(); return; }
-  if (mod && e.key.toLowerCase() === "j") { e.preventDefault(); $("#ask").classList.contains("open") ? closeChat() : openChat(); return; }
+  const k = e.key.toLowerCase();
+  if (mod && k === "k") { e.preventDefault(); $("#searchBtn").click(); return; }
+  if (mod && k === "j") { e.preventDefault(); S.panelMode === "chat" ? closeChat() : openChat(); return; }
   if (e.key === "Escape") {
+    if (e.target.id === "kbEditInput") { S.kbEdit = null; return viewKnowledge(false); }
     const menu = $("#menu");
     if (menu && menu.classList.contains("open")) return menu.classList.remove("open");
-    if ($("#ask").classList.contains("open")) return closeChat();
+    if (S.multi.size) return clearMulti();
+    if (S.panelMode === "chat") return closeChat();
     if (S.selectedId) return closePanel();
+    return;
   }
+  if (e.target.id === "kbEditInput" && e.key === "Enter" && !e.shiftKey) { e.preventDefault(); return kbSave(); }
+  if (typing(e.target)) return;
+  const onSet = S.route.name === "set" && S.set && !isGen(S.set);
+  if (!onSet) return;
+  if (mod && k === "z" && !e.shiftKey) { if (S.undo) { e.preventDefault(); undoLast(); } return; }
+  if (mod || e.altKey) return;
+  if (e.key === "ArrowDown" || k === "j") { e.preventDefault(); return moveSelection(1); }
+  if (e.key === "ArrowUp" || k === "k") { e.preventDefault(); return moveSelection(-1); }
+  if (k === "a" || k === "r") {
+    e.preventDefault();
+    const karar = k === "a" ? "kabul" : "red";
+    if (S.multi.size) return decideMany([...S.multi], karar);
+    if (S.selectedId) { S.kbd = true; return decide(S.selectedId, karar, { advance: true }); }
+    return;
+  }
+  if (k === "e" && S.selectedId && S.panelMode === "detail") {
+    e.preventDefault(); const t = $('#panel textarea[data-field="kontrol_adi"]'); if (t) { t.focus(); t.setSelectionRange(t.value.length, t.value.length); }
+  }
+  if (e.key === "Enter" && S.selectedId && S.panelMode !== "detail") { e.preventDefault(); S.panelMode = null; openPanel(S.selectedId, { keepKbd: true }); }
 });
 
 window.addEventListener("hashchange", route);
 
 /* ---------------------------------------------------------------- başlat */
 (async function init() {
-  api("/api/health").then((h) => { S.health = h; renderHealth(); }).catch(() => renderHealth());
+  api("/api/health").then((h) => { S.health = h; renderHealth(); if (S.route.name === "belgeler") viewDocs(); }).catch(() => renderHealth());
   try { S.meta = await api("/api/meta"); } catch {}
   try { await loadBase(); } catch (e) { toast("Sunucuya ulaşılamadı", true); }
   const running = S.sets.find(isGen);
   if (running) startPoll(running.id);   // sayfa yenilendiyse üretimi izlemeye devam et
   route();
 })();
+

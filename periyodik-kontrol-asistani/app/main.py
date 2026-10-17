@@ -1,3 +1,4 @@
+import hashlib
 import json
 import uuid
 from pathlib import Path
@@ -8,7 +9,7 @@ from fastapi.responses import FileResponse, StreamingResponse
 from fastapi.staticfiles import StaticFiles
 from pydantic import BaseModel
 
-from . import config, documents, exporters, jobs, llm, model_settings, skills, storage
+from . import config, documents, processing, exporters, jobs, llm, model_settings, skills, storage
 
 app = FastAPI(title="Periyodik Kontrol Asistanı")
 storage.init_db()
@@ -190,26 +191,50 @@ async def upload_document(file: UploadFile = File(...)):
     suffix = Path(name).suffix.lower()
     if suffix not in (".pdf", ".docx", ".txt", ".md"):
         raise HTTPException(400, "Yalnız pdf, docx, txt ve md dosyaları kabul edilir.")
+    data = await file.read()
     dest = config.UPLOADS_DIR / f"{uuid.uuid4().hex}{suffix}"
-    dest.write_bytes(await file.read())
+    dest.write_bytes(data)
     text, warning = documents.extract(dest)
+    sha = hashlib.sha256(data).hexdigest()
+    bolum = len(processing.split_document(text, name)) if text.strip() else 0
     with storage.db_session() as conn:
-        cur = conn.execute(
-            "INSERT INTO documents (filename, stored_path, text_excerpt, char_count, uyari) VALUES (?,?,?,?,?)",
-            (name, str(dest), text[:2000], len(text.strip()), warning),
+        conn.execute(
+            "INSERT INTO documents (filename, stored_path, text_excerpt, char_count, uyari, sha, bolum) VALUES (?,?,?,?,?,?,?)",
+            (name, str(dest), text[:2000], len(text.strip()), warning, sha, bolum),
         )
-        doc = _row(conn.execute("SELECT id, filename, char_count, uyari, uploaded_at FROM documents WHERE id=?",
-                                (cur.lastrowid,)).fetchone())
-    return doc
+    return next(d for d in list_documents() if d["sha"] == sha and d["filename"] == name)
+
+
+def _backfill_documents(conn):
+    """Eski kayıtlarda eksik olan özet (hash) ve bölüm sayısını bir kez hesaplar."""
+    for r in conn.execute("SELECT id, filename, stored_path FROM documents WHERE sha IS NULL OR bolum IS NULL").fetchall():
+        p = Path(r["stored_path"])
+        if not p.exists():
+            continue
+        text, _ = documents.extract(p)
+        conn.execute("UPDATE documents SET sha = ?, bolum = ? WHERE id = ?",
+                     (hashlib.sha256(p.read_bytes()).hexdigest(),
+                      len(processing.split_document(text, r["filename"])) if text.strip() else 0, r["id"]))
 
 
 @app.get("/api/documents")
 def list_documents():
     with storage.db_session() as conn:
-        rows = conn.execute(
-            "SELECT id, filename, char_count, uyari, uploaded_at FROM documents ORDER BY id DESC"
-        ).fetchall()
-    return [dict(r) for r in rows]
+        _backfill_documents(conn)
+        rows = [dict(r) for r in conn.execute(
+            "SELECT id, filename, char_count, uyari, uploaded_at, sha, bolum FROM documents ORDER BY id DESC")]
+        used: dict[str, int] = {}
+        for s in conn.execute("SELECT belge_adlari FROM control_sets"):
+            for n in set(json.loads(s["belge_adlari"] or "[]")):
+                used[n] = used.get(n, 0) + 1
+    first_by_sha: dict[str, dict] = {}
+    for d in sorted(rows, key=lambda x: x["id"]):
+        d["kullanim"] = used.get(d["filename"], 0)
+        prev = first_by_sha.get(d["sha"]) if d["sha"] else None
+        d["kopya_of"] = prev["filename"] if prev else None
+        if d["sha"] and not prev:
+            first_by_sha[d["sha"]] = d
+    return rows
 
 
 @app.delete("/api/documents/{doc_id}")
@@ -275,12 +300,17 @@ def create_set():
     if jobs.is_running():
         raise HTTPException(409, "Şu an başka bir set üretiliyor. Bitmesini bekleyin ya da durdurun.")
     with storage.db_session() as conn:
-        rows = conn.execute("SELECT filename, stored_path FROM documents ORDER BY id").fetchall()
+        _backfill_documents(conn)
+        rows = conn.execute("SELECT filename, stored_path, sha FROM documents ORDER BY id").fetchall()
     if not rows:
         raise HTTPException(400, "Önce en az bir belge yükleyin.")
 
-    docs, skipped = [], []
+    docs, skipped, seen = [], [], set()
     for d in rows:
+        if d["sha"] and d["sha"] in seen:
+            continue   # aynı içerik ikinci kez yüklenmiş: bir kez işlenir
+        if d["sha"]:
+            seen.add(d["sha"])
         p = Path(d["stored_path"])
         text = documents.extract_text(p) if p.exists() else ""
         if text.strip():
@@ -398,27 +428,48 @@ class DecisionIn(BaseModel):
     karar: str  # kabul | red | bekliyor
 
 
-@app.post("/api/controls/{control_id}/decision")
-def decide(control_id: int, body: DecisionIn):
-    if body.karar not in ("kabul", "red", "bekliyor"):
-        raise HTTPException(400, "Geçersiz karar.")
+def _decide(control_id: int, karar: str) -> dict:
     with storage.db_session() as conn:
         row = conn.execute("SELECT * FROM suggestions WHERE id = ?", (control_id,)).fetchone()
         if not row:
             raise HTTPException(404, "Kontrol bulunamadı.")
         control = dict(row)
-        if control["status"] == body.karar:
-            return {"ok": True, "control": control}
-        conn.execute("UPDATE suggestions SET status = ? WHERE id = ?", (body.karar, control_id))
-        conn.execute("INSERT INTO feedback (suggestion_id, karar) VALUES (?, ?)", (control_id, body.karar))
-        control["status"] = body.karar
+        prev = control["status"]
+        if prev == karar:
+            return control
+        conn.execute("UPDATE suggestions SET status = ? WHERE id = ?", (karar, control_id))
+        conn.execute("INSERT INTO feedback (suggestion_id, karar) VALUES (?, ?)", (control_id, karar))
+        control["status"] = karar
         _sync_library(conn, control)
-    if body.karar == "red":
+    skill = skills.guess_skill_for_category(control["kategori"])
+    if karar == "red":
         skills.append_learning(
-            skills.guess_skill_for_category(control["kategori"]),
-            f"Reddedildi: '{control['kontrol_adi']}' ({control['kategori']}, {control['siklik']}, risk {control['risk']}).",
-        )
-    return {"ok": True, "control": control}
+            skill, f"Reddedildi: '{control['kontrol_adi']}' ({control['kategori']}, {control['siklik']}, risk {control['risk']}).")
+    elif prev == "red":
+        # ret geri alındı: o retten yazılan öğrenme de geri alınır
+        skills.remove_last_learning_starting(skill, f"Reddedildi: '{control['kontrol_adi']}'")
+    return control
+
+
+@app.post("/api/controls/{control_id}/decision")
+def decide(control_id: int, body: DecisionIn):
+    if body.karar not in ("kabul", "red", "bekliyor"):
+        raise HTTPException(400, "Geçersiz karar.")
+    return {"ok": True, "control": _decide(control_id, body.karar)}
+
+
+class BulkDecisionIn(BaseModel):
+    ids: list[int]
+    karar: str
+
+
+@app.post("/api/controls/bulk-decision")
+def bulk_decide(body: BulkDecisionIn):
+    if body.karar not in ("kabul", "red", "bekliyor"):
+        raise HTTPException(400, "Geçersiz karar.")
+    if not body.ids or len(body.ids) > 500:
+        raise HTTPException(400, "1–500 kontrol seçilmeli.")
+    return {"ok": True, "controls": [_decide(i, body.karar) for i in dict.fromkeys(body.ids)]}
 
 
 class EditIn(BaseModel):
@@ -496,6 +547,29 @@ def remove_library(item_id: int):
 @app.get("/api/skills")
 def get_skills():
     return skills.list_skills()
+
+
+class LearningEditIn(BaseModel):
+    eski: str
+    yeni: str | None = None
+
+
+@app.patch("/api/skills/{name}/learnings")
+def edit_learning(name: str, body: LearningEditIn):
+    if not skills.skill_path(name):
+        raise HTTPException(404, "Skill bulunamadı.")
+    if not skills.edit_learning(name, body.eski, body.yeni or ""):
+        raise HTTPException(400, "Kural bulunamadı ya da yeni metin boş.")
+    return {"ok": True}
+
+
+@app.post("/api/skills/{name}/learnings/archive")
+def archive_learning(name: str, body: LearningEditIn):
+    if not skills.skill_path(name):
+        raise HTTPException(404, "Skill bulunamadı.")
+    if not skills.archive_learning(name, body.eski):
+        raise HTTPException(400, "Kural bulunamadı.")
+    return {"ok": True}
 
 
 @app.get("/api/meta")
