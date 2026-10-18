@@ -78,6 +78,14 @@ döndür, başka metin yazma:
 {"baslik":"<incelenen süreç(ler)in kısa adı, en fazla 6 kelime>","ozet":"<2-3 cümle: hangi \
 belgeler incelendi, kontroller nerede yoğunlaşıyor, öne çıkan boşluk varsa ne>"}"""
 
+RULE_SYSTEM_PROMPT = """Bir bankanın iç kontrol uzmanının bir kontrol setindeki kararlarına bakıp, \
+gelecekteki setlerde de uygulanacak GENEL bir kural çıkarıp çıkaramayacağına karar veriyorsun.
+
+Kural: tek cümle, genel (tek bir kontrolün adını içermez), uygulanabilir (model yeni kontrol önerirken \
+neyi farklı yapacağını söyler). Kararlarda ortak bir örüntü YOKSA ya da sebep belirsizse kural uydurma.
+
+SADECE şu JSON'u döndür: {"kural":"<tek cümle ya da null>","gerekce":"<hangi kararlardan çıkardın, kısa>"}"""
+
 CHAT_SYSTEM_PROMPT = """Sen bir bankanın iç kontrol biriminde, kullanıcının bir kontrol setine \
 veya tek bir kontrole verdiği serbest metin geri bildirimini uygulayan bir uzmansın.
 
@@ -86,7 +94,8 @@ SADECE geçerli bir JSON objesi döndür, başka hiçbir metin yazma:
 
 {"yanit":"<kullanıcıya kısa Türkçe yanıt: ne yaptın, neyi neden değiştirmedin>",
  "degisiklikler":[{"id":<kontrol id>,"alanlar":{"<alan>":"<yeni değer>"}}],
- "ders":"<gelecekteki setlere de uygulanabilecek genel, kısa bir kural; yoksa null>"}
+ "ders":"<kullanıcının mesajından çıkan, gelecekteki setlere de uygulanabilecek GENEL tek cümlelik kural; \
+tek seferlik bir düzeltmeyse null>"}
 
 Değiştirilebilir alanlar: kontrol_adi, kategori, hat, siklik, risk, efor, gerekce, dayanak, sorumlu. \
 Değişiklik gerekmiyorsa "degisiklikler": [] döndür. Yalnız verilen id'leri kullan. \
@@ -351,9 +360,37 @@ def summarize_set(doc_names: list[str], headings: list[str], titles: list[str], 
         return None
 
 
+def propose_rule(rejected: list[dict], edits: list[str], accepted: list[str], conn: dict | None = None) -> dict | None:
+    """Ret ve düzeltmelerden genel kural önerisi; yoksa None."""
+    lines = []
+    if rejected:
+        lines.append("REDDEDİLEN KONTROLLER:")
+        lines += [f"- {r['kontrol_adi']} (kategori {r['kategori']}, hat {r['hat']}, sıklık {r['siklik']}"
+                  f"{', sorumlu ' + r['sorumlu'] if r.get('sorumlu') else ''})" for r in rejected]
+    if edits:
+        lines.append("KULLANICININ DÜZELTMELERİ (alan: eski → yeni):")
+        lines += [f"- {e}" for e in edits]
+    if accepted:
+        lines.append("KARŞILAŞTIRMA İÇİN KABUL EDİLENLER:")
+        lines += [f"- {a}" for a in accepted[:10]]
+    result = call_chat_completion([{"role": "system", "content": RULE_SYSTEM_PROMPT},
+                                   {"role": "user", "content": "\n".join(lines)}], conn=conn)
+    if not result["ok"]:
+        return None
+    try:
+        parsed = _extract_json_payload(result["content"])
+    except Exception:
+        return None
+    kural = parsed.get("kural") if isinstance(parsed, dict) else None
+    if not isinstance(kural, str) or kural.strip().lower() in ("", "null", "none"):
+        return None
+    return {"kural": kural.strip(), "gerekce": str(parsed.get("gerekce") or "").strip()}
+
+
 # ---------------------------------------------------------------- sohbet / geri bildirim
 
-def chat_feedback(controls: list[dict], focus: dict | None, message: str, skills_text: str) -> dict:
+def chat_feedback(controls: list[dict], focus: dict | None, message: str, skills_text: str,
+                  conn: dict | None = None) -> dict:
     compact = [
         {k: c.get(k) for k in ("id", "kontrol_adi", "kategori", "hat", "siklik", "risk", "efor")}
         for c in controls
@@ -365,7 +402,7 @@ def chat_feedback(controls: list[dict], focus: dict | None, message: str, skills
         + f"KULLANICI MESAJI:\n{message}"
     )
     result = call_chat_completion(
-        [{"role": "system", "content": CHAT_SYSTEM_PROMPT}, {"role": "user", "content": user}]
+        [{"role": "system", "content": CHAT_SYSTEM_PROMPT}, {"role": "user", "content": user}], conn=conn
     )
     if not result["ok"]:
         return {"ok": False, "error": connection_error_text(result["error"])}

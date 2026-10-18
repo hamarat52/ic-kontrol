@@ -9,7 +9,7 @@ from fastapi.responses import FileResponse, StreamingResponse
 from fastapi.staticfiles import StaticFiles
 from pydantic import BaseModel
 
-from . import config, documents, processing, exporters, jobs, llm, model_settings, skills, sources, storage
+from . import config, documents, processing, exporters, jobs, llm, model_settings, ogrenme, skills, sources, storage
 
 app = FastAPI(title="Periyodik Kontrol Asistanı")
 storage.init_db()
@@ -383,10 +383,8 @@ def get_set(set_id: str):
         if not s:
             raise HTTPException(404, "Kontrol seti bulunamadı.")
         s["controls"] = _controls(conn, set_id)
-        s["messages"] = [
-            {**dict(m), "changes": json.loads(m["changes"]) if m["changes"] else []}
-            for m in conn.execute("SELECT * FROM set_messages WHERE set_id = ? ORDER BY id", (set_id,))
-        ]
+        s["messages"] = [_message(conn, m) for m in
+                         conn.execute("SELECT * FROM set_messages WHERE set_id = ? ORDER BY id", (set_id,)).fetchall()]
     return s
 
 
@@ -523,7 +521,10 @@ def chat(set_id: str, body: ChatIn):
     by_id = {c["id"]: c for c in controls}
     focus = by_id.get(body.control_id) if body.control_id else None
 
-    result = llm.chat_feedback(controls, focus, msg, skills.read_all_skills_text())
+    with storage.db_session() as conn:
+        sset = _load_set(conn, set_id)
+    alanlar = (sset.get("kapsam") or {}).get("alanlar") or None
+    result = llm.chat_feedback(controls, focus, msg, skills.read_skills_text(alanlar))
     if not result["ok"]:
         with storage.db_session() as conn:
             conn.execute("INSERT INTO set_messages (set_id, control_id, role, content) VALUES (?,?, 'ai', ?)",
@@ -548,19 +549,32 @@ def chat(set_id: str, body: ChatIn):
                     "id": cid, "kontrol_adi": before["kontrol_adi"],
                     "alanlar": {k: [before.get(k), control[k]] for k in fields if before.get(k) != control[k]},
                 })
+        lid = None
+        if result["ders"]:
+            # Ders doğrudan yazılmaz: onay bekleyen öneri olur (sohbette ve Öğrenilenler'de onaylanır)
+            ref = focus or (by_id.get(changes[0]["id"]) if changes else None) or {}
+            kategori = ref.get("kategori", "")
+            konu_alan = alanlar or skills.doc_alanlar(conn, [ref["kaynak_belge"]] if ref.get("kaynak_belge") else [])
+            lid = skills.propose(conn, skills.guess_topic(kategori, konu_alan), result["ders"], "sohbet",
+                                 set_id, sset.get("baslik"), f"Senin mesajın: “{msg}”")
         cur = conn.execute(
-            "INSERT INTO set_messages (set_id, control_id, role, content, changes, lesson) VALUES (?,?, 'ai', ?,?,?)",
-            (set_id, body.control_id, result["yanit"], json.dumps(changes, ensure_ascii=False), result["ders"]),
+            """INSERT INTO set_messages (set_id, control_id, role, content, changes, lesson, learning_id)
+               VALUES (?,?, 'ai', ?,?,?,?)""",
+            (set_id, body.control_id, result["yanit"], json.dumps(changes, ensure_ascii=False), result["ders"], lid),
         )
-        ai_msg = dict(conn.execute("SELECT * FROM set_messages WHERE id = ?", (cur.lastrowid,)).fetchone())
-        ai_msg["changes"] = changes
+        ai_msg = _message(conn, conn.execute("SELECT * FROM set_messages WHERE id = ?", (cur.lastrowid,)).fetchone())
         updated = _controls(conn, set_id)
 
-    if result["ders"]:
-        kategori = (focus or (by_id.get(changes[0]["id"]) if changes else None) or {}).get("kategori", "")
-        skills.append_learning(skills.guess_skill_for_category(kategori), result["ders"])
-
     return {"ok": True, "message": ai_msg, "controls": updated}
+
+
+def _message(conn, m) -> dict:
+    d = {**dict(m), "changes": json.loads(m["changes"]) if m["changes"] else []}
+    d["learning"] = None
+    if m["learning_id"]:
+        r = conn.execute("SELECT id, metin, durum, skill FROM learnings WHERE id = ?", (m["learning_id"],)).fetchone()
+        d["learning"] = dict(r) if r else None
+    return d
 
 
 # ------------------------------------------------------------------ tek kontrol
@@ -582,13 +596,9 @@ def _decide(control_id: int, karar: str) -> dict:
         conn.execute("INSERT INTO feedback (suggestion_id, karar) VALUES (?, ?)", (control_id, karar))
         control["status"] = karar
         _sync_library(conn, control)
-    skill = skills.guess_skill_for_category(control["kategori"])
     if karar == "red":
-        skills.append_learning(
-            skill, f"Reddedildi: '{control['kontrol_adi']}' ({control['kategori']}, {control['siklik']}, risk {control['risk']}).")
-    elif prev == "red":
-        # ret geri alındı: o retten yazılan öğrenme de geri alınır
-        skills.remove_last_learning_starting(skill, f"Reddedildi: '{control['kontrol_adi']}'")
+        # Ret tek başına kural değildir; benzer kararlar birikince model kural önerir (onaya gelir)
+        ogrenme.maybe_analyze_async(control["run_id"])
     return control
 
 
@@ -636,10 +646,7 @@ def edit_control(control_id: int, body: EditIn):
         fields = {k: v for k, v in fields.items() if v or k in ("gerekce", "dayanak")}
         diffs = _apply_fields(conn, control, fields, "duzenle")
     if diffs:
-        skills.append_learning(
-            skills.guess_skill_for_category(control["kategori"]),
-            f"Kullanıcı düzeltti — '{control['kontrol_adi']}': {'; '.join(diffs)}",
-        )
+        ogrenme.maybe_analyze_async(control["run_id"])
     control["edited"] = 1 if diffs else 0
     return {"ok": True, "changed": bool(diffs), "control": control}
 
@@ -716,31 +723,104 @@ def remove_library(item_id: int):
     return {"ok": True}
 
 
-@app.get("/api/skills")
-def get_skills():
-    return skills.list_skills()
+@app.get("/api/learnings")
+def get_learnings():
+    with storage.db_session() as conn:
+        return skills.overview(conn)
 
 
-class LearningEditIn(BaseModel):
-    eski: str
-    yeni: str | None = None
+class LearningDecisionIn(BaseModel):
+    karar: str                 # onayla | at
+    skill: str | None = None
+    metin: str | None = None
 
 
-@app.patch("/api/skills/{name}/learnings")
-def edit_learning(name: str, body: LearningEditIn):
-    if not skills.skill_path(name):
-        raise HTTPException(404, "Skill bulunamadı.")
-    if not skills.edit_learning(name, body.eski, body.yeni or ""):
-        raise HTTPException(400, "Kural bulunamadı ya da yeni metin boş.")
+@app.post("/api/learnings/{lid}/decision")
+def decide_learning(lid: int, body: LearningDecisionIn):
+    if body.karar not in ("onayla", "at"):
+        raise HTTPException(400, "Geçersiz karar.")
+    with storage.db_session() as conn:
+        row = conn.execute("SELECT durum FROM learnings WHERE id = ?", (lid,)).fetchone()
+        if not row:
+            raise HTTPException(404, "Kural bulunamadı.")
+        if row["durum"] != "bekliyor":
+            raise HTTPException(409, "Bu öneri zaten karara bağlanmış.")
+        try:
+            r = skills.decide(conn, lid, body.karar, body.skill, body.metin)
+        except ValueError as e:
+            raise HTTPException(400, str(e))
+    return {"ok": True, "learning": r}
+
+
+class TextIn(BaseModel):
+    metin: str
+
+
+@app.patch("/api/learnings/{lid}")
+def edit_learning(lid: int, body: TextIn):
+    with storage.db_session() as conn:
+        if not skills.edit(conn, lid, body.metin):
+            raise HTTPException(400, "Kural bulunamadı ya da yeni metin boş.")
     return {"ok": True}
 
 
-@app.post("/api/skills/{name}/learnings/archive")
-def archive_learning(name: str, body: LearningEditIn):
-    if not skills.skill_path(name):
-        raise HTTPException(404, "Skill bulunamadı.")
-    if not skills.archive_learning(name, body.eski):
-        raise HTTPException(400, "Kural bulunamadı.")
+@app.delete("/api/learnings/{lid}")
+def archive_learning(lid: int):
+    with storage.db_session() as conn:
+        if not skills.archive(conn, lid):
+            raise HTTPException(404, "Kural bulunamadı.")
+    return {"ok": True}
+
+
+@app.post("/api/learnings")
+def add_learning(body: LearningDecisionIn):
+    """Kullanıcının elle eklediği kural (doğrudan onaylı)."""
+    with storage.db_session() as conn:
+        if (body.skill or "") not in skills.topics(conn):
+            raise HTTPException(400, "Konu bulunamadı.")
+        lid = skills.propose(conn, body.skill, body.metin or "", "elle")
+        if not lid:
+            raise HTTPException(400, "Kural boş ya da zaten var.")
+        skills.decide(conn, lid, "onayla")
+    return {"ok": True, "id": lid}
+
+
+@app.get("/api/learnings/export")
+def export_learnings(baslangic: int = 1):
+    from datetime import date
+    with storage.db_session() as conn:
+        data = skills.export_zip(conn, with_seed=bool(baslangic))
+    name = f"ic-kontrol-ogrenilenler-{date.today().isoformat()}.zip"
+    return StreamingResponse(iter([data]), media_type="application/zip",
+                             headers={"Content-Disposition": _disposition(name)})
+
+
+@app.post("/api/prefs")
+def add_pref(body: TextIn):
+    with storage.db_session() as conn:
+        try:
+            pid = skills.add_pref(conn, body.metin)
+        except ValueError as e:
+            raise HTTPException(400, str(e))
+    return {"ok": True, "id": pid}
+
+
+@app.patch("/api/prefs/{pid}")
+def edit_pref(pid: int, body: TextIn):
+    with storage.db_session() as conn:
+        if not conn.execute("SELECT 1 FROM tercihler WHERE id = ? AND arsiv = 0", (pid,)).fetchone():
+            raise HTTPException(404, "Tercih bulunamadı.")
+        try:
+            skills.edit_pref(conn, pid, body.metin)
+        except ValueError as e:
+            raise HTTPException(400, str(e))
+    return {"ok": True}
+
+
+@app.delete("/api/prefs/{pid}")
+def delete_pref(pid: int):
+    with storage.db_session() as conn:
+        skills.delete_pref(conn, pid)
     return {"ok": True}
 
 

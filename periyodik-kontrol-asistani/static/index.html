@@ -4,7 +4,7 @@
 <meta charset="utf-8" />
 <title>Periyodik Kontrol Asistanı</title>
 <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>📋</text></svg>" />
-<link rel="stylesheet" href="/static/style.css?v=1792253006" />
+<link rel="stylesheet" href="/static/style.css?v=1792314135" />
 </head>
 <body>
 <div class="win" id="win">
@@ -18,7 +18,7 @@
     <nav id="nav">
       <button class="nav-item" data-route="belgeler"><span class="ico">📄</span><span class="label">Belgeler</span><span class="count" id="cDocs"></span></button>
       <button class="nav-item" data-route="kutuphane"><span class="ico">📚</span><span class="label">Kontroller</span><span class="count" id="cLib"></span></button>
-      <button class="nav-item" data-route="bilgi"><span class="ico">💡</span><span class="label">Öğrenilenler</span></button>
+      <button class="nav-item" data-route="bilgi"><span class="ico">💡</span><span class="label">Öğrenilenler</span><span class="pend-dot" id="cLearn" hidden></span></button>
     </nav>
 
     <div class="sec" id="secSets">
@@ -65,6 +65,6 @@
 <input type="file" id="fileInput" accept=".pdf,.docx,.xlsx,.txt,.md" multiple hidden />
 <div class="toast" id="toast"></div>
 <div class="undo" id="undo" hidden></div>
-<script src="/static/app.js?v=1792253006"></script>
+<script src="/static/app.js?v=1792314135"></script>
 </body>
 </html>

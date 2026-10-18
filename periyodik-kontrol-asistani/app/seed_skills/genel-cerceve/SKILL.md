@@ -1,4 +1,14 @@
-# Skill: Genel Çerçeve (BDDK / Üçlü Savunma Hattı)
+---
+name: genel-cerceve
+description: Banka iç kontrol, risk ve teftiş görev ayrımı (BDDK, üç savunma hattı). Her periyodik kontrol tasarımında kullan.
+metadata:
+  ic_kontrol:
+    baslik: Genel Çerçeve
+    ikon: "🏛️"
+    alanlar: []
+---
+
+# Genel Çerçeve
 
 > Bu dosya başlangıç (seed) bilgisidir — kamuya açık mevzuat ve IIA standartlarından derlenmiştir,
 > şirkete özel hiçbir veri içermez. Kullanım ve geri bildirim arttıkça "Öğrenilenler" bölümü büyür.
@@ -22,6 +32,3 @@
 - Önerilen her kontrol hangi hatta ait olduğunu (1/2/3) belirtmeli.
 - Süreç belgesinde tanımlı adım ile olması gereken arasında boşluk (gap) varsa bunu ayrıca işaretle.
 - Kontrol, mevcut bir üst politika/mevzuat maddesine dayanıyorsa referans ver (ör. "5411 m.29").
-
-## Öğrenilenler
-_(henüz geri bildirim yok — kullanım arttıkça buraya eklenir)_

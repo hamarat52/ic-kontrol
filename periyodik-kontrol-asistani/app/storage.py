@@ -78,7 +78,36 @@ CREATE TABLE IF NOT EXISTS set_messages (
     created_at TEXT DEFAULT (datetime('now'))
 );
 
+-- Öğrenen yapı: model önerir (bekliyor) → kullanıcı onaylar (onayli) ya da atar (atildi); arşiv = silinmiş
+CREATE TABLE IF NOT EXISTS learnings (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    skill TEXT NOT NULL,
+    metin TEXT NOT NULL,
+    durum TEXT NOT NULL DEFAULT 'bekliyor',
+    kaynak TEXT,               -- sohbet | ret | duzenleme | elle | eski
+    set_id TEXT,
+    set_baslik TEXT,
+    neden TEXT,                -- kullanıcının mesajı ya da dayanak olan kararlar
+    created_at TEXT DEFAULT (datetime('now')),
+    decided_at TEXT
+);
+
+-- USER.md: kullanıcının çalışma tercihleri
+CREATE TABLE IF NOT EXISTS tercihler (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    metin TEXT NOT NULL,
+    arsiv INTEGER DEFAULT 0,
+    created_at TEXT DEFAULT (datetime('now'))
+);
+
+CREATE TABLE IF NOT EXISTS skill_usage (
+    set_id TEXT,
+    skill TEXT,
+    created_at TEXT DEFAULT (datetime('now'))
+);
+
 CREATE INDEX IF NOT EXISTS idx_suggestions_run ON suggestions(run_id);
+CREATE INDEX IF NOT EXISTS idx_learnings_durum ON learnings(durum);
 CREATE INDEX IF NOT EXISTS idx_feedback_sugg ON feedback(suggestion_id);
 CREATE INDEX IF NOT EXISTS idx_messages_set ON set_messages(set_id);
 """
@@ -95,6 +124,8 @@ MIGRATIONS = {
                     "sorumlu": "TEXT", "dayanak_bag": "TEXT"},
     "control_sets": {"progress": "TEXT", "istatistik": "TEXT", "iptal": "INTEGER DEFAULT 0", "kapsam": "TEXT"},
     "library": {"sorumlu": "TEXT"},
+    "feedback": {"incelendi": "INTEGER DEFAULT 0"},
+    "set_messages": {"learning_id": "INTEGER"},
 }
 
 

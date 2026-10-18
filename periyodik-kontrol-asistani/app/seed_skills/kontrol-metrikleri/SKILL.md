@@ -1,4 +1,14 @@
-# Skill: Kontrol Önerisi Metrikleri (Kategori / Sıklık / Risk / Efor)
+---
+name: kontrol-metrikleri
+description: Kontrolün kategori, sıklık, risk ve efor değerlerini seçerken kullan.
+metadata:
+  ic_kontrol:
+    baslik: Kontrol Metrikleri
+    ikon: "📐"
+    alanlar: []
+---
+
+# Kontrol Metrikleri
 
 > Seed bilgisi — her periyodik kontrol önerisi bu dört metrikle birlikte üretilmelidir.
 
@@ -36,6 +46,3 @@ Risk:
 Efor:
 Gerekçe / dayanak (belge referansı veya mevzuat maddesi):
 ```
-
-## Öğrenilenler
-_(henüz geri bildirim yok — kullanım arttıkça buraya eklenir)_

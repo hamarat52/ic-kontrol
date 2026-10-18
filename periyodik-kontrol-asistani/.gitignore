@@ -25,3 +25,5 @@ app/kaynaklar/metin/bcbs-ic-denetim-2012.txt
 app/kaynaklar/orijinal/bcbs-ic-denetim-2012.pdf
 app/kaynaklar/metin/bcbs-uyum-fonksiyonu-2005.txt
 app/kaynaklar/orijinal/bcbs-uyum-fonksiyonu-2005.pdf
+data/USER.md
+data/*.db-*

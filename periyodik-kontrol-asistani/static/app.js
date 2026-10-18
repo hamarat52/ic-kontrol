@@ -15,6 +15,7 @@ const S = {
   filter: "all", q: "", selectedId: null, chatBusy: false, fresh: new Set(),
   panelMode: null, docId: null, docBack: null, multi: new Set(), anchor: null, changed: new Set(), undo: null, kbd: false,
   uploading: [], kbEdit: null, skills: null,
+  learn: null, exportOpen: false, exportSeed: true, lpEdit: null,
   docTab: "sirket", showAll: new Set(), docEdit: null, scope: null, uploadAs: null, openScopeAfter: false,
 };
 const isGen = (s) => s && s.durum === "uretiliyor";
@@ -69,6 +70,7 @@ async function loadBase() {
   const [docs, sets, lib] = await Promise.all([api("/api/documents"), api("/api/sets"), api("/api/library")]);
   S.docs = docs; S.sets = sets; S.lib = lib;
   renderSidebar();
+  refreshLearn();
 }
 async function refreshSets() { S.sets = await api("/api/sets"); renderSidebar(); }
 async function refreshLib() { S.lib = await api("/api/library"); renderSidebar(); }
@@ -89,7 +91,7 @@ async function route() {
   S.route = r;
   if (changed) {
     S.panelMode = null; closePanel(true);
-    S.filter = "all"; S.q = ""; S.editConn = null; S.addingConn = false; S.kbEdit = null;
+    S.filter = "all"; S.q = ""; S.exportOpen = false; S.editConn = null; S.addingConn = false; S.kbEdit = null;
     S.multi.clear(); S.changed.clear(); S.undo = null; $("#undo").hidden = true;
     $("#scroll").scrollTop = 0;
   }
@@ -623,6 +625,7 @@ async function decide(id, karar, { advance = false, undoable = true } = {}) {
   catch (e) { c.status = prev; refreshAfterDecision(); toast(e.message, true); return; }
   if (S.selectedId === c.id && S.panelMode === "detail") loadHistory(c.id);
   if (undoable) showUndo([{ id: c.id, prev }], `“${short(c.kontrol_adi)}” ${LABEL[karar]}`);
+  if (karar === "red") { setTimeout(refreshLearn, 6000); setTimeout(refreshLearn, 20000); }
 }
 
 async function decideMany(ids, karar) {
@@ -923,8 +926,18 @@ function msgHtml(m) {
       ${Object.entries(ch.alanlar || {}).map(([k, [a, b]]) => `<div class="c-diff">${FN[k] || k} <s>${esc(short(String(a || "—")))}</s> → <b>${esc(short(String(b)))}</b></div>`).join("")}
       ${ch.id ? `<button class="go" data-act="show-row" data-id="${ch.id}">Listede göster</button>` : ""}
     </div>`).join("");
-  return `<div class="msg-ai${m.error ? " err" : ""}"><span class="orb"></span><div>${esc(m.content)}${changes}${
-    m.lesson ? `<div class="learned">💡 Öğrenilenlere eklendi: “${esc(m.lesson)}”</div>` : ""}</div></div>`;
+  return `<div class="msg-ai${m.error ? " err" : ""}"><span class="orb"></span><div>${esc(m.content)}${changes}${learnCard(m)}</div></div>`;
+}
+function learnCard(m) {
+  const l = m.learning;
+  if (!l) return "";
+  if (l.durum === "onayli") return `<div class="learned">💡 Öğrenilenlere eklendi: “${esc(l.metin)}”</div>`;
+  if (l.durum !== "bekliyor") return `<div class="learned muted">Yalnız bu sette kaldı.</div>`;
+  const ed = S.lpEdit === l.id;
+  return `<div class="proposal"><div class="h">💡 Bundan sonra da uygulayayım mı?</div>
+    ${ed ? `<textarea class="lp-edit" id="lpEditInput" rows="2">${esc(l.metin)}</textarea>` : `<div class="t">${esc(l.metin)}</div>`}
+    <div class="a">${ed ? `<button class="y" data-act="lp-save" data-id="${l.id}">Kaydet ve ekle</button><button class="n" data-act="lp-cancel">Vazgeç</button>`
+      : `<button class="y" data-act="lp-add" data-id="${l.id}">Ekle</button><button class="n" data-act="lp-edit" data-id="${l.id}">Düzenle</button><button class="n" data-act="lp-skip" data-id="${l.id}">Yalnız bu sette kalsın</button>`}</div></div>`;
 }
 function renderChat() {
   const el = $("#chat"); if (!el) return;
@@ -949,6 +962,7 @@ async function sendChat() {
     else {
       set.messages.push(r.message);
       set.controls = r.controls;
+      if (r.message.learning) refreshLearn();
       if (S.set === set) {
         S.changed = new Set((r.message.changes || []).map((c) => c.id));
         renderSetBody(); renderSetHead();
@@ -1013,61 +1027,133 @@ function mdLite(src) {
   if (inList) out += "</ul>"; if (inCode) out += "</pre>";
   return out;
 }
-function parseSkill(content) {
-  const lines = content.split("\n");
-  const title = ((lines.find((l) => l.startsWith("# ")) || "# Skill").slice(2)).replace(/^Skill:\s*/, "");
-  const idx = lines.findIndex((l) => l.trim() === "## Öğrenilenler");
-  const seedLines = (idx >= 0 ? lines.slice(0, idx) : lines).filter((l) => !l.startsWith("# "));
-  const learned = [];
-  if (idx >= 0) lines.slice(idx + 1).forEach((l) => {
-    const m = l.match(/^- \[(\d{4}-\d{2}-\d{2})(?: (\d{2}:\d{2}))?\]\s*(.+)$/);
-    if (m) learned.push({ date: m[1], time: m[2] || "", text: m[3] });
-  });
-  return { title, seed: seedLines.join("\n").trim(), learned: learned.reverse() };
+
+/* --- öğrenilenler: onay bekleyenler, tercihler (USER.md), konular, dışa aktarma */
+const KAYNAK_ADI = { sohbet: "Sohbetten", ret: "Ret kararlarından", duzenleme: "Düzeltmelerinden", kararlar: "Kararlarından", elle: "Elle eklendi", eski: "Önceki sürümden" };
+function shortDate(s, time = true) {
+  const d = toDate(s); if (!d) return "";
+  const today = new Date(); const y = new Date(); y.setDate(today.getDate() - 1);
+  const hm = d.toLocaleTimeString("tr-TR", { hour: "2-digit", minute: "2-digit" });
+  if (d.toDateString() === today.toDateString()) return time ? `bugün ${hm}` : "bugün";
+  if (d.toDateString() === y.toDateString()) return time ? `dün ${hm}` : "dün";
+  return d.toLocaleDateString("tr-TR", { day: "2-digit", month: "2-digit" }) + (time ? ` ${hm}` : "");
 }
-const KB_ICO = { "genel-cerceve": "🏛️", "kontrol-metrikleri": "📐", "masak-aml": "🔍" };
-function learnSource(t) {
-  if (t.startsWith("Reddedildi")) return "Ret kararından";
-  if (t.startsWith("Kullanıcı düzeltti")) return "Düzenlemeden";
-  return "Sohbetten";
+async function refreshLearn() {
+  try { S.learn = await api("/api/learnings"); } catch { return; }
+  const n = S.learn.bekleyen.length, b = $("#cLearn");
+  if (b) { b.textContent = n || ""; b.hidden = !n; b.title = n ? `${n} öğrenme onay bekliyor` : ""; }
 }
+const topicOpts = (sel) => (S.learn ? S.learn.tum_konular : []).map((t) =>
+  `<option value="${esc(t.name)}" ${t.name === sel ? "selected" : ""}>${esc(t.baslik)}</option>`).join("");
+
+function pendCard(p) {
+  const ed = S.kbEdit && S.kbEdit.kind === "pend" && S.kbEdit.id === p.id;
+  const meta = [KAYNAK_ADI[p.kaynak] || "Öneri", p.set_baslik, shortDate(p.created_at)].filter(Boolean).map(esc).join(SEP);
+  return `<div class="pend" data-pend="${p.id}">
+    ${ed ? `<textarea class="pend-edit" id="kbEditInput" rows="2">${esc(p.metin)}</textarea>` : `<div class="t">${esc(p.metin)}</div>`}
+    <div class="m">${meta}</div>
+    ${p.neden ? `<div class="why">${esc(p.neden)}</div>` : ""}
+    <div class="acts"><label class="to">Konu <select class="sel-inline" data-pend-topic="${p.id}">${topicOpts(p.skill)}</select></label><span class="sp"></span>
+      ${ed ? `<button class="ghost-l" data-act="kb-cancel">Vazgeç</button>` : `<button class="ghost-l" data-act="pend-edit" data-id="${p.id}">Düzenle</button><button class="ghost-l" data-act="pend-drop" data-id="${p.id}">At</button>`}
+      <button class="btn btn-ink" data-act="pend-add" data-id="${p.id}">Ekle</button></div>
+  </div>`;
+}
+
 async function viewKnowledge(fresh = true) {
-  setTop(`<b>Öğrenilenler</b>`);
-  if (fresh || !S.skills) {
-    if (!S.skills) $("#view").innerHTML = `<h1>Öğrenilenler</h1><p class="lead muted">Yükleniyor…</p>`;
-    try { S.skills = await api("/api/skills"); } catch (e) { toast(e.message, true); return; }
+  setTop(`<b>Öğrenilenler</b>`, `<button class="pill-btn" data-act="export-toggle">${SVG.down}Dışa aktar</button>
+    <div class="pop" id="exportPop" ${S.exportOpen ? "" : "hidden"}></div>`);
+  if (fresh || !S.learn) {
+    if (!S.learn) $("#view").innerHTML = `<h1>Öğrenilenler</h1><p class="lead muted">Yükleniyor…</p>`;
+    await refreshLearn();
+    if (!S.learn) { toast("Öğrenilenler yüklenemedi", true); return; }
   }
   if (S.route.name !== "bilgi") return;
-  const parsed = S.skills.map((s) => ({ name: s.name, ...parseSkill(s.content) }));
-  const total = parsed.reduce((a, p) => a + p.learned.length, 0);
-  const ed = S.kbEdit;
+  const L = S.learn, ed = S.kbEdit;
+  const rules = L.konular.reduce((a, k) => a + k.learnings.length, 0);
+  const pct = Math.min(100, Math.round((L.tercih_karakter / L.tercih_sinir) * 100));
+  const prefRow = (r) => (ed && ed.kind === "pref" && ed.id === r.id)
+    ? `<li class="editing"><textarea id="kbEditInput" rows="1">${esc(r.metin)}</textarea>
+        <div class="edit-acts"><button class="btn btn-ink" data-act="kb-save">Kaydet</button><button class="btn btn-ghost" data-act="kb-cancel">Vazgeç</button></div></li>`
+    : `<li><span>${esc(r.metin)}</span><span class="acts"><button data-act="pref-edit" data-id="${r.id}">Düzenle</button><button class="del" data-act="pref-del" data-id="${r.id}">Sil</button></span></li>`;
+  const ruleRow = (k, x) => {
+    const time = `<time>${esc(shortDate(x.decided_at || x.created_at))}</time>`;
+    if (ed && ed.kind === "rule" && ed.id === x.id) return `<li class="editing">${time}
+      <textarea id="kbEditInput" rows="2">${esc(x.metin)}</textarea>
+      <div class="edit-acts"><button class="btn btn-ink" data-act="kb-save">Kaydet</button><button class="btn btn-ghost" data-act="kb-cancel">Vazgeç</button></div></li>`;
+    const src = [KAYNAK_ADI[x.kaynak] || "", x.set_baslik || ""].filter(Boolean).map(esc).join(" · ");
+    return `<li>${time}<span>${esc(x.metin)}${src ? `<span class="src-chip">${src}</span>` : ""}</span>
+      <span class="acts"><button data-act="rule-edit" data-id="${x.id}">Düzenle</button><button class="del" data-act="rule-del" data-id="${x.id}">Sil</button></span></li>`;
+  };
   $("#view").innerHTML = `
     <h1>Öğrenilenler</h1>
-    <div class="source"><span>💡 ${parsed.length} konu</span><span class="sep">·</span><span>${total} öğrenilen kural</span></div>
-    <p class="lead">Model her kontrol setini üretirken bu bilgileri kullanır. Reddettiğin, düzelttiğin ya da sohbette açıkladığın şeyler ilgili konunun altına kural olarak eklenir. Yanlış öğrenilen bir kuralı düzeltebilir ya da silebilirsin.</p>
-    ${parsed.map((p) => `<section class="kb">
-      <h2><span class="ico">${KB_ICO[p.name] || "📘"}</span>${esc(p.title)}</h2>
-      <p class="sub">${p.learned.length ? `${p.learned.length} öğrenilen kural` : "Henüz öğrenilen kural yok"}</p>
-      ${p.learned.length ? `<ul class="learn">${p.learned.map((x) => {
-        const time = `<time>${esc(x.date.slice(8, 10) + "." + x.date.slice(5, 7))} ${esc(x.time)}</time>`;
-        if (ed && ed.skill === p.name && ed.text === x.text) return `<li class="editing">${time}
-          <textarea id="kbEditInput" rows="2">${esc(x.text)}</textarea>
-          <div class="edit-acts"><button class="btn btn-ink" data-act="kb-save">Kaydet</button><button class="btn btn-ghost" data-act="kb-cancel">Vazgeç</button></div></li>`;
-        return `<li data-skill="${p.name}" data-text="${esc(x.text)}">${time}
-          <span>${esc(x.text)}<span class="src-chip">${learnSource(x.text)}</span></span>
-          <span class="acts"><button data-act="kb-edit">Düzenle</button><button class="del" data-act="kb-del">Sil</button></span></li>`;
-      }).join("")}</ul>` : ""}
-      <details class="seed"><summary>Başlangıç bilgisi</summary><div class="md">${mdLite(p.seed)}</div></details>
+    <div class="source"><span>💡 ${L.konular.length} konu</span>${SEP}<span>${rules} kural</span>${SEP}<span>${L.tercihler.length} tercih</span>${L.bekleyen.length ? `${SEP}<span>${L.bekleyen.length} onay bekliyor</span>` : ""}</div>
+    <p class="lead">Model her kontrol setini üretirken bunları kullanır; yalnız setin alanıyla ilgili konular ve tercihlerin modele verilir. Sohbetten ve kararlarından çıkan yeni bir kural, sen onaylamadan buraya eklenmez.</p>
+
+    ${L.bekleyen.length ? `<section class="sec2">
+      <div class="sec2-h"><h2>⏳ Onay bekleyenler</h2><span class="count">${L.bekleyen.length}</span></div>
+      <p class="sub">Modelin senin geri bildiriminden çıkardığı kurallar. Ekle, düzenleyip ekle ya da at.</p>
+      ${L.bekleyen.map(pendCard).join("")}</section>` : ""}
+
+    <section class="sec2">
+      <div class="sec2-h"><h2>🙋 Tercihlerim</h2><span class="count">${L.tercihler.length}</span>
+        <span class="r budget">${L.tercih_karakter.toLocaleString("tr-TR")} / ${L.tercih_sinir.toLocaleString("tr-TR")} karakter <span class="b"><i style="width:${pct}%"></i></span></span></div>
+      <p class="sub">Çalışma tarzın: kontrol adlarının yazılışı, ayrıntı düzeyi, öncelikler. Her sette modele verilir; dışa aktarınca USER.md olur. Giriş eklenince her kullanıcıya ayrı tutulacak.</p>
+      <ul class="prefs">${L.tercihler.map(prefRow).join("")}
+        ${ed && ed.kind === "newpref" ? `<li class="editing"><textarea id="kbEditInput" rows="1" placeholder="ör. Gerekçe en fazla iki cümle olsun."></textarea>
+          <div class="edit-acts"><button class="btn btn-ink" data-act="kb-save">Ekle</button><button class="btn btn-ghost" data-act="kb-cancel">Vazgeç</button></div></li>` : ""}</ul>
+      ${ed && ed.kind === "newpref" ? "" : `<button class="add-row" data-act="pref-new">＋ Tercih ekle</button>`}
+    </section>
+
+    ${L.konular.map((k) => `<section class="kb">
+      <h2><span class="ico">${esc(k.ikon)}</span>${esc(k.baslik)}</h2>
+      <p class="sub"><span class="topic-when">Kullanıldığı yer ${k.alanlar.length ? k.alanlar.map((a) => `<span class="alan">${esc(a)}</span>`).join("") : `<span class="alan">Tüm alanlar</span>`}</span>${SEP}<span>${k.kullanim_30 ? `son 30 günde ${k.kullanim_30} sette kullanıldı` : "son 30 günde kullanılmadı"}</span></p>
+      ${k.learnings.length ? `<ul class="learn">${[...k.learnings].reverse().map((x) => ruleRow(k, x)).join("")}</ul>` : `<ul class="learn"><li class="none">Henüz onaylanmış kural yok.</li></ul>`}
+      ${k.seed ? `<details class="seed"><summary>Başlangıç bilgisi</summary><div class="md">${mdLite(k.seed)}</div></details>` : ""}
     </section>`).join("")}`;
+  if (S.exportOpen) renderExport();
   const inp = $("#kbEditInput");
   if (inp) { autosize(inp); inp.focus(); inp.setSelectionRange(inp.value.length, inp.value.length); }
 }
+
+function renderExport() {
+  const el = $("#exportPop"); if (!el || !S.learn) return;
+  const withSeed = S.exportSeed !== false;
+  const names = S.learn.konular.filter((k) => k.learnings.length || (withSeed && k.seed)).map((k) => k.name);
+  el.innerHTML = `<h4>Öğrenilenleri dışa aktar</h4>
+    <p>Hermes ve agentskills.io standardında; başka bir agent'a ya da Hermes'e olduğu gibi konabilir.</p>
+    <div class="tree">ic-kontrol-ogrenilenler-${new Date().toISOString().slice(0, 10)}.zip<br>
+      ${names.map((n) => `├─ ${esc(n)}/SKILL.md`).join("<br>")}<br>├─ USER.md <span>— tercihlerim</span><br>└─ BENIOKU.md <span>— nasıl kullanılır</span></div>
+    <button class="ck" data-act="export-seed"><i class="${withSeed ? "" : "off"}">✓</i>Başlangıç bilgisini de ekle</button>
+    <button class="btn btn-ink" data-act="export-go">İndir (.zip)</button>
+    <div class="hint2">Hermes'te kullanmak için: zip'i aç, konu klasörlerini <b>~/.hermes/skills/</b> altına, USER.md içeriğini kullanıcı profiline koy.</div>`;
+  el.hidden = false;
+}
+
 async function kbSave() {
   const ed = S.kbEdit, inp = $("#kbEditInput"); if (!ed || !inp) return;
-  const yeni = inp.value.trim();
-  if (!yeni || yeni === ed.text) { S.kbEdit = null; return viewKnowledge(false); }
-  try { await api(`/api/skills/${ed.skill}/learnings`, jsonOpts("PATCH", { eski: ed.text, yeni })); S.kbEdit = null; toast("Kural güncellendi"); viewKnowledge(); }
-  catch (e) { toast(e.message, true); }
+  const metin = inp.value.trim();
+  try {
+    if (ed.kind === "rule") { if (metin) await api(`/api/learnings/${ed.id}`, jsonOpts("PATCH", { metin })); }
+    else if (ed.kind === "pref") { if (metin) await api(`/api/prefs/${ed.id}`, jsonOpts("PATCH", { metin })); }
+    else if (ed.kind === "newpref") { if (metin) await api("/api/prefs", jsonOpts("POST", { metin })); }
+    else if (ed.kind === "pend") return decideLearning(ed.id, "onayla", { metin });
+  } catch (e) { toast(e.message, true); return; }
+  S.kbEdit = null; viewKnowledge();
+}
+
+/* Öneriyi onayla / at — hem Öğrenilenler sayfasından hem sohbetten */
+async function decideLearning(id, karar, { metin = null, skill = null } = {}) {
+  const body = { karar };
+  if (metin) body.metin = metin;
+  if (skill) body.skill = skill;
+  let r;
+  try { r = await api(`/api/learnings/${id}/decision`, jsonOpts("POST", body)); } catch (e) { toast(e.message, true); return; }
+  S.kbEdit = null; S.lpEdit = null;
+  if (S.set) S.set.messages.forEach((m) => { if (m.learning && m.learning.id === id) m.learning = r.learning; });
+  toast(karar === "onayla" ? "💡 Öğrenilenlere eklendi" : "Öneri atıldı");
+  await refreshLearn();
+  if (S.route.name === "bilgi") viewKnowledge(false);
+  if (S.panelMode === "chat") renderChat();
 }
 
 /* --- model ayarları */
@@ -1178,6 +1264,7 @@ document.addEventListener("mousedown", (e) => {
 document.addEventListener("click", async (e) => {
   const menu = $("#menu");
   if (menu && menu.classList.contains("open") && !e.target.closest("#menu") && !e.target.closest('[data-act="menu"]')) menu.classList.remove("open");
+  if (S.exportOpen && !e.target.closest("#exportPop") && !e.target.closest('[data-act="export-toggle"]')) { S.exportOpen = false; const pp = $("#exportPop"); if (pp) pp.hidden = true; }
 
   const nav = e.target.closest("#nav .nav-item");
   if (nav) { go(nav.dataset.route === "setler" ? "#/setler" : "#/" + nav.dataset.route); return; }
@@ -1212,15 +1299,32 @@ document.addEventListener("click", async (e) => {
     return openDoc(d.id, { quote: c.kaynak, bolum: c.kaynak_bolum, back: c.id, verified: c.kaynak_dogrulandi });
   }
   if (a === "doc-back") { const id = S.docBack; S.panelMode = null; return openPanel(id); }
-  if (a === "kb-edit") { const li = act.closest("li"); S.kbEdit = { skill: li.dataset.skill, text: li.dataset.text }; return viewKnowledge(false); }
   if (a === "kb-cancel") { S.kbEdit = null; return viewKnowledge(false); }
   if (a === "kb-save") return kbSave();
-  if (a === "kb-del") {
-    const li = act.closest("li");
-    try { await api(`/api/skills/${li.dataset.skill}/learnings/archive`, jsonOpts("POST", { eski: li.dataset.text })); toast("Kural silindi (arşivde saklanıyor)"); viewKnowledge(); }
+  if (a === "rule-edit") { S.kbEdit = { kind: "rule", id: Number(act.dataset.id) }; return viewKnowledge(false); }
+  if (a === "pref-edit") { S.kbEdit = { kind: "pref", id: Number(act.dataset.id) }; return viewKnowledge(false); }
+  if (a === "pref-new") { S.kbEdit = { kind: "newpref" }; return viewKnowledge(false); }
+  if (a === "pend-edit") { S.kbEdit = { kind: "pend", id: Number(act.dataset.id) }; return viewKnowledge(false); }
+  if (a === "rule-del" || a === "pref-del") {
+    const url = a === "rule-del" ? `/api/learnings/${act.dataset.id}` : `/api/prefs/${act.dataset.id}`;
+    try { await api(url, { method: "DELETE" }); toast(a === "rule-del" ? "Kural silindi (arşivde saklanıyor)" : "Tercih silindi"); viewKnowledge(); }
     catch (err) { toast(err.message, true); }
     return;
   }
+  if (a === "pend-add") {
+    const id = Number(act.dataset.id), sel = $(`[data-pend-topic="${id}"]`), inp = $("#kbEditInput");
+    const editing = S.kbEdit && S.kbEdit.kind === "pend" && S.kbEdit.id === id;
+    return decideLearning(id, "onayla", { skill: sel ? sel.value : null, metin: editing && inp ? inp.value.trim() : null });
+  }
+  if (a === "pend-drop") return decideLearning(Number(act.dataset.id), "at");
+  if (a === "lp-add") return decideLearning(Number(act.dataset.id), "onayla");
+  if (a === "lp-skip") return decideLearning(Number(act.dataset.id), "at");
+  if (a === "lp-edit") { S.lpEdit = Number(act.dataset.id); renderChat(); const i = $("#lpEditInput"); if (i) { autosize(i); i.focus(); } return; }
+  if (a === "lp-cancel") { S.lpEdit = null; return renderChat(); }
+  if (a === "lp-save") { const i = $("#lpEditInput"); return decideLearning(Number(act.dataset.id), "onayla", { metin: i ? i.value.trim() : null }); }
+  if (a === "export-toggle") { S.exportOpen = !S.exportOpen; if (S.exportOpen) renderExport(); else $("#exportPop").hidden = true; return; }
+  if (a === "export-seed") { S.exportSeed = S.exportSeed === false; return renderExport(); }
+  if (a === "export-go") { download(`/api/learnings/export?baslangic=${S.exportSeed === false ? 0 : 1}`); S.exportOpen = false; $("#exportPop").hidden = true; return; }
   if (a === "generate" || a === "scope-open") return openScope();
   if (a === "scope-go") return scopeGo();
   if (a === "scope-alan") {
@@ -1332,7 +1436,7 @@ document.addEventListener("change", (e) => {
 document.addEventListener("input", (e) => {
   if (e.target.id === "scopeName" && S.scope) { S.scope.baslik = e.target.value; S.scope.nameTouched = true; }
   if (e.target.id === "ctrlSearch") { S.q = e.target.value; S.route.name === "kutuphane" ? viewLibrary() : renderSetBody(); }
-  if (e.target.matches("textarea.auto") || e.target.id === "chatInput" || e.target.id === "kbEditInput") autosize(e.target);
+  if (e.target.matches("textarea.auto") || e.target.id === "chatInput" || e.target.id === "kbEditInput" || e.target.id === "lpEditInput") autosize(e.target);
 });
 
 /* panel alan kaydetme */
@@ -1380,6 +1484,7 @@ document.addEventListener("keydown", (e) => {
   if (mod && k === "j") { e.preventDefault(); S.panelMode === "chat" ? closeChat() : openChat(); return; }
   if (e.key === "Escape") {
     if (e.target.id === "kbEditInput") { S.kbEdit = null; return viewKnowledge(false); }
+    if (S.exportOpen) { S.exportOpen = false; const pp = $("#exportPop"); if (pp) pp.hidden = true; return; }
     const menu = $("#menu");
     if (menu && menu.classList.contains("open")) return menu.classList.remove("open");
     if (S.multi.size) return clearMulti();

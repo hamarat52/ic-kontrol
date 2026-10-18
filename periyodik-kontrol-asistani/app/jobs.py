@@ -147,7 +147,12 @@ def run(set_id: str, docs: list[tuple[str, str]], basis: list[dict] | None = Non
              "reddedilene_benzer": 0, "yeniden_denenen": 0}
     _update(set_id, progress={"i": 0, "toplam": total}, istatistik=stats)
 
-    skills_text = skills.read_all_skills_text()
+    with storage.db_session() as conn:
+        r = conn.execute("SELECT kapsam FROM control_sets WHERE id = ?", (set_id,)).fetchone()
+    alanlar = (json.loads(r["kapsam"]).get("alanlar") if r and r["kapsam"] else None) or None
+    skills_text = skills.read_skills_text(alanlar)      # yalnız setin alanlarıyla ilgili konular + tercihler
+    with storage.db_session() as conn:
+        skills.record_usage(conn, set_id, skills.used_topics(alanlar))
     examples, rejected = _history()
     llm_conn = model_settings.active()   # set boyunca aynı model (kullanıcı arada değiştirse de)
     titles: list[str] = []

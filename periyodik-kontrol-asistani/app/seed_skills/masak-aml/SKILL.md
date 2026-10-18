@@ -1,4 +1,14 @@
-# Skill: MASAK / AML Hassasiyetleri
+---
+name: masak-aml
+description: AML, şüpheli işlem ve MASAK yükümlülüklerine ilişkin kontrol tasarlarken kullan.
+metadata:
+  ic_kontrol:
+    baslik: MASAK / AML
+    ikon: "🔍"
+    alanlar: ["AML / Uyum"]
+---
+
+# MASAK / AML
 
 > Seed bilgisi — 5549 sayılı Kanun ve ilgili mevzuattan. AML/MASAK ile ilgili her öneride bu
 > kurallar bağlayıcıdır, görmezden gelinmez.
@@ -21,7 +31,3 @@
 AML/MASAK kategorisindeki her kontrol önerisine şu uyarı otomatik eklenir:
 > "Bu kontrol alanı tipping-off riski taşır: müşteriyle temas eden hiçbir sistem bileşeni ŞİB
 > durumunu doğrudan veya dolaylı ima edecek içerik üretmemelidir."
-
-## Öğrenilenler
-_(henüz geri bildirim yok)_
-

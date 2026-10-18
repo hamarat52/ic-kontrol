@@ -127,8 +127,12 @@ def test_chat_applies_changes_and_learns(client, env):
     assert r["ok"]
     assert r["message"]["changes"] == [
         {"id": cid, "kontrol_adi": "Risk analizi atlanan onaylar", "alanlar": {"siklik": ["Günlük", "Haftalık"]}}]
-    skills = {s["name"]: s["content"] for s in client.get("/api/skills").json()}
-    assert "Düşük hacimli şubelerde" in skills["kontrol-metrikleri"]
+    # ders doğrudan yazılmaz; onay bekleyen öneri olur ve mesaja bağlanır
+    lr = r["message"]["learning"]
+    assert lr and lr["durum"] == "bekliyor" and "Düşük hacimli şubelerde" in lr["metin"]
+    ov = client.get("/api/learnings").json()
+    assert [b["metin"] for b in ov["bekleyen"]] == [lr["metin"]]
+    assert all(not k["learnings"] for k in ov["konular"])
     assert len(client.get(f"/api/sets/{set_id}").json()["messages"]) == 2
 
 
