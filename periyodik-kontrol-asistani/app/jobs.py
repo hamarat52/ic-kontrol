@@ -95,7 +95,7 @@ RETRY_HINT = ("UYARI: Bu bölüm için önceki denemede hiç kontrol çıkmadı.
 def _history() -> tuple[str, list[str]]:
     """Kurumun önceki kararları: (prompt'a eklenecek örnek metni, reddedilen başlıklar)."""
     with storage.db_session() as conn:
-        acc = conn.execute("""SELECT kontrol_adi, kategori, hat, siklik FROM library
+        acc = conn.execute("""SELECT kontrol_adi, kategori, hat, siklik, sorumlu FROM library
                               ORDER BY id DESC LIMIT 12""").fetchall()
         rej = [r["kontrol_adi"] for r in conn.execute(
             """SELECT kontrol_adi FROM suggestions WHERE status = 'red'
@@ -105,7 +105,9 @@ def _history() -> tuple[str, list[str]]:
     lines = ["KURUMUN ÖNCEKİ KARARLARI:"]
     if acc:
         lines.append("Kabul edilen kontrollerden örnekler (ad, ayrıntı düzeyi ve sınıflandırma için örnek al):")
-        lines += [f"- {r['kontrol_adi']} ({r['kategori']}, Hat {r['hat']}, {r['siklik']})" for r in acc]
+        # Örnekte sorumlu da olsun: model örneğin biçimini taklit eder, eksik alanı da eksik bırakır
+        lines += [f"- {r['kontrol_adi']} ({r['kategori']}, Hat {r['hat']}, {r['siklik']}, "
+                  f"sorumlu: {r['sorumlu'] or 'belirtilmemiş'})" for r in acc]
     if rej:
         lines.append("Reddedilen kontroller (bunlara benzer kontrol ÖNERME):")
         lines += [f"- {t}" for t in rej[:20]]
@@ -253,6 +255,9 @@ def run(set_id: str, docs: list[tuple[str, str]], basis: list[dict] | None = Non
         hata = hata or "Hiç kontrol üretilmedi."
     _update(set_id, durum=durum, hata=hata, istatistik=stats, bosluklar=gaps, progress=None)
     _running.pop(set_id, None)
+    # Üretim sürerken ertelenen karar incelemelerini şimdi yap (model artık boşta)
+    from . import ogrenme
+    ogrenme.backlog_async()
 
 
 def recover_interrupted():

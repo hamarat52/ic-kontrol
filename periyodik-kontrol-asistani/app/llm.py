@@ -46,7 +46,7 @@ Bunlardan kontrol ÜRETME; kontroller yalnız BÖLÜM METNİ'nden çıkar. Bir k
 ilgiliyse "dayanak_no" alanına adayın numarasını, "dayanak" alanına kısa adını ve maddesini yaz \
 (ör. "BDDK Bilgi Sistemleri Yönetmeliği m.11"). İlgisizse ikisini de boş bırak. Listede olmayan madde uydurma.
 
-ŞİRKET ORGANİZASYONU: Verilirse "sorumlu" alanına kontrolü yapan birimin adını organizasyon metnindeki \
+SORUMLU HER KONTROLDE DOLDURULUR. ŞİRKET ORGANİZASYONU: Verilirse "sorumlu" alanına kontrolü yapan birimin adını organizasyon metnindeki \
 gibi yaz ve hattı o birime göre seç. Verilmezse bölüm metninde geçen birimi yaz; o da yoksa boş bırak.
 
 SIKLIK: Belgede süre ya da sıklık geçiyorsa (günlük, haftalık, aylık, altı ayda bir, yılda bir, \
@@ -94,8 +94,11 @@ SADECE geçerli bir JSON objesi döndür, başka hiçbir metin yazma:
 
 {"yanit":"<kullanıcıya kısa Türkçe yanıt: ne yaptın, neyi neden değiştirmedin>",
  "degisiklikler":[{"id":<kontrol id>,"alanlar":{"<alan>":"<yeni değer>"}}],
- "ders":"<kullanıcının mesajından çıkan, gelecekteki setlere de uygulanabilecek GENEL tek cümlelik kural; \
-tek seferlik bir düzeltmeyse null>"}
+ "dersler":[{"kural":"<kullanıcının mesajından çıkan, gelecekteki setlere de uygulanabilecek GENEL tek cümlelik kural>","genel":<true: her alan için geçerli (ör. set yapısı, hat, yazım), false: yalnız bu konuya/alana özgü>}]}
+
+"dersler": mesajda birden fazla bağımsız kural varsa her birini AYRI öğe yap (en fazla 3); tek seferlik \
+bir düzeltmeyse boş liste döndür. Kurallar kullanıcı ONAYLAYINCA kalıcı olur: yanıtta "not aldım / \
+bundan sonra uygulayacağım" deme; "onaylarsan bundan sonraki setlerde de uygularım" de.
 
 Değiştirilebilir alanlar: kontrol_adi, kategori, hat, siklik, risk, efor, gerekce, dayanak, sorumlu. \
 Değişiklik gerekmiyorsa "degisiklikler": [] döndür. Yalnız verilen id'leri kullan. \
@@ -412,12 +415,18 @@ def chat_feedback(controls: list[dict], focus: dict | None, message: str, skills
             raise ValueError("obje bekleniyordu")
     except Exception as exc:
         return {"ok": False, "error": f"Model yanıtı ayrıştırılamadı: {exc}"}
-    ders = parsed.get("ders")
-    if isinstance(ders, str) and ders.strip().lower() in ("null", "none", ""):
-        ders = None
+    dersler = []
+    raw = parsed.get("dersler")
+    if raw is None and parsed.get("ders"):          # eski biçim: tek metin
+        raw = [{"kural": parsed.get("ders"), "genel": False}]
+    for d in raw or []:
+        k = d.get("kural") if isinstance(d, dict) else d
+        if isinstance(k, str) and k.strip() and k.strip().lower() not in ("null", "none"):
+            dersler.append({"kural": k.strip(), "genel": bool(d.get("genel")) if isinstance(d, dict) else False})
     return {
         "ok": True,
         "yanit": (parsed.get("yanit") or "").strip() or "Tamam.",
         "degisiklikler": parsed.get("degisiklikler") or [],
-        "ders": ders,
+        "dersler": dersler[:3],
+        "ders": dersler[0]["kural"] if dersler else None,
     }

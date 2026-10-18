@@ -125,7 +125,7 @@ MIGRATIONS = {
     "control_sets": {"progress": "TEXT", "istatistik": "TEXT", "iptal": "INTEGER DEFAULT 0", "kapsam": "TEXT"},
     "library": {"sorumlu": "TEXT"},
     "feedback": {"incelendi": "INTEGER DEFAULT 0"},
-    "set_messages": {"learning_id": "INTEGER"},
+    "set_messages": {"learning_id": "INTEGER", "learning_ids": "TEXT"},
 }
 
 

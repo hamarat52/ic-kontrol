@@ -931,7 +931,10 @@ function msgHtml(m) {
   return `<div class="msg-ai${m.error ? " err" : ""}"><span class="orb"></span><div>${esc(m.content)}${changes}${learnCard(m)}</div></div>`;
 }
 function learnCard(m) {
-  const l = m.learning;
+  const list = m.learnings || (m.learning ? [m.learning] : []);
+  return list.map(learnOne).join("");
+}
+function learnOne(l) {
   if (!l) return "";
   if (l.durum === "onayli") return `<div class="learned">💡 Öğrenilenlere eklendi: “${esc(l.metin)}”</div>`;
   if (l.durum !== "bekliyor") return `<div class="learned muted">Yalnız bu sette kaldı.</div>`;
@@ -964,7 +967,7 @@ async function sendChat() {
     else {
       set.messages.push(r.message);
       set.controls = r.controls;
-      if (r.message.learning) refreshLearn();
+      if ((r.message.learnings || []).length) refreshLearn();
       if (S.set === set) {
         S.changed = new Set((r.message.changes || []).map((c) => c.id));
         renderSetBody(); renderSetHead();
@@ -1151,7 +1154,10 @@ async function decideLearning(id, karar, { metin = null, skill = null } = {}) {
   let r;
   try { r = await api(`/api/learnings/${id}/decision`, jsonOpts("POST", body)); } catch (e) { toast(e.message, true); return; }
   S.kbEdit = null; S.lpEdit = null;
-  if (S.set) S.set.messages.forEach((m) => { if (m.learning && m.learning.id === id) m.learning = r.learning; });
+  if (S.set) S.set.messages.forEach((m) => {
+    (m.learnings || []).forEach((x, i) => { if (x.id === id) m.learnings[i] = r.learning; });
+    if (m.learning && m.learning.id === id) m.learning = r.learning;
+  });
   toast(karar === "onayla" ? "💡 Öğrenilenlere eklendi" : "Öneri atıldı");
   await refreshLearn();
   if (S.route.name === "bilgi") viewKnowledge(false);

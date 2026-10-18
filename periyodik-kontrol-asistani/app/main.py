@@ -549,18 +549,22 @@ def chat(set_id: str, body: ChatIn):
                     "id": cid, "kontrol_adi": before["kontrol_adi"],
                     "alanlar": {k: [before.get(k), control[k]] for k in fields if before.get(k) != control[k]},
                 })
-        lid = None
-        if result["ders"]:
-            # Ders doğrudan yazılmaz: onay bekleyen öneri olur (sohbette ve Öğrenilenler'de onaylanır)
+        lids = []
+        if result["dersler"]:
+            # Dersler doğrudan yazılmaz: her biri ayrı, onay bekleyen öneri olur
             ref = focus or (by_id.get(changes[0]["id"]) if changes else None) or {}
             kategori = ref.get("kategori", "")
             konu_alan = alanlar or skills.doc_alanlar(conn, [ref["kaynak_belge"]] if ref.get("kaynak_belge") else [])
-            lid = skills.propose(conn, skills.guess_topic(kategori, konu_alan), result["ders"], "sohbet",
-                                 set_id, sset.get("baslik"), f"Senin mesajın: “{msg}”")
+            for d in result["dersler"]:
+                topic = "genel-cerceve" if d["genel"] else skills.guess_topic(kategori, konu_alan)
+                lid = skills.propose(conn, topic, d["kural"], "sohbet", set_id, sset.get("baslik"), f"Senin mesajın: “{msg}”")
+                if lid:
+                    lids.append(lid)
         cur = conn.execute(
-            """INSERT INTO set_messages (set_id, control_id, role, content, changes, lesson, learning_id)
+            """INSERT INTO set_messages (set_id, control_id, role, content, changes, lesson, learning_ids)
                VALUES (?,?, 'ai', ?,?,?,?)""",
-            (set_id, body.control_id, result["yanit"], json.dumps(changes, ensure_ascii=False), result["ders"], lid),
+            (set_id, body.control_id, result["yanit"], json.dumps(changes, ensure_ascii=False), result["ders"],
+             json.dumps(lids) if lids else None),
         )
         ai_msg = _message(conn, conn.execute("SELECT * FROM set_messages WHERE id = ?", (cur.lastrowid,)).fetchone())
         updated = _controls(conn, set_id)
@@ -570,10 +574,10 @@ def chat(set_id: str, body: ChatIn):
 
 def _message(conn, m) -> dict:
     d = {**dict(m), "changes": json.loads(m["changes"]) if m["changes"] else []}
-    d["learning"] = None
-    if m["learning_id"]:
-        r = conn.execute("SELECT id, metin, durum, skill FROM learnings WHERE id = ?", (m["learning_id"],)).fetchone()
-        d["learning"] = dict(r) if r else None
+    ids = json.loads(m["learning_ids"]) if m["learning_ids"] else ([m["learning_id"]] if m["learning_id"] else [])
+    d["learnings"] = [dict(r) for i in ids
+                      if (r := conn.execute("SELECT id, metin, durum, skill FROM learnings WHERE id = ?", (i,)).fetchone())]
+    d["learning"] = d["learnings"][0] if d["learnings"] else None
     return d
 
 

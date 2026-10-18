@@ -81,3 +81,18 @@ def maybe_analyze_async(set_id: str) -> None:
         if len(pending_events(conn, set_id)) < THRESHOLD:
             return
     threading.Thread(target=_run, args=(set_id,), daemon=True, name=f"ogrenme-{set_id}").start()
+
+
+def analyze_backlog() -> None:
+    """Üretim sürerken ertelenmiş incelemeleri (eşiği aşmış setler) sırayla yapar."""
+    with storage.db_session() as conn:
+        ids = [r["run_id"] for r in conn.execute(
+            """SELECT s.run_id FROM feedback f JOIN suggestions s ON s.id = f.suggestion_id
+               WHERE f.incelendi = 0 AND f.karar IN ('red','duzenle')
+               GROUP BY s.run_id HAVING COUNT(*) >= ?""", (THRESHOLD,))]
+    for sid in ids:
+        _run(sid)
+
+
+def backlog_async() -> None:
+    threading.Thread(target=analyze_backlog, daemon=True, name="ogrenme-birikmis").start()

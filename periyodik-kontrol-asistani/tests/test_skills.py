@@ -128,3 +128,39 @@ def test_chat_rule_topic_from_source_document_area(client, env):
                                                   "ders": "Teminat değerleme kontrolleri altı aydan sık olmasın."})
     r = client.post(f"/api/sets/{s['id']}/chat", json={"message": "sık", "control_id": cid}).json()
     assert r["message"]["learning"]["skill"] == "kredi"
+
+
+def test_deferred_analysis_runs_after_generation(client, env):
+    from app import jobs
+    client.post("/api/documents", files={"file": ("p.txt", "1. A\nmetin burada\n".encode(), "text/plain")})
+    env.responder = lambda m, stream: jsonl(*[{"tip": "kontrol", "kontrol_adi": f"K{i}"} for i in range(3)]) if stream else "{}"
+    s = wait_set(client, client.post("/api/sets").json()["id"])
+    real = jobs.is_running
+    jobs.is_running = lambda: "baska-set"                               # üretim sürüyormuş gibi
+    try:
+        for c in s["controls"]:
+            client.post(f"/api/controls/{c['id']}/decision", json={"karar": "red"})
+        import time
+        time.sleep(0.3)
+        with storage.db_session() as conn:
+            assert len(ogrenme.pending_events(conn, s["id"])) == 3      # ertelendi
+    finally:
+        jobs.is_running = real
+    env.responder = lambda m, stream: json.dumps({"kural": "Genel kural.", "gerekce": "g"})
+    ogrenme.analyze_backlog()
+    assert [b["metin"] for b in client.get("/api/learnings").json()["bekleyen"]] == ["Genel kural."]
+
+
+def test_chat_splits_general_and_area_rules(client, env):
+    client.post("/api/documents", files={"file": ("Kredi Tahsis Uygulama Esasları.txt",
+        "1. Teminat\nKredi teminatı değerlenir; kredi tahsis komitesi onaylar.\n".encode(), "text/plain")})
+    env.responder = lambda m, stream: jsonl({"tip": "kontrol", "kontrol_adi": "Teminat değerleme"}) if stream else "{}"
+    s = wait_set(client, client.post("/api/sets").json()["id"])
+    cid = s["controls"][0]["id"]
+    env.responder = lambda m, stream: json.dumps({"yanit": "Onaylarsan uygularım.", "degisiklikler": [], "dersler": [
+        {"kural": "Hat 3 kontrolleri sete girmez.", "genel": True},
+        {"kural": "Teminat değerleme kontrolleri aylık önerilmez.", "genel": False}]}, ensure_ascii=False)
+    m = client.post(f"/api/sets/{s['id']}/chat", json={"message": "x", "control_id": cid}).json()["message"]
+    assert [(l["skill"], l["durum"]) for l in m["learnings"]] == [("genel-cerceve", "bekliyor"), ("kredi", "bekliyor")]
+    again = client.get(f"/api/sets/{s['id']}").json()["messages"][-1]
+    assert len(again["learnings"]) == 2
