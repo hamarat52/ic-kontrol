@@ -482,14 +482,16 @@ function renderSetHead() {
   el.innerHTML = `
     <h1>${esc(s.baslik || "Adsız kontrol seti")}</h1>
     <div class="head-pills">
-      <div class="source">
-        ${kap && kap.alanlar && kap.alanlar.length ? `<span>${ALAN_IKON(kap.alanlar[0])} ${esc(kap.alanlar.join(", "))}</span><span class="sep">·</span>` : ""}
-        <span>📘 ${belge} uygulama esası</span>${kap && kap.dayanak && kap.dayanak.length ? `<span class="sep">·</span><span title="${esc((kap.dayanak_adlari || []).join("\n"))}">${kap.dayanak.length} dayanak kaynağı</span>` : ""}${ist.bolum ? `<span class="sep">·</span><span>${ist.bolum} bölüm</span>` : ""}
-        <span class="sep">·</span><span>${fmtDate(s.created_at)}</span>
-        <span class="sep">·</span><span>${n} kontrol</span><span class="sep">·</span><span>${esc(s.model || "")}</span>
-      </div>
+      ${kap && kap.alanlar && kap.alanlar.length ? `<div class="source">${ALAN_IKON(kap.alanlar[0])} ${esc(kap.alanlar.join(", "))}</div>` : ""}
       ${gaps && !generating ? `<button class="gap-pill" data-act="to-gaps">⚠️ ${gaps} boşluk tespit edildi ↓</button>` : ""}
     </div>
+    <div class="set-meta">${[
+      `📘 ${belge} uygulama esası`,
+      kap && kap.dayanak && kap.dayanak.length ? `<span title="${esc((kap.dayanak_adlari || []).join("\n"))}">${kap.dayanak.length} dayanak kaynağı</span>` : "",
+      `${n} kontrol`,
+      fmtDate(s.created_at),
+      s.model ? `<span title="Model">${esc(s.model)}</span>` : "",
+    ].filter(Boolean).map((x) => `<span class="mi">${x}</span>`).join('<span class="sep">·</span>')}</div>
     ${notes.length ? `<div class="notes">${notes.map(esc).join(" · ")}</div>` : ""}
     ${s.ozet ? `<p class="lead">${esc(s.ozet)}</p>` : generating ? `<p class="lead muted">Belgeler bölüm bölüm okunuyor; kontroller hazırlandıkça aşağıya eklenecek. Sayfayı kapatsan da üretim devam eder.</p>` : `<div style="height:22px"></div>`}
     ${prog}
