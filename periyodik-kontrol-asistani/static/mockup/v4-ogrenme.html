@@ -1,0 +1,221 @@
+<!doctype html>
+<html lang="tr">
+<head>
+<meta charset="utf-8" />
+<title>Mockup v4 — Öğrenen yapı</title>
+<link rel="stylesheet" href="/static/style.css" />
+<style>
+/* ---- v4 eklemeleri: yalnız ton/opaklık; yer değiştiren tek şey sağ panel ve açılır menü ---- */
+.head-row{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+.lead{max-width:660px}
+.sec2{margin-top:32px}
+.sec2-h{display:flex;align-items:baseline;gap:10px;margin:0 0 4px}
+.sec2-h h2{font-size:18px;letter-spacing:-.01em;margin:0;display:flex;align-items:center;gap:8px}
+.sec2-h .count{font-size:12.5px;color:var(--faint);font-weight:500;margin-left:0}
+.sec2-h .r{margin-left:auto;font-size:12.5px;color:var(--faint)}
+.sec2 .sub{color:var(--faint);font-size:12.5px;margin:0 0 12px;line-height:1.5}
+
+/* onay bekleyenler */
+.pend{border-radius:12px;box-shadow:0 0 0 1px var(--line);background:#fff;padding:14px 16px;margin-bottom:10px}
+.pend .t{font-size:14px;line-height:1.55;color:var(--ink)}
+.pend .m{font-size:12px;color:var(--faint);margin-top:4px}
+.pend .m .sep,.sub .sep{margin:0 6px}
+.pend .why{margin-top:8px;font-size:12.5px;color:var(--muted);line-height:1.5;padding-left:10px;border-left:2px solid var(--line)}
+.pend .acts{display:flex;align-items:center;gap:8px;margin-top:12px}
+.pend .acts .btn{height:30px;padding:0 12px;font-size:12.5px}
+.pend .to{font-size:12.5px;color:var(--muted);display:inline-flex;align-items:center;gap:6px}
+.sel-inline{height:24px;padding:0 6px;border-radius:6px;border:0;background:#fff;box-shadow:0 0 0 1px var(--line);font:inherit;font-size:12px;color:var(--ink-2)}
+.pend .acts .sp{flex:1}
+.pend .acts .ghost-l{font-size:12.5px;color:var(--muted);padding:4px 8px;border-radius:7px}
+.pend .acts .ghost-l:hover{background:var(--hover)}
+
+/* tercihler */
+.prefs{list-style:none;margin:0;padding:0}
+.prefs li{display:grid;grid-template-columns:1fr auto;gap:12px;padding:8px 10px;border-radius:10px;font-size:13.5px;line-height:1.55;color:var(--ink-2)}
+.prefs li:hover{background:var(--hover)}
+.prefs li .acts{opacity:0;display:flex;gap:2px;transition:opacity var(--t)}
+.prefs li:hover .acts{opacity:1}
+.prefs .acts button{font-size:12px;color:var(--faint);padding:2px 8px;border-radius:6px}
+.add-row{display:flex;align-items:center;gap:8px;padding:8px 10px;font-size:13px;color:var(--muted);border-radius:10px;cursor:pointer}
+.add-row:hover{background:var(--hover)}
+.budget{display:inline-flex;align-items:center;gap:8px}
+.budget .b{width:80px;height:4px;border-radius:4px;background:var(--soft-2);overflow:hidden}
+.budget .b i{display:block;height:100%;background:var(--ink-2)}
+
+/* konu kartları */
+.topic-when{display:inline-flex;align-items:center;gap:6px;font-size:12px;color:var(--muted)}
+.alan{display:inline-flex;align-items:center;height:20px;padding:0 8px;border-radius:6px;background:var(--soft);font-size:11.5px;color:var(--muted)}
+.src-chip{font-size:11.5px;color:var(--faint);display:block;margin-top:2px}
+.stat{font-size:12px;color:var(--faint)}
+
+/* dışa aktarma menüsü */
+.pop{position:absolute;right:20px;top:52px;z-index:40;width:380px;background:#fff;border-radius:14px;padding:16px;box-shadow:0 0 0 1px rgba(0,0,0,.06),0 16px 40px rgba(30,30,40,.14)}
+.pop h4{margin:0 0 4px;font-size:14px;color:var(--ink)}
+.pop p{margin:0 0 12px;font-size:12.5px;color:var(--muted);line-height:1.5}
+.tree{font:12.5px/1.75 ui-monospace,SFMono-Regular,Menlo,monospace;color:var(--ink-2);background:var(--side);border-radius:10px;padding:10px 12px;margin-bottom:12px}
+.tree span{color:var(--faint)}
+.pop label.ck{display:flex;align-items:center;gap:8px;font-size:12.5px;color:var(--ink-2);margin:0 0 12px}
+.pop label.ck i{width:16px;height:16px;border-radius:5px;background:var(--ink);display:inline-grid;place-items:center;color:#fff;font-size:10px;font-style:normal}
+.pop .btn{width:100%}
+.pop .hint2{font-size:11.5px;color:var(--faint);margin-top:10px;line-height:1.5}
+.topbar{position:relative}
+
+/* sohbette öğrenme önerisi */
+.proposal{margin-top:10px;padding:10px 12px;border-radius:10px;background:#FBF8EC;font-size:12.5px;color:var(--muted)}
+.proposal .h{color:#8A6A00;font-weight:600;font-size:12px;margin-bottom:4px}
+.proposal .t{color:var(--ink-2);font-size:13px;line-height:1.5}
+.proposal .a{display:flex;gap:8px;margin-top:8px;align-items:center}
+.proposal .a button{white-space:nowrap;height:26px;padding:0 10px;border-radius:7px;font-size:12px;font-weight:600}
+.proposal .a .y{background:var(--ink);color:#fff}
+.proposal .a .n{color:var(--muted)}
+.proposal .a .n:hover{background:rgba(0,0,0,.04)}
+.cp{display:flex;flex-direction:column;height:100%;width:420px}
+.cp .chat{display:flex;flex:1;padding:6px 20px 14px}
+.cp .composer{display:flex}
+.cp-head{display:flex;align-items:center;justify-content:space-between;height:52px;padding:0 14px 0 20px;font-size:12.5px;color:var(--faint);flex-shrink:0}
+.change2 .c-diff{display:flex;align-items:center;gap:6px}
+.change2 .go{margin-left:auto;color:var(--ink-2);font-weight:600;font-size:12px}
+.change2 s{color:var(--faint)}
+.cp-head b{color:var(--ink-2);font-weight:600}
+.win.chat-open{grid-template-columns:252px 1fr 420px}
+.pend-dot{display:inline-grid;place-items:center;min-width:18px;height:18px;padding:0 5px;border-radius:9px;background:#F5E7B8;color:#7A5B00;font-size:11px;font-weight:600}
+.scene-note{position:fixed;left:290px;bottom:18px;z-index:60;background:#fff;border-radius:10px;padding:8px 12px;font-size:12px;color:var(--muted);box-shadow:0 0 0 1px rgba(0,0,0,.06),0 6px 20px rgba(30,30,40,.08)}
+</style>
+</head>
+<body>
+<div class="win" id="win"></div>
+<script>
+const SEP = '<span class="sep">·</span>';
+const SIDE = (active) => `
+<aside class="side">
+  <button class="search"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>Ara<kbd>⌘K</kbd></button>
+  <nav>
+    <button class="nav-item"><span class="ico">📄</span><span class="label">Belgeler</span><span class="count">3</span></button>
+    <button class="nav-item"><span class="ico">📚</span><span class="label">Kontroller</span><span class="count">31</span></button>
+    <button class="nav-item ${active==='kb'?'active':''}"><span class="ico">💡</span><span class="label">Öğrenilenler</span><span class="pend-dot" title="2 öğrenme onay bekliyor">2</span></button>
+  </nav>
+  <div class="sec"><button class="sec-head"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg>Kontrol Setleri<span class="sec-count">3</span></button>
+    <div class="sec-body">
+      <button class="nav-item"><span class="ico">🛡️</span><span class="label">Veri Güvenliği — Ekim 2026</span><span class="count">16</span></button>
+      <button class="nav-item ${active==='set'?'active':''}"><span class="ico">🏦</span><span class="label">Kredi — Ekim 2026</span><span class="count">22</span></button>
+      <button class="nav-item"><span class="ico">💸</span><span class="label">Ödeme Sistemleri — Ekim 2026</span><span class="count">18</span></button>
+    </div></div>
+  <div class="side-foot">
+    <button class="new-btn"><span class="ico">＋</span>Yeni kontrol seti</button>
+    <button class="user"><div class="avatar">Y</div><div>Yusuf<small><span class="dot ok"></span>lokal-but-not-lokal · yerel</small></div></button>
+  </div>
+</aside>`;
+
+const PAGE = () => `
+  <h1>Öğrenilenler</h1>
+  <div class="head-row"><div class="source"><span>💡 3 konu</span>${SEP}<span>6 kural</span>${SEP}<span>4 tercih</span>${SEP}<span>2 onay bekliyor</span></div></div>
+  <p class="lead">Model her kontrol setini üretirken bunları kullanır. Sohbetten ve kararlarından çıkan yeni bir kural, sen onaylamadan buraya eklenmez.</p>
+
+  <section class="sec2">
+    <div class="sec2-h"><h2>⏳ Onay bekleyenler</h2><span class="count">2</span></div>
+    <p class="sub">Modelin senin geri bildiriminden çıkardığı kurallar. Ekle, düzenleyip ekle ya da at.</p>
+    <div class="pend">
+      <div class="t">Teminat değerlemesi yılda bir dış eksperle yapılıyor; değerleme güncelliği kontrolleri altı aydan sık önerilmesin.</div>
+      <div class="m">Sohbetten${SEP}Kredi — Ekim 2026${SEP}bugün 14:32</div>
+      <div class="why">Senin mesajın: “Teminat değerlemesi bizde zaten yılda bir dış eksperle yapılıyor, üç ayda bir kontrol fazla.”</div>
+      <div class="acts"><span class="to">Konu <select class="sel-inline"><option>Kredi</option></select></span><span class="sp"></span>
+        <button class="ghost-l">Düzenle</button><button class="ghost-l">At</button><button class="btn btn-ink">Ekle</button></div>
+    </div>
+    <div class="pend">
+      <div class="t">Görevler ayrılığı kontrollerinde sorumlu birim Bilgi Güvenliği değil, ilgili iş biriminin yöneticisidir (Hat 1).</div>
+      <div class="m">3 benzer ret kararından${SEP}Veri Güvenliği — Ekim 2026${SEP}dün 17:05</div>
+      <div class="why">Reddettiğin kontroller: “Aynı kullanıcıya hem giriş hem onay rolü…”, “Yetki matrisinin…” ve 1 tane daha — hepsinde sorumlu Bilgi Güvenliği yazıyordu.</div>
+      <div class="acts"><span class="to">Konu <select class="sel-inline"><option>Bilgi Sistemleri ve Veri Güvenliği</option></select></span><span class="sp"></span>
+        <button class="ghost-l">Düzenle</button><button class="ghost-l">At</button><button class="btn btn-ink">Ekle</button></div>
+    </div>
+  </section>
+
+  <section class="sec2">
+    <div class="sec2-h"><h2>🙋 Tercihlerim</h2><span class="count">4</span>
+      <span class="r budget">412 / 1.500 karakter <span class="b"><i style="width:27%"></i></span></span></div>
+    <p class="sub">Senin çalışma tarzın: kontrol adlarının yazılışı, ayrıntı düzeyi, öncelikler. Dışa aktarınca USER.md olur. Giriş eklenince her kullanıcıya ayrı tutulur.</p>
+    <ul class="prefs">
+      <li><span>Kontrol adı neyin nasıl test edildiğini söylesin ve “…teyidi / …kontrolü” ile bitsin.</span><span class="acts"><button>Düzenle</button><button>Sil</button></span></li>
+      <li><span>Kritik riskler dışında haftalıktan sık kontrol önerme; ekip küçük.</span><span class="acts"><button>Düzenle</button><button>Sil</button></span></li>
+      <li><span>Gerekçe en fazla iki cümle olsun.</span><span class="acts"><button>Düzenle</button><button>Sil</button></span></li>
+      <li><span>Örneklem testi gerektiren kontrollerde örneklem büyüklüğünü de yaz.</span><span class="acts"><button>Düzenle</button><button>Sil</button></span></li>
+    </ul>
+    <div class="add-row">＋ Tercih ekle</div>
+  </section>
+
+  <section class="kb">
+    <h2><span class="ico">🏦</span>Kredi</h2>
+    <p class="sub"><span class="topic-when">Kullanıldığı yer <span class="alan">Kredi</span></span>${SEP}<span class="stat">son 30 günde 2 sette kullanıldı</span></p>
+    <ul class="learn">
+      <li><time>16.10 21:12</time><span>Kullandırım öncesi teminat tesis kontrolü her kredi için ayrı değil, aylık örneklemle yapılır.<span class="src-chip">Sohbetten · Kredi — Eylül 2026 · onaylayan: sen</span></span><span class="acts"><button>Düzenle</button><button class="del">Sil</button></span></li>
+    </ul>
+    <details class="seed"><summary>Başlangıç bilgisi</summary></details>
+  </section>
+  <section class="kb">
+    <h2><span class="ico">📐</span>Kontrol Metrikleri</h2>
+    <p class="sub"><span class="topic-when">Kullanıldığı yer <span class="alan">Tüm alanlar</span></span>${SEP}<span class="stat">son 30 günde 5 sette kullanıldı</span></p>
+    <ul class="learn">
+      <li><time>16.10 21:23</time><span>Her kontrolün gerekçe ve dayanak bilgileri mevcut mevzuat maddelerine uygun belirtilir.<span class="src-chip">Sohbetten · onaylayan: sen</span></span><span class="acts"><button>Düzenle</button><button class="del">Sil</button></span></li>
+    </ul>
+    <details class="seed"><summary>Başlangıç bilgisi</summary></details>
+  </section>
+  <section class="kb">
+    <h2><span class="ico">🔍</span>MASAK / AML</h2>
+    <p class="sub"><span class="topic-when">Kullanıldığı yer <span class="alan">AML / Uyum</span></span>${SEP}<span class="stat">henüz kullanılmadı</span></p>
+    <ul class="learn"><li class="none">Henüz öğrenilen kural yok.</li></ul>
+    <details class="seed"><summary>Başlangıç bilgisi</summary></details>
+  </section>`;
+
+const TOP = (pop = false) => `<div class="topbar"><div class="crumb"><b>Öğrenilenler</b></div>
+  <div class="actions"><button class="pill-btn">↓ Dışa aktar</button></div>
+  ${pop ? `<div class="pop">
+    <h4>Öğrenilenleri dışa aktar</h4>
+    <p>Hermes ve agentskills.io standardında; başka bir agent'a ya da Hermes'e olduğu gibi konabilir.</p>
+    <div class="tree">ic-kontrol-ogrenilenler-2026-10-17.zip<br>
+      ├─ kredi/SKILL.md<br>├─ kontrol-metrikleri/SKILL.md<br>├─ masak-aml/SKILL.md<br>├─ genel-cerceve/SKILL.md<br>
+      ├─ USER.md <span>— tercihlerim</span><br>└─ BENIOKU.md <span>— nasıl kullanılır</span></div>
+    <label class="ck"><i>✓</i>Başlangıç bilgisini de ekle</label>
+    <button class="btn btn-ink">İndir (.zip)</button>
+    <div class="hint2">Hermes'te kullanmak için: zip'i aç, konu klasörlerini <b>~/.hermes/skills/</b> altına, USER.md içeriğini kullanıcı profiline koy.</div>
+  </div>` : ""}</div>`;
+
+function scenePage(pop) {
+  const w = document.getElementById("win"); w.className = "win";
+  w.innerHTML = SIDE("kb") + `<section class="main">${TOP(pop)}<div class="scroll"><div class="doc">${PAGE()}</div></div></section><aside class="panel"></aside>`;
+}
+
+function sceneChat() {
+  const w = document.getElementById("win"); w.className = "win chat-open";
+  const CHECK = '<svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg>';
+  const row = (t, m, r, cls = "") => `<div class="row ${cls}"><button class="cb">${CHECK}</button><div><div class="title">${t}</div><div class="meta">${m}</div></div><span class="risk r-${r === "Yüksek" ? "yuksek" : r === "Kritik" ? "kritik" : "orta"}"><i></i>${r}</span></div>`;
+  w.innerHTML = SIDE("set") + `
+  <section class="main"><div class="topbar"><div class="crumb">Kontrol Setleri <span>/</span> <b>Kredi — Ekim 2026</b></div><div class="actions"><button class="pill-btn">↓ Word</button><button class="pill-btn">↓ Excel</button></div></div>
+    <div class="scroll"><div class="doc">
+      <h1>Kredi — Ekim 2026</h1>
+      <div class="source"><span>🏦 Kredi</span>${SEP}<span>📘 1 uygulama esası</span>${SEP}<span>4 dayanak kaynağı</span>${SEP}<span>22 kontrol</span></div>
+      <h2 class="group" style="margin-top:28px"><span class="ico">⚙️</span>Operasyonel <span class="count">9</span></h2>
+      ${row("Kredi başvurularının tahsis öncesi risk analizinden geçtiğinin kontrolü", `Aylık${SEP}Hat 1${SEP}Kredi Tahsis Müdürlüğü`, "Yüksek", "done")}
+      ${row("Teminat değerleme raporlarının güncelliğinin teyidi", `Altı aylık${SEP}Hat 2${SEP}Kredi İzleme<span class="sep">·</span><span class="chg-tag">sohbette değişti</span>`, "Orta", "changed")}
+      ${row("Kullandırım tutarının onaylanan limiti aşmadığının örneklem testi", `Aylık${SEP}Hat 1${SEP}Kredi Operasyon`, "Kritik")}
+    </div></div>
+  </section>
+  <aside class="panel"><div class="cp">
+    <div class="cp-head"><span><b>Sohbet</b> · bu set</span><button class="pill-btn icon-btn">✕</button></div>
+    <div class="chat">
+      <div class="msg-user">Teminat değerlemesi bizde zaten yılda bir dış eksperle yapılıyor, üç ayda bir kontrol fazla.</div>
+      <div class="msg-ai"><span class="orb"></span><div>Haklısın; değerleme yıllık yapılıyorsa güncelliği üç ayda bir test etmek gereksiz iş yükü yaratır. Sıklığı altı aya indirdim.
+        <div class="change2"><div class="c-title">Teminat değerleme raporlarının güncelliği</div><div class="c-diff">Sıklık <s>Üç aylık</s> → <b>Altı aylık</b><span class="go">Listede göster</span></div></div>
+        <div class="proposal"><div class="h">💡 Bundan sonra da uygulayayım mı?</div>
+          <div class="t">Teminat değerlemesi yılda bir dış eksperle yapılıyor; değerleme güncelliği kontrolleri altı aydan sık önerilmesin.</div>
+          <div class="a"><button class="y">Ekle</button><button class="n">Düzenle</button><button class="n">Yalnız bu sette kalsın</button></div></div>
+      </div></div>
+    </div>
+    <div class="composer"><textarea rows="1" placeholder="Bir şey sor ya da geri bildirim ver…"></textarea><button class="send">↑</button></div>
+  </div></aside>`;
+  document.body.insertAdjacentHTML("beforeend", `<div class="scene-note">Cevap vermezsen öneri “Onay bekleyenler”e düşer</div>`);
+}
+const s = new URLSearchParams(location.search).get("s") || "sayfa";
+({ sayfa: () => scenePage(false), aktar: () => scenePage(true), sohbet: sceneChat }[s] || (() => scenePage(false)))();
+</script>
+</body>
+</html>
