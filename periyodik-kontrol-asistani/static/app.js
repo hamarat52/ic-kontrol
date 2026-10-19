@@ -80,7 +80,7 @@ function parseRoute() {
   const h = location.hash.replace(/^#\/?/, "");
   const [name, id] = h.split("/");
   if (name === "set" && id) return { name: "set", id };
-  if (["belgeler", "kutuphane", "bilgi", "setler", "model"].includes(name)) return { name };
+  if (["belgeler", "kutuphane", "bilgi", "setler", "model", "yeni"].includes(name)) return { name };
   return { name: "home" };
 }
 function go(hash) { if (location.hash === hash) route(); else location.hash = hash; }
@@ -95,6 +95,8 @@ async function route() {
     S.multi.clear(); S.changed.clear(); S.undo = null; $("#undo").hidden = true;
     $("#scroll").scrollTop = 0;
   }
+  if (r.name !== "yeni") S.scope = null;
+  else if (!S.scope) S.scope = newScope();          // sayfa doğrudan açıldıysa / yenilendiyse
   if (r.name === "home" || r.name === "setler") {
     if (S.sets.length) { location.replace("#/set/" + S.sets[0].id); return; }
   }
@@ -113,6 +115,7 @@ async function route() {
 
 /* ---------------------------------------------------------------- sidebar */
 function renderSidebar() {
+  $("#newSetBtn").classList.toggle("active", S.route.name === "yeni");
   $("#cDocs").textContent = S.docs.filter((d) => !d.yerlesik).length || "";
   $("#cSets").textContent = S.sets.length || "";
   $("#cLib").textContent = S.lib.length || "";
@@ -152,6 +155,7 @@ function renderView() {
   if (n === "kutuphane") return viewLibrary();
   if (n === "bilgi") return viewKnowledge();
   if (n === "model") return viewModel();
+  if (n === "yeni") { setTop(`<b>Yeni kontrol seti</b>`); return renderScope(); }
   if (n === "set" && S.set) return viewSet();
   return viewHome();
 }
@@ -314,7 +318,7 @@ async function editDoc(id, body) {
     const d = await api(`/api/documents/${id}`, jsonOpts("PATCH", body));
     const i = S.docs.findIndex((x) => x.id === d.id); if (i >= 0) S.docs[i] = d;
     if (S.route.name === "belgeler") viewDocs();
-    if (S.panelMode === "scope") renderScope();
+    if (S.route.name === "yeni") renderScope();
   } catch (e) { toast(e.message, true); }
 }
 
@@ -337,19 +341,19 @@ function scopeDefaults(sc) {
   if (!sc.nameTouched) sc.baslik = scopeTitle([...sc.alanlar]);
 }
 
-function openScope() {
-  if (S.sets.some(isGen)) { toast("Bir set zaten üretiliyor"); return; }
-  if (S.route.name !== "belgeler") { S.openScopeAfter = true; go("#/belgeler"); return; }
+function newScope() {
   const counts = {};
   esasDocs().forEach((d) => d.alanlar.forEach((a) => (counts[a] = (counts[a] || 0) + 1)));
   const withDocs = Object.keys(counts);
   const sc = { alanlar: new Set(withDocs.length === 1 ? withDocs : []), belgeler: new Set(), dayanak: new Set(),
                org: true, baslik: "", nameTouched: false, more: false };
   scopeDefaults(sc);
-  S.scope = sc;
-  renderScope();
-  S.selectedId = null;
-  setPanelMode("scope");
+  return sc;
+}
+function openScope() {
+  if (S.sets.some(isGen)) { toast("Bir set zaten üretiliyor"); return; }
+  S.scope = newScope();
+  go("#/yeni");
 }
 
 function pickRow(d, on, kind, extra = "") {
@@ -372,11 +376,15 @@ function renderScope() {
   const selEsas = esas.filter((d) => sc.belgeler.has(d.id));
   const bolum = selEsas.reduce((a, d) => a + (d.bolum || 0), 0);
   const label = (t) => (S.meta && S.meta.turler[t]) || t;
-  $("#panel").innerHTML = `<div class="scope">
-    <div class="panel-top"><span>Yeni kontrol seti</span><button class="pill-btn icon-btn" data-act="close-panel" title="Kapat (Esc)">${SVG.close}</button></div>
-    <div class="panel-body">
-      <h3>Hangi alanda kontrol üretelim?</h3>
-      <p class="sub">Yalnız seçtiğin alanın belgeleri işlenir. Birden fazla alan seçebilirsin.</p>
+  if (S.route.name !== "yeni") return;
+  if (!esas.length) {
+    $("#view").innerHTML = `<h1>Yeni kontrol seti</h1><p class="lead">Kontrol üretmek için önce en az bir uygulama esası yükle.</p>
+      <button class="btn btn-ink" data-act="to-docs">Belgelere git</button>`;
+    return;
+  }
+  $("#view").innerHTML = `<div class="scope-page">
+      <h1>Yeni kontrol seti</h1>
+      <p class="lead">Hangi alanda kontrol üretelim? Yalnız seçtiğin alanın belgeleri işlenir; birden fazla alan seçebilirsin.</p>
       <div class="step first"><div class="step-h"><span class="n">1</span>Alan</div>
         <div class="chips">${alanList.map((a) => `<button class="chip${sc.alanlar.has(a.ad) ? " on" : ""}${counts[a.ad] ? "" : " dim"}" data-act="scope-alan" data-alan="${esc(a.ad)}">${a.ikon} ${esc(a.ad)} <span class="c">${counts[a.ad] || 0}</span></button>`).join("")}</div></div>
 
@@ -399,8 +407,8 @@ function renderScope() {
 
       <div class="step"><div class="step-h"><span class="n">5</span>Set adı</div>
         <input class="inp-name" id="scopeName" value="${esc(sc.baslik)}" maxlength="80" /></div>
-    </div>
     <div class="scope-foot"><div class="sum"><b>${selEsas.length} belge · ${bolum} bölüm</b><br>${sc.dayanak.size} dayanak kaynağı${org.length && sc.org ? " · organizasyon" : ""}${S.health ? ` · ${esc(S.health.llm_model)}` : ""}</div>
+      <button class="btn btn-ghost" data-act="scope-cancel">Vazgeç</button>
       <button class="btn btn-ink" data-act="scope-go" ${selEsas.length ? "" : "disabled"}>Kontrolleri üret</button></div>
   </div>`;
 }
@@ -413,7 +421,6 @@ async function scopeGo() {
   let s;
   try { s = await api("/api/sets", jsonOpts("POST", body)); }
   catch (e) { toast(e.message, true); if (btn) btn.disabled = false; return; }
-  S.scope = null;
   s.controls = []; s.messages = [];
   S.set = s;
   await refreshSets();
@@ -720,8 +727,7 @@ function setPanelMode(mode) {
   w.classList.toggle("has-panel", !!mode);
   w.classList.toggle("chat-open", mode === "chat");
   w.classList.toggle("doc-open", mode === "doc");
-  w.classList.toggle("scope-open", mode === "scope");
-  if (mode !== "scope") S.scope = null;
+
   if (mode !== "doc") { S.docId = null; S.docBack = null; syncDocRows(); }
   renderBottom();
 }
@@ -1335,6 +1341,7 @@ document.addEventListener("click", async (e) => {
   if (a === "export-go") { download(`/api/learnings/export?baslangic=${S.exportSeed === false ? 0 : 1}`); S.exportOpen = false; $("#exportPop").hidden = true; return; }
   if (a === "generate" || a === "scope-open") return openScope();
   if (a === "scope-go") return scopeGo();
+  if (a === "scope-cancel") return go("#/belgeler");
   if (a === "scope-alan") {
     const sc = S.scope, v = act.dataset.alan;
     sc.alanlar.has(v) ? sc.alanlar.delete(v) : sc.alanlar.add(v);
@@ -1497,7 +1504,7 @@ document.addEventListener("keydown", (e) => {
     if (menu && menu.classList.contains("open")) return menu.classList.remove("open");
     if (S.multi.size) return clearMulti();
     if (S.panelMode === "chat") return closeChat();
-    if (S.panelMode === "scope") return closePanel();
+    if (S.route.name === "yeni" && !typing(e.target)) return go("#/belgeler");
     if (S.panelMode === "doc") { if (S.docBack) { const id = S.docBack; S.panelMode = null; return openPanel(id); } return closePanel(); }
     if (S.selectedId) return closePanel();
     return;
