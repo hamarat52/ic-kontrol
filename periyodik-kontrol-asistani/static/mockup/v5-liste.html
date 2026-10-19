@@ -1,0 +1,86 @@
+<!doctype html>
+<html lang="tr">
+<head>
+<meta charset="utf-8" />
+<title>Mockup v5 — Kontrol listesi</title>
+<link rel="stylesheet" href="/static/style.css" />
+<style>
+body{background:var(--main);overflow:auto}
+.mk{max-width:980px;margin:0 auto;padding:36px 40px 80px}
+.mk h1{font-size:28px;letter-spacing:-.02em;margin:0 0 6px}
+.mk .lead{color:var(--muted);font-size:13.5px;margin:0 0 20px}
+.opt{display:inline-block;font-size:11.5px;font-weight:600;color:#3B5BDB;background:#EDF2FF;border-radius:6px;padding:2px 8px;margin-bottom:10px}
+.kod{display:inline-block;font-size:11.5px;font-weight:600;color:var(--muted);background:var(--soft);border-radius:5px;padding:1px 6px;margin-right:8px;vertical-align:1px;font-variant-numeric:tabular-nums}
+
+/* ---------- A: sütunlu liste ---------- */
+.tl .thead,.tl .tr{display:grid;grid-template-columns:22px minmax(0,1fr) 92px 54px 170px 84px;gap:14px;align-items:center}
+.tl .thead{font-size:11.5px;font-weight:600;color:var(--faint);letter-spacing:.02em;padding:0 10px 8px;border-bottom:1px solid var(--line);position:sticky;top:0;background:var(--main);z-index:2}
+.tl .tr{padding:10px;border-radius:10px;cursor:pointer;transition:background var(--t)}
+.tl .tr:hover{background:var(--hover)}
+.tl .tr.selected{background:var(--sel)}
+.tl .tr .title{font-size:14px;line-height:1.4}
+.tl .c{font-size:13px;color:var(--ink-2);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.tl .c.m{color:var(--muted)}
+.hat{display:inline-flex;align-items:center;justify-content:center;min-width:26px;height:20px;border-radius:6px;background:var(--soft);font-size:12px;font-weight:600;color:var(--ink-2)}
+.tl h2.group{margin:22px 0 2px}
+.tl .tr .sub{font-size:12px;color:var(--faint);margin-top:2px}
+
+/* ---------- B: etiketli çipler ---------- */
+.ch .row .title{font-size:14.5px}
+.tags{display:flex;gap:6px;flex-wrap:wrap;margin-top:6px}
+.tag{display:inline-flex;align-items:center;gap:5px;height:22px;padding:0 8px;border-radius:6px;background:var(--soft);font-size:12px;color:var(--ink-2);white-space:nowrap}
+.tag b{font-weight:500;color:var(--faint)}
+
+/* ---------- C: etiketli alt satır ---------- */
+.lb .row .title{font-size:14.5px}
+.kv{display:flex;gap:22px;margin-top:6px;flex-wrap:wrap}
+.kv span{font-size:12.5px;color:var(--ink-2);white-space:nowrap}
+.kv span b{font-weight:500;color:var(--faint);margin-right:5px;font-size:11.5px;letter-spacing:.02em;text-transform:uppercase}
+</style>
+</head>
+<body>
+<div class="mk" id="app"></div>
+<script>
+const SVG_CHECK = '<svg width="11" height="11" viewBox="0 0 12 12"><path d="M2.5 6.2l2.3 2.3 4.7-5" fill="none" stroke="#fff" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>';
+const RISK = {"Kritik":"r-kritik","Yüksek":"r-yuksek","Orta":"r-orta","Düşük":"r-dusuk"};
+const G = [
+  ["⚙️ Operasyonel", [
+    ["KN.01","EFT/Havale işlemlerinde 250.000 TL limitinin sistemde doğru tanımlı olduğunun ve aşım denemelerinin engellendiğinin kontrolü","Aylık","1","Operasyon Müdürlüğü","Yüksek","Orta",1],
+    ["KN.02","Kredi tahsis işlemlerinde portföy yöneticisi girişi olmadan şube müdürü/kredi komitesi onayı verilmediğinin örneklem testi","Aylık","2","İç Kontrol Müdürlüğü","Yüksek","Orta",0],
+    ["KN.03","Gün sonu kasa sayım tutanaklarının iki yetkili imzasıyla düzenlendiğinin teyidi","Günlük","1","Şube Operasyon","Orta","Düşük",0],
+  ]],
+  ["🛡️ Bilgi Sistemleri", [
+    ["KN.04","Sunuculardaki Domain Admin ve Local Admin yetkilerinin altı aylık gözden geçirmesinin örneklem testi","6 aylık","2","Kimlik ve Erişim Yönetimi","Kritik","Yüksek",0],
+    ["KN.05","İşten ayrılan personelin sistem erişimlerinin 1 iş günü içinde kapatıldığının sistem sorgusu ile kontrolü","Aylık","2","Bilgi Güvenliği Müdürlüğü","Yüksek","Orta",0],
+    ["KN.06","Yedekleme geri dönüş testlerinin yılda en az bir kez yapılıp sonuçlarının raporlandığının kontrolü","Yıllık","2","BT Operasyon","Orta","Düşük",0],
+  ]],
+];
+const s = new URLSearchParams(location.search).get("s") || "a";
+const cb = (d) => `<button class="cb">${SVG_CHECK}</button>`;
+const risk = (r) => `<span class="risk ${RISK[r]}"><i></i>${r}</span>`;
+let h = "";
+if (s === "a") {
+  h = `<span class="opt">Öneri A · Sütunlu liste</span><h1>Kredi Tahsis, Ödeme Transfer ve Erişim Yönetimi</h1>
+  <p class="lead">Her bilgi kendi sütununda; başlık satırı kaydırırken üstte kalır. Efor ve kaynak detay panelinde.</p>
+  <div class="tl"><div class="thead"><span></span><span>Kontrol</span><span>Sıklık</span><span>Hat</span><span>Sorumlu</span><span>Risk</span></div>
+  ${G.map(([g, rows]) => `<h2 class="group">${g} <span class="count">${rows.length}</span></h2>` + rows.map((r) => `
+    <div class="tr ${r[7] ? "selected" : ""}">${cb()}<div><div class="title"><span class="kod">${r[0]}</span>${r[1]}</div></div>
+      <span class="c">${r[2]}</span><span class="c"><span class="hat">${r[3]}</span></span><span class="c m" title="${r[4]}">${r[4]}</span>${risk(r[5])}</div>`).join("")).join("")}
+  </div>`;
+} else if (s === "b") {
+  h = `<span class="opt">Öneri B · Etiket çipleri</span><h1>Kredi Tahsis, Ödeme Transfer ve Erişim Yönetimi</h1>
+  <p class="lead">Mevcut düzen korunur; bilgiler ayrı, etiketli küçük kutucuklarda.</p>
+  <div class="ch">${G.map(([g, rows]) => `<h2 class="group">${g} <span class="count">${rows.length}</span></h2>` + rows.map((r) => `
+    <div class="row ${r[7] ? "selected" : ""}">${cb()}<div><div class="title"><span class="kod">${r[0]}</span>${r[1]}</div>
+      <div class="tags"><span class="tag"><b>Sıklık</b>${r[2]}</span><span class="tag"><b>Hat</b>${r[3]}</span><span class="tag"><b>Sorumlu</b>${r[4]}</span><span class="tag"><b>Efor</b>${r[6]}</span></div></div>${risk(r[5])}</div>`).join("")).join("")}</div>`;
+} else {
+  h = `<span class="opt">Öneri C · Etiketli alt satır</span><h1>Kredi Tahsis, Ödeme Transfer ve Erişim Yönetimi</h1>
+  <p class="lead">Mevcut düzen korunur; alt satırda her bilginin önünde küçük etiketi var, aralar açık.</p>
+  <div class="lb">${G.map(([g, rows]) => `<h2 class="group">${g} <span class="count">${rows.length}</span></h2>` + rows.map((r) => `
+    <div class="row ${r[7] ? "selected" : ""}">${cb()}<div><div class="title"><span class="kod">${r[0]}</span>${r[1]}</div>
+      <div class="kv"><span><b>Sıklık</b>${r[2]}</span><span><b>Hat</b>${r[3]}</span><span><b>Sorumlu</b>${r[4]}</span><span><b>Efor</b>${r[6]}</span></div></div>${risk(r[5])}</div>`).join("")).join("")}</div>`;
+}
+document.getElementById("app").innerHTML = h;
+</script>
+</body>
+</html>
