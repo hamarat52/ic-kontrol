@@ -658,3 +658,11 @@ textarea.auto.small{font-size:12px;color:var(--muted)}
 .steps-edit{display:none}
 .steps-blk.editing .steps{display:none}
 .steps-blk.editing .steps-edit{display:block}
+
+/* kontrol satırı: etiketli çipler (mockup v5 B) */
+.row .tags{display:flex;gap:6px;flex-wrap:wrap;align-items:center;margin-top:6px}
+.row .tag{display:inline-flex;align-items:center;gap:5px;height:22px;padding:0 8px;border-radius:6px;background:var(--soft);font-size:12px;color:var(--ink-2);white-space:nowrap;max-width:100%;overflow:hidden;text-overflow:ellipsis;transition:background var(--t)}
+.row .tag b{font-weight:500;color:var(--faint)}
+.row.selected .tag{background:rgba(255,255,255,.7)}
+.row.done .tag,.row.rejected .tag{color:var(--muted)}
+.row .tag-note{font-size:12px;color:var(--faint);white-space:nowrap;margin-left:2px}

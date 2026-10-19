@@ -505,17 +505,18 @@ function renderSetHead() {
     ${status}`;
 }
 
+const tag = (label, v) => (v ? `<span class="tag"><b>${label}</b>${esc(v)}</span>` : "");
 function rowHtml(c) {
   const cls = ["row", c.status === "kabul" ? "done" : "", c.status === "red" ? "rejected" : "",
     S.selectedId === c.id ? "selected" : "", S.selectedId === c.id && S.kbd ? "kbd" : "",
     S.multi.has(c.id) ? "multi" : "", S.changed.has(c.id) ? "changed" : "",
     S.fresh.has(c.id) ? "fresh" : ""].filter(Boolean).join(" ");
-  const warn = c.kaynak_dogrulandi === 0 ? `<span class="sep">·</span><span class="warn-tag">⚠ kaynak doğrulanamadı</span>` : "";
-  const ch = S.changed.has(c.id) ? `<span class="sep">·</span><span class="chg-tag">sohbette değişti</span>` : "";
+  const warn = c.kaynak_dogrulandi === 0 ? `<span class="tag-note warn-tag">⚠ kaynak doğrulanamadı</span>` : "";
+  const ch = S.changed.has(c.id) ? `<span class="tag-note chg-tag">sohbette değişti</span>` : "";
   return `<div class="${cls}" data-id="${c.id}">
     <button class="cb" data-act="toggle" title="${c.status === "kabul" ? "Kabulü geri al" : "Kabul et"}">${SVG.check}</button>
     <div><div class="title">${c.kod ? `<span class="kod">${esc(c.kod)}</span>` : ""}${esc(c.kontrol_adi)}</div>
-      <div class="meta">${esc(c.siklik)}<span class="sep">·</span>Hat ${esc(c.hat)}${c.sorumlu ? `<span class="sep">·</span>${esc(c.sorumlu)}` : `<span class="sep">·</span>Efor ${esc((c.efor || "").toLocaleLowerCase("tr"))}`}${c.edited ? `<span class="sep">·</span>düzenlendi` : ""}${warn}${ch}</div></div>
+      <div class="tags">${tag("Sıklık", c.siklik)}${tag("Hat", c.hat)}${tag("Sorumlu", c.sorumlu)}${tag("Efor", c.efor)}${c.edited ? `<span class="tag-note">düzenlendi</span>` : ""}${warn}${ch}</div></div>
     <span class="risk ${RISK_CLS[c.risk] || ""}"><i></i>${esc(c.risk)}</span>
   </div>`;
 }
