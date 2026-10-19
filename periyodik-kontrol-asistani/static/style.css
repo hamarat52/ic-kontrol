@@ -646,3 +646,15 @@ textarea.auto.small{font-size:12px;color:var(--muted)}
 .scope-page .scope-foot .btn-ghost{margin-left:auto}
 .scope-page .scope-foot .btn-ink{margin-left:0}
 .new-btn.active{background:var(--hover);color:var(--ink)}
+
+/* kurum kontrol kartı */
+.kod{display:inline-block;font-size:11.5px;font-weight:600;color:var(--muted);background:var(--soft);border-radius:5px;padding:1px 6px;margin-right:8px;vertical-align:1px;font-variant-numeric:tabular-nums}
+.p-kod{font-size:12px;font-weight:600;color:var(--faint);letter-spacing:.02em;margin:2px 0 2px}
+.kart{border-top:1px solid var(--line);padding-top:6px;margin-top:4px}
+.kart .blk{margin-bottom:14px}
+.steps{margin:2px 0 0;padding-left:20px;font-size:13.5px;line-height:1.6;color:var(--ink-2);border-radius:8px;cursor:text;transition:background var(--t)}
+.steps:hover{background:var(--hover)}
+.steps li{padding:1px 0}
+.steps-edit{display:none}
+.steps-blk.editing .steps{display:none}
+.steps-blk.editing .steps-edit{display:block}

@@ -514,7 +514,7 @@ function rowHtml(c) {
   const ch = S.changed.has(c.id) ? `<span class="sep">·</span><span class="chg-tag">sohbette değişti</span>` : "";
   return `<div class="${cls}" data-id="${c.id}">
     <button class="cb" data-act="toggle" title="${c.status === "kabul" ? "Kabulü geri al" : "Kabul et"}">${SVG.check}</button>
-    <div><div class="title">${esc(c.kontrol_adi)}</div>
+    <div><div class="title">${c.kod ? `<span class="kod">${esc(c.kod)}</span>` : ""}${esc(c.kontrol_adi)}</div>
       <div class="meta">${esc(c.siklik)}<span class="sep">·</span>Hat ${esc(c.hat)}${c.sorumlu ? `<span class="sep">·</span>${esc(c.sorumlu)}` : `<span class="sep">·</span>Efor ${esc((c.efor || "").toLocaleLowerCase("tr"))}`}${c.edited ? `<span class="sep">·</span>düzenlendi` : ""}${warn}${ch}</div></div>
     <span class="risk ${RISK_CLS[c.risk] || ""}"><i></i>${esc(c.risk)}</span>
   </div>`;
@@ -715,6 +715,10 @@ async function saveFields(id, fields) {
     const r = await api(`/api/controls/${id}`, jsonOpts("PATCH", diff));
     Object.assign(c, r.control);
     renderSetBody(); loadHistory(id);
+    if ("adimlar" in diff) {
+      const ol = $("#panel .steps"); if (ol) ol.innerHTML = stepsHtml(c.adimlar);
+      const b = $("#panel .steps-blk"); if (b && (c.adimlar || "").trim()) b.classList.remove("editing");
+    }
     const sv = $("#saved"); if (sv) { sv.classList.add("on"); setTimeout(() => sv.classList.remove("on"), 1400); }
     if (c.status === "kabul") refreshLib();
   } catch (e) { toast(e.message, true); }
@@ -784,6 +788,32 @@ function dayanakItems(c) {
   }).join("")}</div>`;
 }
 
+/* Kurum kontrol kartı alanları (KN.xx şablonu) */
+const KART = [
+  ["amac", "Kontrol amacı", "… doğrulamak."],
+  ["nitelik", "Kontrolün niteliği", "ör. İkinci seviye uygunluk ve işletim etkinliği kontrolü"],
+  ["ilgili_birimler", "İlgili birimler", "Birimler, noktalı virgülle"],
+  ["kapsam", "Ana kütle / kapsam", "Hangi dönem, hangi işlemler; tam kütle mi örneklem mi"],
+  ["donem", "Dönem", "ör. Ocak–Haziran dönemi: Temmuz ayında; Temmuz–Aralık dönemi: Ocak ayında"],
+  ["adimlar", "Uygulama adımları", "Her satıra bir adım"],
+  ["kanit", "Asgari kanıt", "Rapor, kayıt, liste…"],
+  ["olcut", "Değerlendirme ölçütü", "Kontrol ne zaman etkin sayılır"],
+  ["istisna", "İstisna / aksiyon", "-"],
+  ["raporlama", "Raporlama", "Ne zaman, kime"],
+];
+const stepsHtml = (v) => (v || "").split("\n").filter((x) => x.trim()).map((s) => `<li>${esc(s)}</li>`).join("");
+function kartBlocks(c) {
+  return `<div class="kart">${KART.map(([f, label, ph]) => {
+    if (f === "adimlar") {
+      const steps = (c.adimlar || "").split("\n").filter((x) => x.trim());
+      return `<div class="blk steps-blk${steps.length ? "" : " editing"}"><h4>${label}</h4>
+        <ol class="steps" data-act="steps-edit" title="Düzenlemek için tıkla">${stepsHtml(c.adimlar)}</ol>
+        <textarea class="auto steps-edit" data-field="adimlar" rows="2" placeholder="${ph}">${esc(c.adimlar || "")}</textarea></div>`;
+    }
+    return `<div class="blk"><h4>${label}</h4><textarea class="auto" data-field="${f}" rows="1" placeholder="${esc(ph)}">${esc(c[f] || "")}</textarea></div>`;
+  }).join("")}</div>`;
+}
+
 function renderPanel(c) {
   const m = S.meta || { kategoriler: KAT_ORDER, sikliklar: [], riskler: [], eforlar: [] };
   const pending = S.set.controls.filter((x) => x.status === "bekliyor").length;
@@ -791,6 +821,7 @@ function renderPanel(c) {
     <div class="panel-top"><span>Kontrol detayı${pending ? ` · ${pending} bekleyen` : ""}<span class="saved" id="saved">· Kaydedildi</span></span>
       <button class="pill-btn icon-btn" data-act="close-panel" title="Kapat (Esc)">${SVG.close}</button></div>
     <div class="panel-body">
+      ${c.kod ? `<div class="p-kod">${esc(c.kod)}</div>` : ""}
       <textarea class="auto p-title" data-field="kontrol_adi" rows="1">${esc(c.kontrol_adi)}</textarea>
       <dl class="fields">
         <dt>Kategori</dt><dd><select data-field="kategori">${opts(m.kategoriler, c.kategori)}</select></dd>
@@ -800,6 +831,7 @@ function renderPanel(c) {
         <dt>Hat</dt><dd><select data-field="hat">${["1", "2", "3"].map((h) => `<option value="${h}" ${String(c.hat) === h ? "selected" : ""}>${HAT_ADI[h]}</option>`).join("")}</select></dd>
         <dt>Sorumlu</dt><dd><textarea class="auto owner" data-field="sorumlu" rows="1" placeholder="Birim ekle">${esc(c.sorumlu || "")}</textarea></dd>
       </dl>
+      ${kartBlocks(c)}
       <div class="blk"><h4>Gerekçe</h4><textarea class="auto" data-field="gerekce" rows="1" placeholder="Gerekçe ekle">${esc(c.gerekce)}</textarea></div>
       ${kaynakBlock(c)}
       <div class="blk"><h4>Dayanak</h4>${dayanakItems(c)}<textarea class="auto${(c.dayanak_bag || []).length ? " small" : ""}" data-field="dayanak" rows="1" placeholder="Mevzuat / politika maddesi ekle">${esc(c.dayanak)}</textarea></div>
@@ -1009,7 +1041,7 @@ async function viewLibrary() {
     ${order.map((cat) => `<h2 class="group"><span class="ico">${KAT_ICO[cat] || "📋"}</span>${esc(cat)} <span class="count">${groups[cat].length}</span></h2>
       ${groups[cat].map((c) => `<div class="row" style="cursor:default">
         <span class="ico" style="font-size:14px">✓</span>
-        <div><div class="title">${esc(c.kontrol_adi)}</div>
+        <div><div class="title">${c.kod ? `<span class="kod">${esc(c.kod)}</span>` : ""}${esc(c.kontrol_adi)}</div>
           <div class="meta">${esc(c.siklik)}<span class="sep">·</span>Hat ${esc(c.hat)}${c.sorumlu ? `<span class="sep">·</span>${esc(c.sorumlu)}` : `<span class="sep">·</span>Efor ${esc((c.efor || "").toLocaleLowerCase("tr"))}`}${c.set_baslik ? `<span class="sep">·</span>${esc(c.set_baslik)}` : ""}</div></div>
         <div style="display:flex;flex-direction:column;align-items:flex-end;gap:6px">
           <span class="risk ${RISK_CLS[c.risk] || ""}"><i></i>${esc(c.risk)}</span>
@@ -1340,6 +1372,10 @@ document.addEventListener("click", async (e) => {
   if (a === "export-seed") { S.exportSeed = S.exportSeed === false; return renderExport(); }
   if (a === "export-go") { download(`/api/learnings/export?baslangic=${S.exportSeed === false ? 0 : 1}`); S.exportOpen = false; $("#exportPop").hidden = true; return; }
   if (a === "generate" || a === "scope-open") return openScope();
+  if (a === "steps-edit") {
+    const b = act.closest(".steps-blk"); b.classList.add("editing");
+    const ta = b.querySelector("textarea"); autosize(ta); ta.focus(); ta.setSelectionRange(ta.value.length, ta.value.length); return;
+  }
   if (a === "scope-go") return scopeGo();
   if (a === "scope-cancel") return go("#/belgeler");
   if (a === "scope-alan") {
@@ -1461,6 +1497,7 @@ $("#panel").addEventListener("change", (e) => {
 $("#panel").addEventListener("focusout", (e) => {
   const el = e.target.closest("textarea[data-field]"); if (!el || !S.selectedId) return;
   const v = el.value.trim();
+  if (el.dataset.field === "adimlar" && v === (findControl(S.selectedId).adimlar || "").trim() && v) el.closest(".steps-blk").classList.remove("editing");
   if (el.dataset.field === "kontrol_adi" && !v) { el.value = findControl(S.selectedId).kontrol_adi; return; }
   saveFields(S.selectedId, { [el.dataset.field]: v });
 });

@@ -16,7 +16,8 @@ KATEGORILER = ["Operasyonel", "Mevzuat Uyum", "Bilgi Sistemleri", "Finansal Rapo
 SIKLIKLAR = ["Anlık", "Günlük", "Haftalık", "Aylık", "Üç aylık", "Altı aylık", "Yıllık", "Olay tetiklemeli"]
 RISKLER = ["Düşük", "Orta", "Yüksek", "Kritik"]
 EFORLAR = ["Düşük", "Orta", "Yüksek"]
-EDITABLE_FIELDS = ("kontrol_adi", "kategori", "hat", "siklik", "risk", "efor", "gerekce", "dayanak", "sorumlu")
+KART_FIELDS = ("amac", "nitelik", "ilgili_birimler", "kapsam", "donem", "adimlar", "kanit", "olcut", "istisna", "raporlama")
+EDITABLE_FIELDS = ("kontrol_adi", "kategori", "hat", "siklik", "risk", "efor", "gerekce", "dayanak", "sorumlu") + KART_FIELDS
 
 SET_SYSTEM_PROMPT = f"""Sen bir bankanın iç kontrol biriminde periyodik kontrol tasarlayan \
 kıdemli bir uzmansın. Sana şirketin bir süreç/prosedür belgesinden TEK BİR BÖLÜM ve birikmiş \
@@ -59,8 +60,24 @@ Aynı kontrolü farklı adlarla tekrar etme.
 ÇIKTI BİÇİMİ — ÇOK ÖNEMLİ: JSON Lines. Her satır tek bir JSON objesi. Başka hiçbir metin, \
 açıklama, liste parantezi veya kod bloğu yazma.
 
+KONTROL KARTI: Her kontrol, iç kontrol denetçisinin doğrudan uygulayabileceği bir karttır. Kart alanları:
+- amac: Kontrolün neyi doğruladığı; "… doğrulamak." diye biten tek-iki cümle.
+- nitelik: Kontrolün niteliği (ör. "Operasyonel birimin aylık gözden geçirmesi üzerinde ikinci seviye uygunluk ve işletim etkinliği kontrolü").
+- ilgili_birimler: Süreçte rolü olan birimler, noktalı virgülle.
+- kapsam: Ana kütle / kapsam: hangi dönemdeki hangi işlemler/hesaplar; tam kütle mi örneklem mi.
+- donem: "siklik" alanıyla BİREBİR uyumlu olarak hangi dönemin ne zaman kontrol edileceği. Örnekler — \
+Aylık: "Her ayın işlemleri izleyen ayın ilk 10 iş gününde"; Üç aylık: "Her çeyrek, izleyen ayın ilk yarısında"; \
+Altı aylık: "Ocak–Haziran dönemi: Temmuz ayında; Temmuz–Aralık dönemi: izleyen yılın Ocak ayında"; \
+Yıllık: "Takvim yılı, izleyen yılın Ocak ayında".
+- adimlar: 2-5 numarasız kısa uygulama adımı (liste); her adım denetçinin yapacağı somut bir iş.
+- kanit: Asgari kanıt: dosya/rapor/kayıt adları.
+- olcut: Değerlendirme ölçütü: kontrol ne zaman "etkin" sayılır.
+- istisna: İstisna ve aksiyon (yoksa "-").
+- raporlama: Sonucun nasıl ve ne sıklıkla raporlanacağı; önemli bulgular için derhal bildirim.
+Kart alanlarını belgedeki somut bilgilerle (birim adları, süreler, tutarlar) doldur; belgede yoksa makul ve genel yaz, uydurma tutar/süre ekleme.
+
 Her kontrol için bir satır:
-{{"tip":"kontrol","kontrol_adi":"...","kategori":"<{' | '.join(KATEGORILER)}>","hat":"<1, 2 veya 3>","siklik":"<{' | '.join(SIKLIKLAR)}>","risk":"<{' | '.join(RISKLER)}>","efor":"<{' | '.join(EFORLAR)}>","gerekce":"<neden gerekli, en fazla 2 cümle>","dayanak":"<dayanak adayının kısa adı ve maddesi; yoksa boş>","dayanak_no":[<ilgili aday numaraları>],"sorumlu":"<kontrolü yapan birim ya da boş>","kaynak":"<bu bölümden kısa BİREBİR alıntı ya da boş>"}}
+{{"tip":"kontrol","kontrol_adi":"...","kategori":"<{' | '.join(KATEGORILER)}>","hat":"<1, 2 veya 3>","siklik":"<{' | '.join(SIKLIKLAR)}>","risk":"<{' | '.join(RISKLER)}>","efor":"<{' | '.join(EFORLAR)}>","gerekce":"<neden gerekli, en fazla 2 cümle>","dayanak":"<dayanak adayının kısa adı ve maddesi; yoksa boş>","dayanak_no":[<ilgili aday numaraları>],"sorumlu":"<kontrolü yapan birim ya da boş>","kaynak":"<bu bölümden kısa BİREBİR alıntı ya da boş>","amac":"...","nitelik":"...","ilgili_birimler":"...","kapsam":"...","donem":"...","adimlar":["...","..."],"kanit":"...","olcut":"...","istisna":"...","raporlama":"..."}}
 
 Bölümde gerçek bir boşluk/tutarsızlık görürsen (ör. tanımlı bir adımı atlayan yol, süresi \
 belirtilmemiş bir takip) bir satır:
@@ -100,7 +117,8 @@ SADECE geçerli bir JSON objesi döndür, başka hiçbir metin yazma:
 bir düzeltmeyse boş liste döndür. Kurallar kullanıcı ONAYLAYINCA kalıcı olur: yanıtta "not aldım / \
 bundan sonra uygulayacağım" deme; "onaylarsan bundan sonraki setlerde de uygularım" de.
 
-Değiştirilebilir alanlar: kontrol_adi, kategori, hat, siklik, risk, efor, gerekce, dayanak, sorumlu. \
+Değiştirilebilir alanlar: kontrol_adi, kategori, hat, siklik, risk, efor, gerekce, dayanak, sorumlu, amac, nitelik, \
+ilgili_birimler, kapsam, donem, adimlar (satır satır), kanit, olcut, istisna, raporlama. \
 Değişiklik gerekmiyorsa "degisiklikler": [] döndür. Yalnız verilen id'leri kullan. \
 Kategori/sıklık/risk/efor için mevcut değerlerle aynı sözlüğü kullan."""
 
@@ -182,7 +200,23 @@ def normalize_control(obj: dict) -> dict:
         "dayanak_no": _nums(obj.get("dayanak_no")),
         "sorumlu": (obj.get("sorumlu") or "").strip()[:120],
         "kaynak": (obj.get("kaynak") or "").strip(),
+        **{k: _text(obj.get(k)) for k in KART_FIELDS if k != "adimlar"},
+        "adimlar": _steps(obj.get("adimlar")),
     }
+
+
+def _text(v) -> str:
+    if isinstance(v, list):
+        v = "; ".join(str(x).strip() for x in v if str(x).strip())
+    return str(v or "").strip()
+
+
+def _steps(v) -> str:
+    """Uygulama adımları satır satır (numarasız) saklanır; çıktıda numaralanır."""
+    if isinstance(v, str):
+        v = [x for x in re.split(r"\n+|(?:^|\s)\d+[).]\s+", v) if x.strip()]
+    out = [re.sub(r"^\s*(?:\d+[).]|[-•])\s*", "", str(x)).strip() for x in (v or [])]
+    return "\n".join(x for x in out if x)
 
 
 def _nums(v) -> list[int]:
@@ -217,8 +251,10 @@ def normalize_fields(fields: dict) -> dict:
         elif k == "hat":
             m = re.search(r"[123]", str(v))
             v = m.group(0) if m else None
+        elif k == "adimlar":
+            v = _steps(v)
         else:
-            v = str(v).strip()
+            v = _text(v)
         if v:
             out[k] = v
     return out
@@ -282,7 +318,8 @@ def stream_control_set(chunk_text: str, skills_text: str, context: dict | None =
         )},
     ]
     conn = _conn(conn)
-    payload = {"model": conn["model"], "messages": messages, "temperature": 0.2, "stream": True, "max_tokens": 8192}
+    # Kontrol kartı uzun: bölüm başına çıktı bütçesi geniş tutulur
+    payload = {"model": conn["model"], "messages": messages, "temperature": 0.2, "stream": True, "max_tokens": 16000}
     buffer, full = "", ""
     emitted = 0
     stop = should_stop or (lambda: False)

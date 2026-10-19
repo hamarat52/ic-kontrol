@@ -190,16 +190,19 @@ def run(set_id: str, docs: list[tuple[str, str]], basis: list[dict] | None = Non
                 if links:
                     stats["dayanakli"] = stats.get("dayanakli", 0) + 1
                 dayanak = c["dayanak"] or "; ".join(f"{l['doc']} — {l['label']}" for l in links)
+                kart = {k: c.get(k) or None for k in llm.KART_FIELDS}
                 with storage.db_session() as conn:
+                    n = conn.execute("SELECT COUNT(*) FROM suggestions WHERE run_id = ?", (set_id,)).fetchone()[0]
                     conn.execute(
-                        """INSERT INTO suggestions (run_id, kontrol_adi, kategori, hat, siklik, risk, efor,
+                        f"""INSERT INTO suggestions (run_id, kontrol_adi, kategori, hat, siklik, risk, efor,
                                gerekce, dayanak, kaynak, kaynak_belge, kaynak_bolum, kaynak_dogrulandi,
-                               sorumlu, dayanak_bag)
-                           VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)""",
+                               sorumlu, dayanak_bag, kod, {', '.join(kart)})
+                           VALUES ({', '.join(['?'] * (16 + len(kart)))})""",
                         (set_id, c["kontrol_adi"], c["kategori"], c["hat"], c["siklik"], c["risk"], c["efor"],
                          c["gerekce"], dayanak, c["kaynak"], chunk["belge"], chunk["bolum"],
                          None if verified is None else int(verified), c.get("sorumlu") or None,
-                         json.dumps(links, ensure_ascii=False) if links else None),
+                         json.dumps(links, ensure_ascii=False) if links else None,
+                         f"KN.{n + 1:02d}", *kart.values()),
                     )
             elif kind == "gap":
                 if ev["metin"] and not processing.is_duplicate(ev["metin"], gaps, threshold=0.8):

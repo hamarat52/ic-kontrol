@@ -121,7 +121,11 @@ MIGRATIONS = {
                   "kaynak_url": "TEXT", "orijinal_path": "TEXT"},
     "suggestions": {"dayanak": "TEXT", "kaynak": "TEXT", "kaynak_belge": "TEXT",
                     "kaynak_bolum": "TEXT", "kaynak_dogrulandi": "INTEGER",
-                    "sorumlu": "TEXT", "dayanak_bag": "TEXT"},
+                    "sorumlu": "TEXT", "dayanak_bag": "TEXT",
+                    # kurum kontrol kartı şablonu (KN.01 – …)
+                    "kod": "TEXT", "amac": "TEXT", "nitelik": "TEXT", "ilgili_birimler": "TEXT", "kapsam": "TEXT",
+                    "donem": "TEXT", "adimlar": "TEXT", "kanit": "TEXT", "olcut": "TEXT", "istisna": "TEXT",
+                    "raporlama": "TEXT"},
     "control_sets": {"progress": "TEXT", "istatistik": "TEXT", "iptal": "INTEGER DEFAULT 0", "kapsam": "TEXT"},
     "library": {"sorumlu": "TEXT"},
     "feedback": {"incelendi": "INTEGER DEFAULT 0"},

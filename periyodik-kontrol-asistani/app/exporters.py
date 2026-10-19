@@ -1,4 +1,5 @@
-"""Word (.docx) ve Excel (.xlsx) dışa aktarımı — panel tasarımıyla aynı düzen."""
+"""Word (.docx) ve Excel (.xlsx) dışa aktarımı. Word: kurumun kontrol kartı şablonu (KN.01 – …)."""
+import re
 from datetime import datetime
 from io import BytesIO
 
@@ -71,47 +72,8 @@ def build_word(control_set: dict, controls: list[dict], library: bool = False) -
     if control_set.get("ozet"):
         doc.add_paragraph(control_set["ozet"])
 
-    for kategori, items in _grouped(controls):
-        doc.add_heading(f"{kategori} ({len(items)})", level=2)
-        table = doc.add_table(rows=1, cols=6)
-        table.alignment = WD_TABLE_ALIGNMENT.CENTER
-        table.style = "Table Grid"
-        heads = ["Kontrol", "Sıklık", "Risk", "Efor", "Hat", "Set" if library else "Durum"]
-        for i, t in enumerate(heads):
-            cell = table.rows[0].cells[i]
-            cell.text = ""
-            r = cell.paragraphs[0].add_run(t)
-            r.bold = True
-            r.font.size = Pt(9)
-            _shade(cell, "F3F2EF")
-        for c in items:
-            row = table.add_row().cells
-            p = row[0].paragraphs[0]
-            p.add_run(c.get("kontrol_adi") or "").bold = True
-            if c.get("gerekce"):
-                g = row[0].add_paragraph().add_run(c["gerekce"])
-                g.font.size = Pt(9)
-                g.font.color.rgb = MUTED
-            if c.get("sorumlu"):
-                o = row[0].add_paragraph().add_run(f"Sorumlu: {c['sorumlu']}")
-                o.font.size = Pt(8.5)
-                o.font.color.rgb = MUTED
-            if c.get("dayanak"):
-                d = row[0].add_paragraph().add_run(f"Dayanak: {c['dayanak']}")
-                d.font.size = Pt(8.5)
-                d.font.color.rgb = MUTED
-            if c.get("kaynak_belge"):
-                src = f"Kaynak: {c['kaynak_belge']} · {c.get('kaynak_bolum') or ''}".rstrip(" ·")
-                if c.get("kaynak_dogrulandi") == 0:
-                    src += " (alıntı belgede bulunamadı)"
-                k = row[0].add_paragraph().add_run(src)
-                k.font.size = Pt(8.5)
-                k.font.color.rgb = MUTED
-            last = (c.get("set_baslik") or "—") if library else _durum(c)
-            for i, val in enumerate([c.get("siklik"), c.get("risk"), c.get("efor"), c.get("hat"), last], start=1):
-                row[i].text = str(val or "")
-        for row in table.rows:
-            row.cells[0].width = Cm(8.5)
+    for n, c in enumerate(_ordered(controls), start=1):
+        _control_card(doc, c, _code(c, n, library), library)
 
     gaps = control_set.get("bosluklar") or []
     if gaps:
@@ -132,8 +94,111 @@ def build_word(control_set: dict, controls: list[dict], library: bool = False) -
     return buf
 
 
+# ------------------------------------------------------------------ kurum kontrol kartı (KN.01 – …)
+
+CARD_HEAD = RGBColor(0x1F, 0x38, 0x64)
+LABEL_FILL = "DDEDE8"
+BORDER = "BFBFBF"
+SIKLIK_KISA = {"Altı aylık": "6 aylık", "Üç aylık": "3 aylık"}
+COL_W = (Cm(4.3), Cm(12.7))
+
+
+def _ordered(controls):
+    """Kod sırasıyla (KN.01, KN.02…); kodu olmayanlar sonda, kategoriye göre."""
+    def key(c):
+        m = re.match(r"KN\.(\d+)", c.get("kod") or "")
+        return (0, int(m.group(1))) if m else (1, KATEGORI_SIRASI.index(c["kategori"]) if c.get("kategori") in KATEGORI_SIRASI else 9)
+    return sorted(controls, key=key)
+
+
+def _code(c, n, library):
+    # Kütüphanede kontroller farklı setlerden gelir: kodlar çakışmasın diye yeniden numaralanır
+    return f"KN.{n:02d}" if library or not c.get("kod") else c["kod"]
+
+
+def _borders(table):
+    tbl_pr = table._tbl.tblPr
+    b = OxmlElement("w:tblBorders")
+    for edge in ("top", "left", "bottom", "right", "insideH", "insideV"):
+        e = OxmlElement(f"w:{edge}")
+        e.set(qn("w:val"), "single")
+        e.set(qn("w:sz"), "4")
+        e.set(qn("w:color"), BORDER)
+        b.append(e)
+    tbl_pr.append(b)
+
+
+def _card_rows(c):
+    siklik = SIKLIK_KISA.get(c.get("siklik"), c.get("siklik") or "")
+    donem = [x.strip() for x in re.split(r"[;\n]+", c.get("donem") or "") if x.strip()]
+    adim = [x.strip() for x in (c.get("adimlar") or "").split("\n") if x.strip()]
+    return [
+        ("Kontrol Amacı", [c.get("amac") or c.get("gerekce") or ""]),
+        ("Dayanak", [c.get("dayanak") or "-"]),
+        ("Kontrolün Niteliği", [c.get("nitelik") or "-"]),
+        ("İlgili Birimler", [c.get("ilgili_birimler") or c.get("sorumlu") or "-"]),
+        ("Ana Kütle / Kapsam", [c.get("kapsam") or "-"]),
+        ("Sıklık ve Dönem", [f"{siklik}." if siklik else "-"] + [f"• {d}" for d in donem]),
+        ("Uygulama Adımları", [f"{i}) {a}" for i, a in enumerate(adim, start=1)] or ["-"]),
+        ("Asgari Kanıt", [c.get("kanit") or "-"]),
+        ("Değerlendirme Ölçütü", [c.get("olcut") or "-"]),
+        ("İstisna / Aksiyon", [c.get("istisna") or "-"]),
+        ("Raporlama", [c.get("raporlama") or "-"]),
+    ]
+
+
+def _control_card(doc, c, code, library):
+    h = doc.add_heading(f"{code} – {c.get('kontrol_adi') or ''}", level=2)
+    h.paragraph_format.space_before = Pt(16)
+    h.paragraph_format.keep_with_next = True
+    for r in h.runs:
+        r.font.color.rgb = CARD_HEAD
+        r.font.size = Pt(12.5)
+    rows = _card_rows(c)
+    table = doc.add_table(rows=len(rows), cols=2)
+    table.alignment = WD_TABLE_ALIGNMENT.CENTER
+    table.autofit = False
+    _borders(table)
+    for col, w in zip(table.columns, COL_W):     # tblGrid: Word ve LibreOffice sütun genişliğini buradan alır
+        col.width = w
+    for (label, lines), row in zip(rows, table.rows):
+        lc, vc = row.cells
+        lc.width, vc.width = COL_W
+        _shade(lc, LABEL_FILL)
+        lr = lc.paragraphs[0].add_run(label)
+        lr.bold = True
+        lr.font.size = Pt(9.5)
+        first = True
+        for line in lines:
+            par = vc.paragraphs[0] if first else vc.add_paragraph()
+            first = False
+            par.paragraph_format.space_after = Pt(1)
+            if line.startswith("• "):
+                par.paragraph_format.left_indent = Cm(0.3)
+            run = par.add_run(line)
+            run.font.size = Pt(9.5)
+    # Kurum şablonunda olmayan ama uygulamanın ürettiği bilgiler: kartın altında küçük not
+    extra = [f"Risk: {c.get('risk')}" if c.get("risk") else None, f"Hat {c.get('hat')}" if c.get("hat") else None,
+             f"Sorumlu: {c['sorumlu']}" if c.get("sorumlu") else None]
+    if c.get("kaynak_belge"):
+        src = f"Kaynak: {c['kaynak_belge']}" + (f" · {c['kaynak_bolum']}" if c.get("kaynak_bolum") else "")
+        if c.get("kaynak_dogrulandi") == 0:
+            src += " (alıntı belgede bulunamadı)"
+        extra.append(src)
+    extra.append(f"Set: {c['set_baslik']}" if library and c.get("set_baslik") else (f"Durum: {_durum(c)}" if not library else None))
+    note = doc.add_paragraph()
+    note.paragraph_format.space_before = Pt(3)
+    nr = note.add_run("  ·  ".join(x for x in extra if x))
+    nr.font.size = Pt(8)
+    nr.font.color.rgb = MUTED
+
+
 EXCEL_COLS = [
-    ("Kontrol", "kontrol_adi", 48), ("Kategori", "kategori", 20), ("Hat", "hat", 6), ("Sorumlu", "sorumlu", 24),
+    ("Kod", "kod", 8), ("Kontrol", "kontrol_adi", 48), ("Kontrol amacı", "amac", 50), ("Kategori", "kategori", 20),
+    ("Hat", "hat", 6), ("Sorumlu", "sorumlu", 24), ("İlgili birimler", "ilgili_birimler", 30),
+    ("Kontrolün niteliği", "nitelik", 36), ("Ana kütle / kapsam", "kapsam", 40), ("Dönem", "donem", 36),
+    ("Uygulama adımları", "adimlar", 60), ("Asgari kanıt", "kanit", 40), ("Değerlendirme ölçütü", "olcut", 40),
+    ("İstisna / aksiyon", "istisna", 30), ("Raporlama", "raporlama", 30),
     ("Sıklık", "siklik", 16), ("Risk", "risk", 10), ("Efor", "efor", 10),
     ("Gerekçe", "gerekce", 60), ("Dayanak", "dayanak", 30),
     ("Kaynak belge", "kaynak_belge", 28), ("Kaynak bölüm", "kaynak_bolum", 28),
@@ -170,6 +235,8 @@ def build_excel(control_set: dict, controls: list[dict], library: bool = False) 
                     row.append(_durum(c))
                 elif key == "_dogrulama":
                     row.append(_dogrulama(c))
+                elif key == "adimlar":
+                    row.append("\n".join(f"{i}) {a}" for i, a in enumerate((c.get("adimlar") or "").split("\n"), 1) if a.strip()))
                 else:
                     row.append(c.get(key) or "")
             ws.append(row)

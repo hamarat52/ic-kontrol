@@ -637,6 +637,16 @@ class EditIn(BaseModel):
     gerekce: str | None = None
     dayanak: str | None = None
     sorumlu: str | None = None
+    amac: str | None = None
+    nitelik: str | None = None
+    ilgili_birimler: str | None = None
+    kapsam: str | None = None
+    donem: str | None = None
+    adimlar: str | None = None
+    kanit: str | None = None
+    olcut: str | None = None
+    istisna: str | None = None
+    raporlama: str | None = None
 
 
 @app.patch("/api/controls/{control_id}")
@@ -647,7 +657,7 @@ def edit_control(control_id: int, body: EditIn):
             raise HTTPException(404, "Kontrol bulunamadı.")
         control = dict(row)
         fields = {k: v.strip() for k, v in body.model_dump().items() if isinstance(v, str)}
-        fields = {k: v for k, v in fields.items() if v or k in ("gerekce", "dayanak")}
+        fields = {k: v for k, v in fields.items() if v or k not in ("kontrol_adi", "kategori", "hat", "siklik", "risk", "efor")}
         diffs = _apply_fields(conn, control, fields, "duzenle")
     if diffs:
         ogrenme.maybe_analyze_async(control["run_id"])
@@ -678,7 +688,9 @@ def history(control_id: int):
 def get_library():
     with storage.db_session() as conn:
         rows = conn.execute(
-            """SELECT l.*, c.baslik AS set_baslik, s.kaynak, s.kaynak_belge, s.kaynak_bolum, s.kaynak_dogrulandi
+            """SELECT l.*, c.baslik AS set_baslik, s.kaynak, s.kaynak_belge, s.kaynak_bolum, s.kaynak_dogrulandi,
+                      s.kod, s.amac, s.nitelik, s.ilgili_birimler, s.kapsam, s.donem, s.adimlar, s.kanit, s.olcut,
+                      s.istisna, s.raporlama
                FROM library l
                LEFT JOIN control_sets c ON c.id = l.set_id
                LEFT JOIN suggestions s ON s.id = l.suggestion_id
