@@ -729,7 +729,8 @@ async function saveFields(id, fields) {
 function setPanelMode(mode) {
   S.panelMode = mode;
   const w = $("#win");
-  w.classList.toggle("has-panel", !!mode);
+  w.classList.toggle("has-panel", mode === "chat" || mode === "doc");
+  w.classList.toggle("modal-open", mode === "detail" || mode === "lib-detail");
   w.classList.toggle("chat-open", mode === "chat");
   w.classList.toggle("doc-open", mode === "doc");
 
@@ -751,6 +752,7 @@ function openPanel(id, { keepKbd = false } = {}) {
 }
 function closePanel(silent) {
   S.selectedId = null;
+  S.libSelectedId = null;
   setPanelMode(null);
   if (!silent) syncRows();
   updateAskPlaceholder();
@@ -859,6 +861,49 @@ async function loadHistory(id) {
     const el = $("#hist"); if (!el || S.selectedId !== id) return;
     el.innerHTML = items.map((h) => `<li><time>${fmtTime(h.t)}</time><span>${esc(h.text)}</span></li>`).join("");
   } catch {}
+}
+
+/* --- kütüphane detayı (salt okunur; aynı modal kabı kullanılır) */
+function kartBlocksRO(c) {
+  return KART.map(([f, label]) => {
+    if (f === "adimlar") {
+      const steps = (c.adimlar || "").split("\n").filter((x) => x.trim());
+      return steps.length ? `<div class="blk"><h4>${label}</h4><ol class="steps">${stepsHtml(c.adimlar)}</ol></div>` : "";
+    }
+    return c[f] ? `<div class="blk"><h4>${label}</h4><p>${esc(c[f])}</p></div>` : "";
+  }).join("");
+}
+function renderLibPanel(c) {
+  $("#panel").innerHTML = `
+    <div class="panel-top"><span>Kontrol detayı</span>
+      <button class="pill-btn icon-btn" data-act="close-panel" title="Kapat (Esc)">${SVG.close}</button></div>
+    <div class="panel-body">
+      ${c.kod ? `<div class="p-kod">${esc(c.kod)}</div>` : ""}
+      <h3 class="lib-title">${esc(c.kontrol_adi)}</h3>
+      <dl class="fields fields-ro">
+        <dt>Kategori</dt><dd>${esc(c.kategori)}</dd>
+        <dt>Sıklık</dt><dd>${esc(c.siklik)}</dd>
+        <dt>Risk</dt><dd>${esc(c.risk)}</dd>
+        <dt>Efor</dt><dd>${esc(c.efor || "—")}</dd>
+        <dt>Hat</dt><dd>${esc(HAT_ADI[String(c.hat)] || c.hat || "—")}</dd>
+        <dt>Sorumlu</dt><dd>${esc(c.sorumlu || "—")}</dd>
+      </dl>
+      ${kartBlocksRO(c)}
+      ${c.gerekce ? `<div class="blk"><h4>Gerekçe</h4><p>${esc(c.gerekce)}</p></div>` : ""}
+      ${kaynakBlock(c)}
+      ${c.dayanak ? `<div class="blk"><h4>Dayanak</h4><p>${esc(c.dayanak)}</p></div>` : ""}
+      <div class="blk"><h4>Geldiği set</h4><p>${esc(c.set_baslik || "—")}</p></div>
+    </div>
+    <div class="panel-foot">
+      <button class="btn btn-ghost" data-act="lib-remove" data-id="${c.id}">Kütüphaneden çıkar</button>
+      <button class="btn btn-ink" data-act="close-panel">Kapat</button>
+    </div>`;
+}
+function openLibDetail(id) {
+  const c = S.lib.find((x) => x.id === Number(id)); if (!c) return;
+  S.libSelectedId = c.id;
+  renderLibPanel(c);
+  setPanelMode("lib-detail");
 }
 
 /* ---------------------------------------------------------------- belge görüntüleme (sağ panel) */
@@ -1040,7 +1085,7 @@ async function viewLibrary() {
     <p class="lead">Kabul ettiğin kontroller burada birikir ve sonraki setlerde tekrar kullanılabilir. Bir kontrolü setin içinde düzenlersen buradaki kopyası da güncellenir.</p>
     ${lib.length ? `<div class="toolbar"><span></span><label class="mini-search">${SVG.search}<input id="ctrlSearch" placeholder="Kontrollerde ara" value="${esc(S.q)}" /></label></div>` : ""}
     ${order.map((cat) => `<h2 class="group"><span class="ico">${KAT_ICO[cat] || "📋"}</span>${esc(cat)} <span class="count">${groups[cat].length}</span></h2>
-      ${groups[cat].map((c) => `<div class="row" style="cursor:default">
+      ${groups[cat].map((c) => `<div class="row lib-row" data-id="${c.id}">
         <span class="ico" style="font-size:14px">✓</span>
         <div><div class="title">${c.kod ? `<span class="kod">${esc(c.kod)}</span>` : ""}${esc(c.kontrol_adi)}</div>
           <div class="meta">${esc(c.siklik)}<span class="sep">·</span>Hat ${esc(c.hat)}${c.sorumlu ? `<span class="sep">·</span>${esc(c.sorumlu)}` : `<span class="sep">·</span>Efor ${esc((c.efor || "").toLocaleLowerCase("tr"))}`}${c.set_baslik ? `<span class="sep">·</span>${esc(c.set_baslik)}` : ""}</div></div>
@@ -1441,6 +1486,7 @@ document.addEventListener("click", async (e) => {
   }
   if (a === "lib-remove") {
     await api("/api/library/" + act.dataset.id, { method: "DELETE" });
+    if (S.panelMode === "lib-detail" && S.libSelectedId === Number(act.dataset.id)) closePanel();
     await refreshLib(); viewLibrary(); return;
   }
 
@@ -1455,6 +1501,13 @@ document.addEventListener("click", async (e) => {
   if (docRow && !e.target.closest("a, button, select, label, .classify")) {
     const id = Number(docRow.dataset.doc);
     if (S.panelMode === "doc" && S.docId === id) closePanel(); else openDoc(id);
+    return;
+  }
+
+  const libRow = e.target.closest(".lib-row[data-id]");
+  if (libRow && !e.target.closest("button")) {
+    const id = Number(libRow.dataset.id);
+    if (S.panelMode === "lib-detail" && S.libSelectedId === id) closePanel(); else openLibDetail(id);
     return;
   }
 
@@ -1510,6 +1563,9 @@ $("#panel").addEventListener("keydown", (e) => {
 });
 
 $("#fileInput").addEventListener("change", (e) => { upload(e.target.files); e.target.value = ""; });
+$("#panelAside").addEventListener("click", (e) => {
+  if (e.target.id === "panelAside" && (S.panelMode === "detail" || S.panelMode === "lib-detail")) closePanel();
+});
 $("#secToggle").onclick = () => $("#secSets").classList.toggle("closed");
 $("#newSetBtn").onclick = () => openScope();
 $("#userBtn").onclick = () => go("#/model");
@@ -1544,6 +1600,7 @@ document.addEventListener("keydown", (e) => {
     if (S.panelMode === "chat") return closeChat();
     if (S.route.name === "yeni" && !typing(e.target)) return go("#/belgeler");
     if (S.panelMode === "doc") { if (S.docBack) { const id = S.docBack; S.panelMode = null; return openPanel(id); } return closePanel(); }
+    if (S.panelMode === "lib-detail") return closePanel();
     if (S.selectedId) return closePanel();
     return;
   }
