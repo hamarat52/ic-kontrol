@@ -972,7 +972,15 @@ function docByName(name) { return [...S.docs].sort((a, b) => b.id - a.id).find((
 /* ---------------------------------------------------------------- sohbet (sağ panelde) */
 function updateAskPlaceholder() {
   const c = S.selectedId && findControl(S.selectedId);
-  $("#askPh").textContent = c ? `“${c.kontrol_adi}” kontrolüne geri bildirim ver…` : "Bu kontrol setine sor ya da geri bildirim ver…";
+  const i = $("#askQuick");
+  if (i) i.placeholder = c ? `“${short(c.kontrol_adi)}” kontrolüne geri bildirim ver…` : "Bu kontrol setine sor ya da geri bildirim ver…";
+}
+function quickAsk(text) {
+  openChat();
+  requestAnimationFrame(() => {
+    const ci = $("#chatInput");
+    if (ci) { ci.value = text; autosize(ci); sendChat(); }
+  });
 }
 function openChat() {
   if (S.route.name !== "set" || !S.set) return;
@@ -1581,7 +1589,14 @@ document.addEventListener("submit", (e) => {
   if (f) { e.preventDefault(); saveConn(f); }
 });
 $("#searchBtn").onclick = () => { const i = $("#ctrlSearch"); if (i) i.focus(); else if (S.lib.length) go("#/kutuphane"); };
-$("#askBar").onclick = openChat;
+$("#askOrb").onclick = openChat;
+$("#askQuick").addEventListener("keydown", (e) => {
+  if (e.key !== "Enter" || e.shiftKey) return;
+  e.preventDefault();
+  const v = e.target.value.trim(); if (!v) return;
+  e.target.value = "";
+  quickAsk(v);
+});
 
 /* klavye: gezinme ve karar */
 function moveSelection(dir) {

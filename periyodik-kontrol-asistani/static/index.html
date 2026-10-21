@@ -4,7 +4,7 @@
 <meta charset="utf-8" />
 <title>Periyodik Kontrol Asistanı</title>
 <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>📋</text></svg>" />
-<link rel="stylesheet" href="/static/style.css?v=1792564500" />
+<link rel="stylesheet" href="/static/style.css?v=1792566000" />
 </head>
 <body>
 <div class="win" id="win">
@@ -47,11 +47,8 @@
 
     <div class="ask-wrap">
       <div class="ask" id="ask" hidden>
-        <button class="ask-bar" id="askBar">
-          <span class="orb"></span>
-          <span class="ph" id="askPh">Bu kontrol setine sor ya da geri bildirim ver…</span>
-          <kbd class="k">⌘J</kbd>
-        </button>
+        <button class="ask-orb" id="askOrb" title="Sohbet aç (⌘J)"><span class="orb"></span></button>
+        <input class="ask-quick" id="askQuick" placeholder="Bu kontrol setine sor ya da geri bildirim ver…" />
       </div>
       <div class="bulk" id="bulk" hidden></div>
     </div>
@@ -65,6 +62,6 @@
 <input type="file" id="fileInput" accept=".pdf,.docx,.xlsx,.txt,.md" multiple hidden />
 <div class="toast" id="toast"></div>
 <div class="undo" id="undo" hidden></div>
-<script src="/static/app.js?v=1792564500"></script>
+<script src="/static/app.js?v=1792566000"></script>
 </body>
 </html>
