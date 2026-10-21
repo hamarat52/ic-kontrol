@@ -238,7 +238,7 @@ details.seed summary:hover{background:var(--hover)}
 .md pre{background:var(--soft);padding:10px;border-radius:8px;font-size:12px;overflow:auto}
 
 /* ---------- floating ask / chat ---------- */
-.ask-wrap{position:absolute;left:0;right:0;bottom:22px;display:flex;justify-content:center;pointer-events:none}
+.ask-wrap{position:absolute;left:0;right:22px;bottom:22px;display:flex;justify-content:flex-end;pointer-events:none}
 .ask{
   pointer-events:auto;width:520px;height:46px;background:#fff;border-radius:22px;
   box-shadow:0 0 0 1px rgba(0,0,0,.06),0 10px 30px rgba(30,30,40,.10);
@@ -282,6 +282,11 @@ kbd.k{font-family:inherit;font-size:11px;color:var(--faint);padding:3px 7px;bord
 .panel-in{width:400px;height:100%;display:flex;flex-direction:column;opacity:0;transition:opacity 160ms ease}
 .win.has-panel .panel-in{opacity:1;transition-delay:60ms}
 .panel-top{display:flex;align-items:center;justify-content:space-between;height:52px;padding:0 14px 0 22px;color:var(--faint);font-size:12.5px;flex-shrink:0}
+.panel-top-left{display:flex;align-items:center;gap:10px}
+.panel-nav{display:inline-flex;gap:2px}
+.nav-arrow{width:26px;height:26px;border-radius:7px;display:flex;align-items:center;justify-content:center;color:var(--muted);transition:background var(--t)}
+.nav-arrow:hover:not(:disabled){background:var(--hover)}
+.nav-arrow:disabled{opacity:.3;cursor:default}
 .saved{opacity:0;transition:opacity var(--t);color:var(--r-dusuk);margin-left:8px}
 .saved.on{opacity:1}
 .panel-body{flex:1;overflow-y:scroll;overflow-x:hidden;scrollbar-gutter:stable;padding:4px 22px 20px}

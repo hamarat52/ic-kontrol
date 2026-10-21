@@ -63,6 +63,8 @@ const SVG = {
   more: `<svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor"><circle cx="5" cy="12" r="1.7"/><circle cx="12" cy="12" r="1.7"/><circle cx="19" cy="12" r="1.7"/></svg>`,
   search: `<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>`,
   close: `<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M6 6l12 12M18 6 6 18"/></svg>`,
+  chevUp: `<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m18 15-6-6-6 6"/></svg>`,
+  chevDown: `<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg>`,
 };
 
 /* ---------------------------------------------------------------- veri */
@@ -820,8 +822,13 @@ function kartBlocks(c) {
 function renderPanel(c) {
   const m = S.meta || { kategoriler: KAT_ORDER, sikliklar: [], riskler: [], eforlar: [] };
   const pending = S.set.controls.filter((x) => x.status === "bekliyor").length;
+  const list = orderedVisible(); const idx = list.findIndex((x) => x.id === c.id);
+  const hasPrev = idx > 0, hasNext = idx >= 0 && idx < list.length - 1;
   $("#panel").innerHTML = `
-    <div class="panel-top"><span>Kontrol detayı${pending ? ` · ${pending} bekleyen` : ""}<span class="saved" id="saved">· Kaydedildi</span></span>
+    <div class="panel-top"><span class="panel-top-left"><span class="panel-nav">
+        <button class="nav-arrow" data-act="panel-prev" title="Önceki (↑)" ${hasPrev ? "" : "disabled"}>${SVG.chevUp}</button>
+        <button class="nav-arrow" data-act="panel-next" title="Sonraki (↓)" ${hasNext ? "" : "disabled"}>${SVG.chevDown}</button>
+      </span>Kontrol detayı${pending ? ` · ${pending} bekleyen` : ""}<span class="saved" id="saved">· Kaydedildi</span></span>
       <button class="pill-btn icon-btn" data-act="close-panel" title="Kapat (Esc)">${SVG.close}</button></div>
     <div class="panel-body">
       ${c.kod ? `<div class="p-kod">${esc(c.kod)}</div>` : ""}
@@ -840,9 +847,7 @@ function renderPanel(c) {
       <div class="blk"><h4>Dayanak</h4>${dayanakItems(c)}<textarea class="auto${(c.dayanak_bag || []).length ? " small" : ""}" data-field="dayanak" rows="1" placeholder="Mevzuat / politika maddesi ekle">${esc(c.dayanak)}</textarea></div>
       <div class="blk"><h4>Geçmiş</h4><ul class="hist" id="hist"><li><time></time>Yükleniyor…</li></ul></div>
     </div>
-    <div class="panel-foot" id="panelFoot"></div>
-    <div class="next-hint">Karar verince sıradaki bekleyen kontrol açılır</div>
-    <div class="keys"><span><kbd>↑</kbd><kbd>↓</kbd>gezin</span><span><kbd>A</kbd>kabul</span><span><kbd>R</kbd>red</span><span><kbd>E</kbd>düzenle</span><span><kbd>⌘Z</kbd>geri al</span></div>`;
+    <div class="panel-foot" id="panelFoot"></div>`;
   $("#panel").querySelectorAll("textarea.auto").forEach(autosize);
   requestAnimationFrame(() => $("#panel").querySelectorAll("textarea.auto").forEach(autosize));
   renderPanelFoot(c);
@@ -1380,6 +1385,8 @@ document.addEventListener("click", async (e) => {
   if (a === "bulk-clear") return clearMulti();
   if (a === "to-gaps") { const g = $("#setGaps"); if (g) g.scrollIntoView({ block: "start", behavior: "smooth" }); return; }
   if (a === "close-panel") return closePanel();
+  if (a === "panel-prev") return moveSelection(-1);
+  if (a === "panel-next") return moveSelection(1);
   if (a === "chat-close") return closeChat();
   if (a === "chat-send") return sendChat();
   if (a === "chat-detail") { const id = S.selectedId; S.panelMode = null; return openPanel(id); }
